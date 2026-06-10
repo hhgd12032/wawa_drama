@@ -41,33 +41,35 @@ const T={
   bg:       "#F0EDE6",
   surface:  "#FAFAF7",
   white:    "#FFFFFF",
-  ink:      "#2A2520",      // strong
-  ink2:     "#4A4540",      // body
-  ink3:     "#706860",      // secondary
-  ink4:     "#9A9088",      // placeholder/hint
-  line:     "#C8C0B8",      // card border
+  ink:      "#2A2520",
+  ink2:     "#4A4540",
+  ink3:     "#706860",
+  ink4:     "#9A9088",
+  line:     "#C8C0B8",
   lineSoft: "#E0DAD2",
   bg2:      "#EDE8DF",
 
-  rose:     "#B89088",   roseBg:"#F2ECEA",
-  sage:     "#7A9A88",   sageBg:"#E8F2EC",
-  slate:    "#7888A8",   slateBg:"#E8ECF4",
-  sand:     "#A89070",   sandBg:"#F2EDE4",
-  mauve:    "#9888B0",   mauveBg:"#EEE8F4",
-  olive:    "#889070",   oliveBg:"#EAEDDF",
+  rose:     "#C09090",   roseBg:"#F5EDEB",
+  sage:     "#6EA890",   sageBg:"#E4F2EC",
+  slate:    "#6E88B0",   slateBg:"#E4EBF5",
+  sand:     "#B8986A",   sandBg:"#F2EAE0",
+  mauve:    "#9878B8",   mauveBg:"#EDE6F5",
+  olive:    "#88A070",   oliveBg:"#E8EEE0",
+  coral:    "#C8806A",   coralBg:"#F5EAE6",
+  teal:     "#5E9898",   tealBg:"#E2F0F0",
 
-  catM:{line:"#7888A8",bg:"#EEF1F8",text:"#4A6080"},
-  catD:{line:"#7A9A88",bg:"#E8F2EC",text:"#3A7058"},
-  catE:{line:"#B89088",bg:"#F2ECEA",text:"#906058"},
-  catC:{line:"#9888B0",bg:"#EEE8F4",text:"#705890"},
+  catM:{line:"#6E88B0",bg:"#E8EFF8",text:"#3A5A88"},
+  catD:{line:"#6EA890",bg:"#E2F0EA",text:"#2E7858"},
+  catE:{line:"#C09090",bg:"#F5EDEB",text:"#906060"},
+  catC:{line:"#9878B8",bg:"#EDE6F5",text:"#684898"},
 };
-const FACE_C=["","#C07068","#A09060","#6A9870","#5878A8","#8868B0"];
+const FACE_C=["","#C07068","#B09050","#5A9870","#4878B0","#8860B8"];
 const DSubs=["影集","日劇","韓劇","美劇","實境秀","動漫","紀錄片"];
 const DTC={
-  影集:{l:"#7A9A88",t:"#3A7058"},日劇:{l:"#B89088",t:"#906058"},
-  韓劇:{l:"#9888B0",t:"#705890"},美劇:{l:"#7888A8",t:"#4A6080"},
-  實境秀:{l:"#A89070",t:"#706040"},動漫:{l:"#889070",t:"#506040"},
-  紀錄片:{l:"#88A090",t:"#406050"},
+  影集:{l:"#6EA890",t:"#2E7858"},日劇:{l:"#C09090",t:"#906060"},
+  韓劇:{l:"#9878B8",t:"#684898"},美劇:{l:"#6E88B0",t:"#3A5A88"},
+  實境秀:{l:"#B8986A",t:"#785828"},動漫:{l:"#88A070",t:"#486030"},
+  紀錄片:{l:"#5E9898",t:"#2E6868"},
 };
 const catSt=c=>({電影:T.catM,戲劇:T.catD,展覽:T.catE,演唱會:T.catC}[c]||T.catM);
 
@@ -208,28 +210,28 @@ const DTag=({date,th=T})=>(
 
 /* ── SMALL TAG ─────────────────────────────────────── */
 const Tg=({label,col})=>(
-  <span style={{display:"inline-block",padding:"2px 9px",borderRadius:20,fontSize:11,fontWeight:400,color:col||T.ink3,border:`1.5px solid ${col||T.line}`,letterSpacing:".2px"}}>{label}</span>
+  <span style={{display:"inline-block",padding:"2px 9px",borderRadius:20,fontSize:11,fontWeight:400,color:col||"#706860",border:`1.5px solid ${col||"#C8C0B8"}`,letterSpacing:".2px"}}>{label}</span>
 );
 
 /* ── TIME FILTER ───────────────────────────────────── */
-function TFilt({value,onChange}){
+function TFilt({value,onChange,th=T}){
   const[open,setOpen]=useState(false);
   const months=Array.from({length:12},(_,i)=>{const d=new Date(TY,TM-1-i,1);return{y:d.getFullYear(),m:d.getMonth()+1,label:`${d.getFullYear()}.${String(d.getMonth()+1).padStart(2,"0")}`};});
   const isMo=typeof value==="object";
   const chip=(v,lbl,act)=>(
-    <button key={lbl} className="tap" onClick={()=>onChange(v)} style={{padding:"5px 13px",borderRadius:20,fontSize:11,fontWeight:500,background:act?T.ink:T.white,color:act?"#fff":T.ink3,border:`1.5px solid ${act?T.ink:T.line}`,transition:"all .15s"}}>{lbl}</button>
+    <button key={lbl} className="tap" onClick={()=>onChange(v)} style={{padding:"5px 13px",borderRadius:20,fontSize:11,fontWeight:500,background:act?T.rose:th.white,color:act?"#fff":th.ink3,border:`1.5px solid ${act?T.rose:th.line}`,transition:"all .15s"}}>{lbl}</button>
   );
   return(
     <div style={{display:"flex",gap:6,marginBottom:14,alignItems:"center",flexWrap:"wrap",position:"relative"}}>
       {chip("總覽","總覽",value==="總覽")}
       {chip("本月","本月",value==="本月")}
-      <button className="tap" onClick={()=>setOpen(p=>!p)} style={{display:"flex",alignItems:"center",gap:3,padding:"5px 13px",borderRadius:20,fontSize:11,fontWeight:500,background:isMo?T.ink:T.white,color:isMo?"#fff":T.ink3,border:`1.5px solid ${isMo?T.ink:T.line}`}}>
+      <button className="tap" onClick={()=>setOpen(p=>!p)} style={{display:"flex",alignItems:"center",gap:3,padding:"5px 13px",borderRadius:20,fontSize:11,fontWeight:500,background:isMo?T.rose:th.white,color:isMo?"#fff":th.ink3,border:`1.5px solid ${isMo?T.rose:th.line}`}}>
         {isMo?value.label:"月份"}<ICD/>
       </button>
       {open&&(
-        <div style={{position:"absolute",top:"115%",left:0,zIndex:300,background:T.white,border:`1.5px solid ${T.line}`,borderRadius:14,padding:10,boxShadow:"0 8px 28px rgba(40,30,20,.12)",display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:4,width:200,maxWidth:"calc(100vw - 32px)"}}>
+        <div style={{position:"absolute",top:"115%",left:0,zIndex:300,background:th.white,border:`1.5px solid ${th.line}`,borderRadius:14,padding:10,boxShadow:"0 8px 28px rgba(40,30,20,.12)",display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:4,width:200,maxWidth:"calc(100vw - 32px)"}}>
           {months.map(mo=>(
-            <button key={mo.label} className="tap" onClick={()=>{onChange(mo);setOpen(false);}} style={{padding:"6px 4px",borderRadius:8,fontSize:11,background:(isMo&&value.label===mo.label)?T.ink:"transparent",color:(isMo&&value.label===mo.label)?"#fff":T.ink3}}>{mo.label}</button>
+            <button key={mo.label} className="tap" onClick={()=>{onChange(mo);setOpen(false);}} style={{padding:"6px 4px",borderRadius:8,fontSize:11,background:(isMo&&value.label===mo.label)?T.rose:"transparent",color:(isMo&&value.label===mo.label)?"#fff":th.ink3}}>{mo.label}</button>
           ))}
         </div>
       )}
@@ -238,132 +240,181 @@ function TFilt({value,onChange}){
 }
 
 /* ── BOTTOM SHEET ──────────────────────────────────── */
-function Sheet({title,onClose,children}){
+function Sheet({title,onClose,children,th=T}){
+  const isDark=th.bg==="#141210";
+  const sheetBg=isDark?"#231E1B":T.white;
+  const inputBg=isDark?"#2E2520":"#FBF9F6";
+  const inputBorder=isDark?"#4A3830":"#C0B8B0";
+  const inputColor=isDark?"#EDE8E2":"#2A2520";
+  const titleColor=isDark?T.rose:T.ink;
   return(
-    <div style={{position:"fixed",inset:0,background:"rgba(30,25,20,.55)",backdropFilter:"blur(8px)",zIndex:500,display:"flex",alignItems:"flex-end",justifyContent:"center"}} onClick={onClose}>
-      <div onClick={e=>e.stopPropagation()} style={{background:T.white,borderRadius:"22px 22px 0 0",width:"100%",maxWidth:"480px",maxHeight:"88vh",overflow:"auto",padding:"8px 18px 48px",boxShadow:"0 -2px 30px rgba(40,30,20,.15)"}}>
-        <div style={{width:36,height:4,borderRadius:2,background:T.lineSoft,margin:"12px auto 18px"}}/>
-        {title&&<div style={{fontSize:15,fontWeight:500,color:T.ink,marginBottom:18,letterSpacing:".2px"}}>{title}</div>}
-        {children}
+    <div style={{position:"fixed",inset:0,background:"rgba(20,15,12,.7)",backdropFilter:"blur(8px)",zIndex:500,display:"flex",alignItems:"flex-end",justifyContent:"center"}} onClick={onClose}>
+      <div onClick={e=>e.stopPropagation()} style={{background:sheetBg,borderRadius:"22px 22px 0 0",width:"100%",maxWidth:"480px",maxHeight:"88vh",overflow:"auto",padding:"8px 18px 48px",boxShadow:"0 -4px 40px rgba(0,0,0,.4)"}}>
+        <div style={{width:36,height:4,borderRadius:2,background:isDark?"#4A3830":T.lineSoft,margin:"12px auto 18px"}}/>
+        {title&&<div style={{fontSize:15,fontWeight:500,color:titleColor,marginBottom:18,letterSpacing:".2px"}}>{title}</div>}
+        {/* inject input styles for dark mode */}
+        {isDark&&<style>{`
+          .sheet-dark input,.sheet-dark textarea,.sheet-dark select{
+            background:${inputBg}!important;
+            border-color:${inputBorder}!important;
+            color:${inputColor}!important;
+          }
+          .sheet-dark input::placeholder,.sheet-dark textarea::placeholder{color:#786860!important;}
+          .sheet-dark select option{background:${inputBg};}
+        `}</style>}
+        <div className={isDark?"sheet-dark":""}>
+          {children}
+        </div>
       </div>
     </div>
   );
 }
-const FR=({label,children})=>(
-  <div style={{marginBottom:16}}>
-    <div style={{fontSize:10,fontWeight:500,color:T.ink4,letterSpacing:"1.2px",marginBottom:7,textTransform:"uppercase"}}>{label}</div>
-    {children}
-  </div>
-);
-const SvBtn=({onClick,label="儲存"})=>(
-  <button className="tap" onClick={onClick} style={{width:"100%",padding:13,background:T.ink,color:"#fff",borderRadius:12,fontSize:14,fontWeight:500,marginTop:14,letterSpacing:".5px"}}>{label}</button>
-);
+const FR=({label,children,th=T})=>{
+  const isDark=th.bg==="#141210";
+  return(
+    <div style={{marginBottom:16}}>
+      <div style={{fontSize:10,fontWeight:500,color:isDark?T.rose:T.ink4,letterSpacing:"1.2px",marginBottom:7,textTransform:"uppercase"}}>{label}</div>
+      {children}
+    </div>
+  );
+};
+const SvBtn=({onClick,label="儲存",th=T})=>{
+  const isDark=th.bg==="#141210";
+  return(
+    <button className="tap" onClick={onClick} style={{width:"100%",padding:13,background:isDark?T.rose:T.ink,color:"#fff",borderRadius:12,fontSize:14,fontWeight:500,marginTop:14,letterSpacing:".5px"}}>{label}</button>
+  );
+};
 
 /* ── ADD BUTTON ────────────────────────────────────── */
 const AddBtn=({onClick})=>(
-  <button className="tap" onClick={onClick} style={{width:38,height:38,borderRadius:"50%",background:T.rose,display:"flex",alignItems:"center",justifyContent:"center",boxShadow:`0 4px 14px ${T.rose}55`,flexShrink:0}}>
-    <IPlus s={18}/>
+  <button className="tap" onClick={onClick} style={{
+    width:40,height:40,borderRadius:"50%",
+    background:T.rose,
+    display:"flex",alignItems:"center",justifyContent:"center",
+    boxShadow:`0 4px 16px ${T.rose}60`,
+    flexShrink:0,border:"none",
+  }}>
+    <svg width={18} height={18} viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" strokeWidth={2.5} strokeLinecap="round">
+      <line x1="12" y1="4" x2="12" y2="20"/>
+      <line x1="4" y1="12" x2="20" y2="12"/>
+    </svg>
   </button>
 );
 
 /* ── FORMS ─────────────────────────────────────────── */
-function FMovie({init,onSave,onClose}){
+function FMovie({init,onSave,onClose,th=T}){
   const[f,sf]=useState(init||{title:"",subtype:"電影",date:"",rating:0,platform:"",notes:""});
   const s=(k,v)=>sf(p=>({...p,[k]:v}));
+  const isDark=th.bg==="#141210";
+  const chipBase=isDark?"#3A2C26":"#FAFAF7";
+  const chipText=isDark?"#C8B8B0":T.ink3;
+  const chipBorder=isDark?"#5A3C34":T.line;
   return(
-    <Sheet title={init?"編輯電影":"新增電影"} onClose={onClose}>
-      <FR label="片名"><input value={f.title} onChange={e=>s("title",e.target.value)} placeholder="輸入片名"/></FR>
-      <FR label="觀看日期"><input type="date" value={f.date} onChange={e=>s("date",e.target.value)}/></FR>
-      <FR label="觀看方式">
+    <Sheet title={init?"編輯電影":"新增電影"} onClose={onClose} th={th}>
+      <FR label="片名" th={th}><input value={f.title} onChange={e=>s("title",e.target.value)} placeholder="輸入片名"/></FR>
+      <FR label="觀看日期" th={th}><input type="date" value={f.date} onChange={e=>s("date",e.target.value)}/></FR>
+      <FR label="觀看方式" th={th}>
         <div style={{display:"flex",gap:7,flexWrap:"wrap"}}>
           {["電影院","線上串流","飛機上"].map(p=>(
-            <button key={p} className="tap" onClick={()=>s("platform",p)} style={{padding:"6px 14px",borderRadius:20,fontSize:12,background:f.platform===p?T.ink:T.surface,color:f.platform===p?"#fff":T.ink3,border:`1.5px solid ${f.platform===p?T.ink:T.line}`}}>{p}</button>
+            <button key={p} className="tap" onClick={()=>s("platform",p)} style={{padding:"6px 14px",borderRadius:20,fontSize:12,background:f.platform===p?T.rose:chipBase,color:f.platform===p?"#fff":chipText,border:`1.5px solid ${f.platform===p?T.rose:chipBorder}`}}>{p}</button>
           ))}
         </div>
       </FR>
-      <FR label="心情評分"><MoodPicker value={f.rating} onChange={v=>s("rating",v)}/></FR>
-      <FR label="觀後感"><textarea value={f.notes} onChange={e=>s("notes",e.target.value)} rows={3} placeholder="寫下你的感受..."/></FR>
-      <SvBtn onClick={()=>{if(f.title&&f.date){onSave({...f,subtype:"電影"});onClose();}}}/>
+      <FR label="心情評分" th={th}><MoodPicker value={f.rating} onChange={v=>s("rating",v)}/></FR>
+      <FR label="觀後感" th={th}><textarea value={f.notes} onChange={e=>s("notes",e.target.value)} rows={3} placeholder="寫下你的感受..."/></FR>
+      <SvBtn onClick={()=>{if(f.title&&f.date){onSave({...f,subtype:"電影"});onClose();}}} th={th}/>
     </Sheet>
   );
 }
-function FDrama({init,onSave,onClose}){
+function FDrama({init,onSave,onClose,th=T}){
   const[f,sf]=useState(init||{title:"",subtype:"影集",date:"",rating:0,notes:""});
   const s=(k,v)=>sf(p=>({...p,[k]:v}));
+  const isDark=th.bg==="#141210";
+  const chipBase=isDark?"#3A2C26":"#FAFAF7";
+  const chipText=isDark?"#C8B8B0":T.ink3;
+  const chipBorder=isDark?"#5A3C34":T.line;
   return(
-    <Sheet title={init?"編輯戲劇":"新增戲劇"} onClose={onClose}>
-      <FR label="類型">
+    <Sheet title={init?"編輯戲劇":"新增戲劇"} onClose={onClose} th={th}>
+      <FR label="類型" th={th}>
         <div style={{display:"flex",gap:7,flexWrap:"wrap"}}>
           {DSubs.map(t=>(
-            <button key={t} className="tap" onClick={()=>s("subtype",t)} style={{padding:"5px 12px",borderRadius:20,fontSize:11,background:f.subtype===t?T.ink:T.surface,color:f.subtype===t?"#fff":T.ink3,border:`1.5px solid ${f.subtype===t?T.ink:T.line}`}}>{t}</button>
+            <button key={t} className="tap" onClick={()=>s("subtype",t)} style={{padding:"5px 12px",borderRadius:20,fontSize:11,background:f.subtype===t?T.rose:chipBase,color:f.subtype===t?"#fff":chipText,border:`1.5px solid ${f.subtype===t?T.rose:chipBorder}`}}>{t}</button>
           ))}
         </div>
       </FR>
-      <FR label="片名"><input value={f.title} onChange={e=>s("title",e.target.value)} placeholder="輸入片名"/></FR>
-      <FR label="觀看日期"><input type="date" value={f.date} onChange={e=>s("date",e.target.value)}/></FR>
-      <FR label="心情評分"><MoodPicker value={f.rating} onChange={v=>s("rating",v)}/></FR>
-      <FR label="觀後感"><textarea value={f.notes} onChange={e=>s("notes",e.target.value)} rows={3} placeholder="寫下你的感受..."/></FR>
-      <SvBtn onClick={()=>{if(f.title&&f.date){onSave(f);onClose();}}}/>
+      <FR label="片名" th={th}><input value={f.title} onChange={e=>s("title",e.target.value)} placeholder="輸入片名"/></FR>
+      <FR label="觀看日期" th={th}><input type="date" value={f.date} onChange={e=>s("date",e.target.value)}/></FR>
+      <FR label="心情評分" th={th}><MoodPicker value={f.rating} onChange={v=>s("rating",v)}/></FR>
+      <FR label="觀後感" th={th}><textarea value={f.notes} onChange={e=>s("notes",e.target.value)} rows={3} placeholder="寫下你的感受..."/></FR>
+      <SvBtn onClick={()=>{if(f.title&&f.date){onSave(f);onClose();}}} th={th}/>
     </Sheet>
   );
 }
 const ETypes=["藝術","攝影","裝置","歷史","科技","設計","自然"];
-function FExhib({init,onSave,onClose}){
+function FExhib({init,onSave,onClose,th=T}){
   const[f,sf]=useState(init||{title:"",venue:"",type:"藝術",date:"",notes:""});
   const s=(k,v)=>sf(p=>({...p,[k]:v}));
   return(
-    <Sheet title={init?"編輯展覽":"新增展覽"} onClose={onClose}>
-      <FR label="展覽名稱"><input value={f.title} onChange={e=>s("title",e.target.value)} placeholder="展覽名稱"/></FR>
-      <FR label="展覽館"><input value={f.venue} onChange={e=>s("venue",e.target.value)} placeholder="場館名稱"/></FR>
-      <FR label="類型"><select value={f.type} onChange={e=>s("type",e.target.value)}>{ETypes.map(t=><option key={t}>{t}</option>)}</select></FR>
-      <FR label="觀展日期"><input type="date" value={f.date} onChange={e=>s("date",e.target.value)}/></FR>
-      <FR label="觀後感"><textarea value={f.notes} onChange={e=>s("notes",e.target.value)} rows={3} placeholder="寫下你的感受..."/></FR>
-      <SvBtn onClick={()=>{if(f.title&&f.date){onSave(f);onClose();}}}/>
+    <Sheet title={init?"編輯展覽":"新增展覽"} onClose={onClose} th={th}>
+      <FR label="展覽名稱" th={th}><input value={f.title} onChange={e=>s("title",e.target.value)} placeholder="展覽名稱"/></FR>
+      <FR label="展覽館" th={th}><input value={f.venue} onChange={e=>s("venue",e.target.value)} placeholder="場館名稱"/></FR>
+      <FR label="類型" th={th}><select value={f.type} onChange={e=>s("type",e.target.value)}>{ETypes.map(t=><option key={t}>{t}</option>)}</select></FR>
+      <FR label="觀展日期" th={th}><input type="date" value={f.date} onChange={e=>s("date",e.target.value)}/></FR>
+      <FR label="觀後感" th={th}><textarea value={f.notes} onChange={e=>s("notes",e.target.value)} rows={3} placeholder="寫下你的感受..."/></FR>
+      <SvBtn onClick={()=>{if(f.title&&f.date){onSave(f);onClose();}}} th={th}/>
     </Sheet>
   );
 }
-function FConcert({init,onSave,onClose}){
+function FConcert({init,onSave,onClose,th=T}){
   const[f,sf]=useState(init||{title:"",venue:"",city:"",date:"",notes:""});
   const s=(k,v)=>sf(p=>({...p,[k]:v}));
   return(
-    <Sheet title={init?"編輯演唱會":"新增演唱會"} onClose={onClose}>
-      <FR label="名稱"><input value={f.title} onChange={e=>s("title",e.target.value)} placeholder="演唱會名稱"/></FR>
-      <FR label="場地"><input value={f.venue} onChange={e=>s("venue",e.target.value)} placeholder="場館名稱"/></FR>
-      <FR label="縣市"><input value={f.city} onChange={e=>s("city",e.target.value)} placeholder="台北市..."/></FR>
-      <FR label="日期"><input type="date" value={f.date} onChange={e=>s("date",e.target.value)}/></FR>
-      <FR label="觀後感"><textarea value={f.notes} onChange={e=>s("notes",e.target.value)} rows={3} placeholder="寫下你的感受..."/></FR>
-      <SvBtn onClick={()=>{if(f.title&&f.date){onSave(f);onClose();}}}/>
+    <Sheet title={init?"編輯演唱會":"新增演唱會"} onClose={onClose} th={th}>
+      <FR label="名稱" th={th}><input value={f.title} onChange={e=>s("title",e.target.value)} placeholder="演唱會名稱"/></FR>
+      <FR label="場地" th={th}><input value={f.venue} onChange={e=>s("venue",e.target.value)} placeholder="場館名稱"/></FR>
+      <FR label="縣市" th={th}><input value={f.city} onChange={e=>s("city",e.target.value)} placeholder="台北市..."/></FR>
+      <FR label="日期" th={th}><input type="date" value={f.date} onChange={e=>s("date",e.target.value)}/></FR>
+      <FR label="觀後感" th={th}><textarea value={f.notes} onChange={e=>s("notes",e.target.value)} rows={3} placeholder="寫下你的感受..."/></FR>
+      <SvBtn onClick={()=>{if(f.title&&f.date){onSave(f);onClose();}}} th={th}/>
     </Sheet>
   );
 }
 
 /* ── DETAIL SHEET ──────────────────────────────────── */
-function DetSheet({item,cat,onClose,onEdit,onDel}){
+function DetSheet({item,cat,onClose,onEdit,onDel,th=T}){
   const dtl=DTC[item.subtype]||{l:T.rose,t:T.ink3};
+  const isDark=th.bg==="#141210";
+  const titleCol=isDark?T.rose:th.ink;
+  const subCol=isDark?"#A09088":th.ink4;
+  const bodyCol=isDark?"#C8B8A8":th.ink2;
+  const noteBg=isDark?"#2E2018":th.bg2;
+  const editBg=isDark?"#3A3028":"#F5F3EF";
+  const editBorder=isDark?"#5A4838":th.line;
+  const editCol=isDark?"#D8C8B8":th.ink;
   return(
-    <Sheet onClose={onClose}>
+    <Sheet onClose={onClose} th={th}>
       <div style={{marginBottom:6}}>
-        <div style={{fontSize:10,fontWeight:500,color:T.ink4,letterSpacing:"1.2px",textTransform:"uppercase",marginBottom:8}}>
+        <div style={{fontSize:10,fontWeight:500,color:subCol,letterSpacing:"1.2px",textTransform:"uppercase",marginBottom:8}}>
           {cat}{item.subtype&&item.subtype!==cat?` · ${item.subtype}`:""}
         </div>
-        <div style={{fontSize:21,fontWeight:500,color:T.ink,lineHeight:1.35,marginBottom:12}}>{item.title}</div>
-        <DTag date={item.date}/>
-        {item.platform&&<span style={{marginLeft:10,fontSize:11,color:T.ink3,background:T.bg2,padding:"2px 9px",borderRadius:20,fontWeight:400}}>{item.platform}</span>}
+        <div style={{fontSize:21,fontWeight:500,color:titleCol,lineHeight:1.35,marginBottom:12}}>{item.title}</div>
+        <DTag date={item.date} th={th}/>
+        {item.platform&&<span style={{marginLeft:10,fontSize:11,color:subCol,background:noteBg,padding:"2px 9px",borderRadius:20,fontWeight:400}}>{item.platform}</span>}
       </div>
       {(item.venue||item.city)&&(
-        <div style={{fontSize:13,color:T.ink2,marginBottom:14,marginTop:10,display:"flex",alignItems:"center",gap:6,fontWeight:400}}>
-          <svg width={13} height={13} viewBox="0 0 24 24" fill="none" stroke={T.ink3} strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        <div style={{fontSize:13,color:bodyCol,marginBottom:14,marginTop:10,display:"flex",alignItems:"center",gap:6,fontWeight:400}}>
+          <svg width={13} height={13} viewBox="0 0 24 24" fill="none" stroke={subCol} strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
           {item.venue}{item.city&&` · ${item.city}`}
         </div>
       )}
       {item.rating>0&&<div style={{marginBottom:14,marginTop:10}}><MoodPicker value={item.rating} size={28}/></div>}
       {item.notes&&(
-        <div style={{padding:"13px 15px",background:T.bg2,borderRadius:12,fontSize:13,color:T.ink2,lineHeight:1.9,fontWeight:400,marginBottom:18,borderLeft:`3px solid ${dtl.l}`}}>
+        <div style={{padding:"13px 15px",background:noteBg,borderRadius:12,fontSize:13,color:bodyCol,lineHeight:1.9,fontWeight:400,marginBottom:18,borderLeft:`3px solid ${dtl.l}`}}>
           {item.notes}
         </div>
       )}
       <div style={{display:"flex",gap:10}}>
-        <button className="tap" onClick={()=>{onEdit(item);onClose();}} style={{flex:1,padding:"11px",borderRadius:12,border:`1.5px solid ${T.line}`,fontSize:13,color:T.ink,display:"flex",alignItems:"center",justifyContent:"center",gap:6,background:T.surface,fontWeight:400}}>
+        <button className="tap" onClick={()=>{onEdit(item);onClose();}} style={{flex:1,padding:"11px",borderRadius:12,border:`1.5px solid ${editBorder}`,fontSize:13,color:editCol,display:"flex",alignItems:"center",justifyContent:"center",gap:6,background:editBg,fontWeight:400}}>
           <IEd/>編輯
         </button>
         <button className="tap" onClick={()=>{onDel(item.id);onClose();}} style={{flex:1,padding:"11px",borderRadius:12,border:"1.5px solid #C89090",fontSize:13,color:"#904040",background:"#FAF0F0",display:"flex",alignItems:"center",justifyContent:"center",gap:6,fontWeight:400}}>
@@ -515,16 +566,18 @@ function Home({data,setData,onNav,settings,th}){
       )}
 
       {/* HERO with grid bg */}
-      <div style={{borderRadius:20,border:`1.5px solid ${T.line}`,padding:"18px 16px 20px",marginBottom:18,position:"relative",overflow:"hidden",background:"#EAE5DB"}}>
+      <div style={{borderRadius:20,border:`1.5px solid ${th.line}`,padding:"18px 16px 20px",marginBottom:18,position:"relative",overflow:"hidden",background:th.heroBg||"#EAE5DB"}}>
+        {/* colour overlay for dark mode rose tint */}
+        {th.heroOverlay&&<div style={{position:"absolute",inset:0,background:th.heroOverlay,zIndex:0,borderRadius:20}}/>}
         <GridBg/>
         <div style={{position:"relative",zIndex:1}}>
-          <div style={{fontSize:10,fontWeight:500,color:T.ink3,letterSpacing:"2px",marginBottom:3,textTransform:"uppercase"}}>
+          <div style={{fontSize:10,fontWeight:500,color:th.ink3,letterSpacing:"2px",marginBottom:3,textTransform:"uppercase"}}>
             本月紀錄 · {TY}.{String(TM).padStart(2,"0")}
           </div>
-          <div className="num" style={{fontSize:13,color:T.ink2,marginBottom:18,fontWeight:500}}>
-            共 <span style={{fontSize:24,color:T.ink,fontWeight:600}}>{total}</span> 筆
+          <div className="num" style={{fontSize:13,color:th.ink2,marginBottom:18,fontWeight:500}}>
+            共 <span style={{fontSize:24,color:th.ink,fontWeight:600}}>{total}</span> 筆
           </div>
-          <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:10}}>
+          <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:8}}>
             {[
               {label:"電影",count:mC,col:T.slate,nav:"watchlist"},
               {label:"戲劇",count:dC,col:T.sage,nav:"watchlist"},
@@ -532,35 +585,39 @@ function Home({data,setData,onNav,settings,th}){
               {label:"演唱會",count:cC,col:T.mauve,nav:"concert"},
             ].map(({label,count,col,nav})=>(
               <button key={label} className="tap" onClick={()=>onNav(nav)} style={{
-                background:"rgba(255,255,255,.75)",borderRadius:14,padding:"12px 6px",
+                background:th.heroCard||"rgba(255,255,255,.75)",
+                borderRadius:14,padding:"12px 4px",
                 display:"flex",flexDirection:"column",alignItems:"center",gap:3,
-                border:`1.5px solid rgba(255,255,255,.9)`,backdropFilter:"blur(4px)",
+                border:`1.5px solid ${th.heroCardBorder||"rgba(255,255,255,.9)"}`,
+                backdropFilter:"blur(6px)",
               }}>
-                <span className="num" style={{fontSize:28,fontWeight:600,color:col,lineHeight:1}}>{count}</span>
-                <span style={{fontSize:10,color:T.ink2,letterSpacing:".3px",fontWeight:500}}>{label}</span>
-                <div style={{width:18,height:3,borderRadius:2,background:col,opacity:.7,marginTop:1}}/>
+                <span className="num" style={{fontSize:26,fontWeight:700,color:col,lineHeight:1}}>{count}</span>
+                <span style={{fontSize:10,color:th.ink2,letterSpacing:".3px",fontWeight:500}}>{label}</span>
+                <div style={{width:20,height:3,borderRadius:2,background:col,marginTop:2}}/>
               </button>
             ))}
           </div>
         </div>
-        {/* deco circles */}
-        <div style={{position:"absolute",top:-28,right:-28,width:90,height:90,borderRadius:"50%",background:T.rose,opacity:.12,zIndex:0}}/>
-        <div style={{position:"absolute",bottom:-20,left:-10,width:60,height:60,borderRadius:"50%",background:T.slate,opacity:.1,zIndex:0}}/>
+        {/* deco circles — more visible in dark mode */}
+        <div style={{position:"absolute",top:-28,right:-28,width:100,height:100,borderRadius:"50%",background:T.rose,opacity:th.heroOverlay?0.26:0.15,zIndex:0}}/>
+        <div style={{position:"absolute",bottom:-20,left:-10,width:70,height:70,borderRadius:"50%",background:T.mauve,opacity:th.heroOverlay?0.20:0.12,zIndex:0}}/>
+        <div style={{position:"absolute",top:10,right:65,width:40,height:40,borderRadius:"50%",background:T.rose,opacity:th.heroOverlay?0.32:0.18,zIndex:0}}/>
+        <div style={{position:"absolute",bottom:10,left:80,width:28,height:28,borderRadius:"50%",background:T.coral||T.rose,opacity:th.heroOverlay?0.22:0.10,zIndex:0}}/>
       </div>
 
       {/* CALENDAR */}
-      <div style={{background:T.white,borderRadius:18,border:`1.5px solid ${T.line}`,padding:"18px 16px"}}>
+      <div style={{background:th.white,borderRadius:18,border:`1.5px solid ${th.line}`,padding:"18px 16px"}}>
         <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:16}}>
-          <button className="tap" onClick={()=>{const d=new Date(calY,calM-2,1);setCY(d.getFullYear());setCM(d.getMonth()+1);setSel(null);}} style={{width:30,height:30,borderRadius:"50%",border:`1.5px solid ${T.line}`,display:"flex",alignItems:"center",justifyContent:"center",color:T.ink2}}>
+          <button className="tap" onClick={()=>{const d=new Date(calY,calM-2,1);setCY(d.getFullYear());setCM(d.getMonth()+1);setSel(null);}} style={{width:30,height:30,borderRadius:"50%",border:`1.5px solid ${th.line}`,display:"flex",alignItems:"center",justifyContent:"center",color:th.ink2}}>
             <ICL/>
           </button>
-          <span style={{fontSize:14,fontWeight:500,color:T.ink,letterSpacing:".3px"}}>{fML(calY,calM)}</span>
-          <button className="tap" onClick={()=>{const d=new Date(calY,calM,1);setCY(d.getFullYear());setCM(d.getMonth()+1);setSel(null);}} style={{width:30,height:30,borderRadius:"50%",border:`1.5px solid ${T.line}`,display:"flex",alignItems:"center",justifyContent:"center",color:T.ink2}}>
+          <span style={{fontSize:14,fontWeight:500,color:th.ink,letterSpacing:".3px"}}>{fML(calY,calM)}</span>
+          <button className="tap" onClick={()=>{const d=new Date(calY,calM,1);setCY(d.getFullYear());setCM(d.getMonth()+1);setSel(null);}} style={{width:30,height:30,borderRadius:"50%",border:`1.5px solid ${th.line}`,display:"flex",alignItems:"center",justifyContent:"center",color:th.ink2}}>
             <ICR/>
           </button>
         </div>
         <div style={{display:"grid",gridTemplateColumns:"repeat(7,1fr)",marginBottom:8}}>
-          {["日","一","二","三","四","五","六"].map(d=><div key={d} style={{textAlign:"center",fontSize:10,color:T.ink4,fontWeight:500,letterSpacing:".3px"}}>{d}</div>)}
+          {["日","一","二","三","四","五","六"].map(d=><div key={d} style={{textAlign:"center",fontSize:10,color:th.ink4,fontWeight:500,letterSpacing:".3px"}}>{d}</div>)}
         </div>
         <div style={{display:"grid",gridTemplateColumns:"repeat(7,1fr)",gap:3}}>
           {Array(fd).fill(null).map((_,i)=><div key={`e${i}`}/>)}
@@ -569,25 +626,32 @@ function Home({data,setData,onNav,settings,th}){
             const evs=calMap[dk]||[];
             const isT=dk===tdk,haE=evs.length>0,isSel=dk===selDay;
             return(
-              <button key={day} className="tap" onClick={()=>setSel(haE?(isSel?null:dk):null)} style={{
-                minHeight:44,borderRadius:12,padding:"5px 2px",
-                background:isT?T.ink:isSel?"#E8DDD4":"transparent",
-                border:`1.5px solid ${isT?T.ink:isSel?T.rose:haE?T.line:"transparent"}`,
-                cursor:haE?"pointer":"default",textAlign:"center",transition:"all .15s",
-              }}>
-                <div className="num" style={{fontSize:12,fontWeight:isT?700:haE?600:400,color:isT?"#fff":isSel?T.rose:haE?T.ink:T.ink3}}>{day}</div>
+              <div key={day} className="tap" onClick={()=>setSel(haE?(isSel?null:dk):null)}
+                style={{display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"3px 0",cursor:haE?"pointer":"default",minHeight:44}}>
+                {/* circle highlight */}
+                <div style={{
+                  width:32,height:32,borderRadius:"50%",
+                  display:"flex",alignItems:"center",justifyContent:"center",
+                  background:isT?th.ink:isSel?T.rose:haE?T.roseBg:"transparent",
+                  border:`1.5px solid ${isT?th.ink:isSel?T.rose:haE?T.rose+"66":"transparent"}`,
+                  transition:"all .15s",
+                  flexShrink:0,
+                }}>
+                  <span className="num" style={{fontSize:12,fontWeight:isT||isSel?700:haE?600:400,color:isT?"#fff":isSel?"#fff":haE?T.rose:th.ink3,lineHeight:1}}>{day}</span>
+                </div>
+                {/* category dots below the circle */}
                 {haE&&(
-                  <div style={{display:"flex",justifyContent:"center",gap:2,marginTop:3}}>
-                    {evs.slice(0,3).map((ev,ei)=><div key={ei} style={{width:5,height:5,borderRadius:"50%",background:catSt(ev._cat).line}}/>)}
+                  <div style={{display:"flex",justifyContent:"center",gap:2,marginTop:2}}>
+                    {evs.slice(0,3).map((ev,ei)=><div key={ei} style={{width:4,height:4,borderRadius:"50%",background:catSt(ev._cat).line}}/>)}
                   </div>
                 )}
-              </button>
+              </div>
             );
           })}
         </div>
-        <div style={{display:"flex",gap:14,marginTop:14,flexWrap:"wrap",paddingTop:12,borderTop:`1px solid ${T.lineSoft}`}}>
+        <div style={{display:"flex",gap:14,marginTop:14,flexWrap:"wrap",paddingTop:12,borderTop:`1px solid ${th.lineSoft}`}}>
           {[["電影",T.catM.line],["戲劇",T.catD.line],["展覽",T.catE.line],["演唱會",T.catC.line]].map(([cat,col])=>(
-            <div key={cat} style={{display:"flex",alignItems:"center",gap:5,fontSize:10,color:T.ink3,fontWeight:400}}>
+            <div key={cat} style={{display:"flex",alignItems:"center",gap:5,fontSize:10,color:th.ink3,fontWeight:400}}>
               <div style={{width:7,height:7,borderRadius:"50%",background:col}}/>{cat}
             </div>
           ))}
@@ -596,16 +660,16 @@ function Home({data,setData,onNav,settings,th}){
 
       {/* INLINE DAY DETAIL */}
       {selDay&&selEvs.length>0&&(
-        <div style={{marginTop:12,background:T.white,borderRadius:16,border:`1.5px solid ${T.rose}`,padding:"16px"}}>
+        <div style={{marginTop:12,background:th.white,borderRadius:16,border:`1.5px solid ${T.rose}`,padding:"16px"}}>
           <div style={{fontSize:11,fontWeight:500,color:T.rose,marginBottom:12,letterSpacing:".5px"}}>{fDS(selDay)} の紀錄</div>
           {selEvs.map((item,i)=>{
             const cs=catSt(item._cat);
             return(
-              <div key={i} style={{paddingBottom:i<selEvs.length-1?12:0,marginBottom:i<selEvs.length-1?12:0,borderBottom:i<selEvs.length-1?`1px solid ${T.lineSoft}`:"none"}}>
+              <div key={i} style={{paddingBottom:i<selEvs.length-1?12:0,marginBottom:i<selEvs.length-1?12:0,borderBottom:i<selEvs.length-1?`1px solid ${th.lineSoft}`:"none"}}>
                 <div style={{fontSize:10,fontWeight:500,color:cs.text,letterSpacing:".8px",marginBottom:4,textTransform:"uppercase"}}>{item._cat}{item.subtype&&item.subtype!==item._cat?` · ${item.subtype}`:""}</div>
-                <div style={{fontSize:15,fontWeight:500,color:T.ink,marginBottom:5}}>{item.title}</div>
+                <div style={{fontSize:15,fontWeight:500,color:th.ink,marginBottom:5}}>{item.title}</div>
                 {item.rating>0&&<MoodIcon value={item.rating} size={20}/>}
-                {item.notes&&<div style={{fontSize:12,color:T.ink3,marginTop:5,lineHeight:1.75}}>{item.notes}</div>}
+                {item.notes&&<div style={{fontSize:12,color:th.ink3,marginTop:5,lineHeight:1.75}}>{item.notes}</div>}
               </div>
             );
           })}
@@ -641,15 +705,22 @@ function Watchlist({data,setData,th=T}){
     <div>
       <PH title="片單" onAdd={()=>tab==="電影"?setAM(true):setAD(true)} th={th}/>
       <div className="page-inner">
-        <TFilt value={tf} onChange={setTf}/>
+        <TFilt value={tf} onChange={setTf} th={th}/>
         <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",borderRadius:12,overflow:"hidden",border:`1.5px solid ${th.line}`,marginBottom:16}}>
           {[["電影",<IFm s={15}/>],["戲劇",<IDr s={15}/>]].map(([t,ic],i)=>(
-            <button key={t} className="tap" onClick={()=>setTab(t)} style={{padding:"9px",fontSize:13,fontWeight:tab===t?500:400,background:tab===t?th.ink:th.surface,color:tab===t?"#fff":th.ink3,borderRight:i===0?`1.5px solid ${th.line}`:"none",display:"flex",alignItems:"center",justifyContent:"center",gap:6}}>{ic}{t}</button>
+            <button key={t} className="tap" onClick={()=>setTab(t)} style={{
+              padding:"10px",fontSize:13,fontWeight:tab===t?500:400,
+              background:tab===t?T.rose:th.surface,
+              color:tab===t?"#fff":th.ink3,
+              borderRight:i===0?`1.5px solid ${th.line}`:"none",
+              display:"flex",alignItems:"center",justifyContent:"center",gap:6,
+              transition:"background .15s",
+            }}>{ic}{t}</button>
           ))}
         </div>
         {tab==="電影"&&(
           <>
-            <div style={{fontSize:11,color:T.ink4,marginBottom:10,fontWeight:500}}>{movies.length} 部電影</div>
+            <div style={{fontSize:11,color:th.ink4,marginBottom:10,fontWeight:500}}>{movies.length} 部電影</div>
             {movies.length===0&&<Mty cat="電影" th={th}/>}
             {movies.map(it=><RCard key={it.id} item={it} cat="電影" onClick={i=>setDet({item:i,cat:"電影"})} th={th}/>)}
           </>
@@ -658,19 +729,25 @@ function Watchlist({data,setData,th=T}){
           <>
             <div style={{display:"flex",gap:6,flexWrap:"wrap",marginBottom:12}}>
               {["全部",...DSubs].map(t=>(
-                <button key={t} className="tap" onClick={()=>setDf(t)} style={{padding:"4px 11px",borderRadius:20,fontSize:11,fontWeight:500,background:df===t?T.ink:T.white,color:df===t?"#fff":T.ink3,border:`1.5px solid ${df===t?T.ink:T.line}`}}>{t}</button>
+                <button key={t} className="tap" onClick={()=>setDf(t)} style={{
+                  padding:"4px 11px",borderRadius:20,fontSize:11,fontWeight:500,
+                  background:df===t?T.rose:th.white,
+                  color:df===t?"#fff":th.ink3,
+                  border:`1.5px solid ${df===t?T.rose:th.line}`,
+                  transition:"all .15s",
+                }}>{t}</button>
               ))}
             </div>
-            <div style={{fontSize:11,color:T.ink4,marginBottom:10,fontWeight:500}}>{fdr.length} 部</div>
+            <div style={{fontSize:11,color:th.ink4,marginBottom:10,fontWeight:500}}>{fdr.length} 部</div>
             {fdr.length===0&&<Mty cat="戲劇" th={th}/>}
             {fdr.map(it=><RCard key={it.id} item={it} cat="戲劇" onClick={i=>setDet({item:i,cat:"戲劇"})} th={th}/>)}
           </>
         )}
       </div>
-      {aM&&<FMovie onClose={()=>setAM(false)} onSave={svM}/>}
-      {aD&&<FDrama onClose={()=>setAD(false)} onSave={svD}/>}
-      {ed&&(ed.subtype==="電影"?<FMovie init={ed} onClose={()=>setEd(null)} onSave={svM}/>:<FDrama init={ed} onClose={()=>setEd(null)} onSave={svD}/>)}
-      {det&&<DetSheet item={det.item} cat={det.cat} onClose={()=>setDet(null)} onEdit={i=>setEd(i)} onDel={id=>det.cat==="電影"?dlM(id):dlD(id)}/>}
+      {aM&&<FMovie onClose={()=>setAM(false)} onSave={svM} th={th}/>}
+      {aD&&<FDrama onClose={()=>setAD(false)} onSave={svD} th={th}/>}
+      {ed&&(ed.subtype==="電影"?<FMovie init={ed} onClose={()=>setEd(null)} onSave={svM} th={th}/>:<FDrama init={ed} onClose={()=>setEd(null)} onSave={svD} th={th}/>)}
+      {det&&<DetSheet item={det.item} cat={det.cat} onClose={()=>setDet(null)} onEdit={i=>setEd(i)} onDel={id=>det.cat==="電影"?dlM(id):dlD(id)} th={th}/>}
     </div>
   );
 }
@@ -684,14 +761,14 @@ function Exhibition({data,setData,th=T}){
     <div>
       <PH title="展覽" onAdd={()=>setSa(true)} th={th}/>
       <div className="page-inner">
-        <TFilt value={tf} onChange={setTf}/>
-        <div style={{fontSize:11,color:T.ink4,marginBottom:10,fontWeight:500}}>{items.length} 場展覽</div>
+        <TFilt value={tf} onChange={setTf} th={th}/>
+        <div style={{fontSize:11,color:th.ink4,marginBottom:10,fontWeight:500}}>{items.length} 場展覽</div>
         {items.length===0&&<Mty cat="展覽" th={th}/>}
         {items.map(it=><RCard key={it.id} item={it} cat="展覽" onClick={i=>setDet(i)} th={th}/>)}
       </div>
-      {sa&&<FExhib onClose={()=>setSa(false)} onSave={sv}/>}
-      {ed&&<FExhib init={ed} onClose={()=>setEd(null)} onSave={sv}/>}
-      {det&&<DetSheet item={det} cat="展覽" onClose={()=>setDet(null)} onEdit={i=>setEd(i)} onDel={dl}/>}
+      {sa&&<FExhib onClose={()=>setSa(false)} onSave={sv} th={th}/>}
+      {ed&&<FExhib init={ed} onClose={()=>setEd(null)} onSave={sv} th={th}/>}
+      {det&&<DetSheet item={det} cat="展覽" onClose={()=>setDet(null)} onEdit={i=>setEd(i)} onDel={dl} th={th}/>}
     </div>
   );
 }
@@ -705,14 +782,14 @@ function Concert({data,setData,th=T}){
     <div>
       <PH title="演唱會" onAdd={()=>setSa(true)} th={th}/>
       <div className="page-inner">
-        <TFilt value={tf} onChange={setTf}/>
-        <div style={{fontSize:11,color:T.ink4,marginBottom:10,fontWeight:500}}>{items.length} 場演唱會</div>
+        <TFilt value={tf} onChange={setTf} th={th}/>
+        <div style={{fontSize:11,color:th.ink4,marginBottom:10,fontWeight:500}}>{items.length} 場演唱會</div>
         {items.length===0&&<Mty cat="演唱會" th={th}/>}
         {items.map(it=><RCard key={it.id} item={it} cat="演唱會" onClick={i=>setDet(i)} th={th}/>)}
       </div>
-      {sa&&<FConcert onClose={()=>setSa(false)} onSave={sv}/>}
-      {ed&&<FConcert init={ed} onClose={()=>setEd(null)} onSave={sv}/>}
-      {det&&<DetSheet item={det} cat="演唱會" onClose={()=>setDet(null)} onEdit={i=>setEd(i)} onDel={dl}/>}
+      {sa&&<FConcert onClose={()=>setSa(false)} onSave={sv} th={th}/>}
+      {ed&&<FConcert init={ed} onClose={()=>setEd(null)} onSave={sv} th={th}/>}
+      {det&&<DetSheet item={det} cat="演唱會" onClose={()=>setDet(null)} onEdit={i=>setEd(i)} onDel={dl} th={th}/>}
     </div>
   );
 }
@@ -745,7 +822,7 @@ function Search({data,th=T}){
       {!q&&<div style={{textAlign:"center",padding:"40px 0",color:th.ink4,fontSize:13}}><div style={{fontSize:28,marginBottom:8}}>🔍</div>輸入關鍵字開始搜尋</div>}
       {q&&res.length===0&&<div style={{textAlign:"center",padding:"40px 0",color:th.ink4,fontSize:13}}>找不到「{q}」的相關紀錄</div>}
       {res.map((it,i)=><RCard key={i} item={it} cat={it._cat} onClick={i=>setDet(i)} th={th}/>)}
-      {det&&<DetSheet item={det} cat={det._cat} onClose={()=>setDet(null)} onEdit={()=>{}} onDel={()=>{}}/>}
+      {det&&<DetSheet item={det} cat={det._cat} onClose={()=>setDet(null)} onEdit={()=>{}} onDel={()=>{}} th={th}/>}
     </div>
   );
 }
@@ -1047,20 +1124,30 @@ const ISettings=({s=22})=><Sv s={s} ch={<><circle cx="12" cy="12" r="3"/><path d
 
 /* ── DARK MODE TOKEN OVERRIDES ─────────────────────── */
 const DARK={
-  bg:"#1A1714",surface:"#222018",white:"#2A2620",
-  ink:"#F0ECE6",ink2:"#C8C0B8",ink3:"#8A8278",ink4:"#5A5450",
-  line:"#3A3630",lineSoft:"#2E2A26",bg2:"#242018",
+  bg:"#141210",surface:"#1C1916",white:"#231F1C",
+  ink:"#EDE8E2",ink2:"#B8B0A8",ink3:"#7A7268",ink4:"#4E4840",
+  line:"#332E28",lineSoft:"#272320",bg2:"#1A1714",
+  heroBg:"#1C1816",heroCard:"rgba(255,255,255,.06)",heroCardBorder:"rgba(255,255,255,.1)",
 };
 
 function getTheme(dark){
-  if(!dark)return T;
+  if(!dark)return{...T,
+    heroBg:"#E8E2D8",
+    heroOverlay:null,
+    heroCard:"rgba(255,255,255,.82)",
+    heroCardBorder:"rgba(255,255,255,.95)",
+  };
   return{...T,...DARK,
-    roseBg:"#2E201C",sageBg:"#1C2820",slateBg:"#1C2030",
-    mauveBg:"#241C2E",sandBg:"#2A2018",
-    catM:{line:"#7888A8",bg:"#1C2030",text:"#8AAAC8"},
-    catD:{line:"#7A9A88",bg:"#1C2820",text:"#7AB890"},
-    catE:{line:"#B89088",bg:"#2E201C",text:"#C8A098"},
-    catC:{line:"#9888B0",bg:"#241C2E",text:"#B0A0C8"},
+    roseBg:"#2A1A18",sageBg:"#162220",slateBg:"#161C2A",
+    mauveBg:"#1E1626",sandBg:"#241A0E",
+    catM:{line:"#6E88B0",bg:"#161C2A",text:"#8AAAC8"},
+    catD:{line:"#6EA890",bg:"#162220",text:"#7AB890"},
+    catE:{line:"#C09090",bg:"#2A1A18",text:"#C8A098"},
+    catC:{line:"#9878B8",bg:"#1E1626",text:"#B0A0C8"},
+    heroBg:"#1C1816",
+    heroOverlay:"linear-gradient(135deg, rgba(192,144,144,.13) 0%, rgba(152,120,176,.08) 60%, rgba(110,136,176,.06) 100%)",
+    heroCard:"rgba(255,255,255,.07)",
+    heroCardBorder:"rgba(255,255,255,.12)",
   };
 }
 
@@ -1185,15 +1272,15 @@ const NAVS=[
 ];
 
 function BNav({active,onNav,dark,th}){
-  const navBg=dark?"rgba(26,23,20,.97)":"rgba(248,246,242,.97)";
+  const navBg=dark?"rgba(22,19,16,.98)":"rgba(250,248,245,.98)";
   return(
-    <nav style={{position:"fixed",bottom:0,left:0,right:0,zIndex:100,background:navBg,backdropFilter:"blur(20px)",borderTop:`1px solid ${th.line}`,display:"flex",justifyContent:"space-around",alignItems:"center",padding:"8px 0 max(10px,env(safe-area-inset-bottom))"}}>
+    <nav style={{position:"fixed",bottom:0,left:0,right:0,zIndex:100,background:navBg,backdropFilter:"blur(20px)",borderTop:`1px solid ${th.line}`,display:"flex",justifyContent:"space-around",alignItems:"center",padding:"10px 0 max(16px,env(safe-area-inset-bottom))"}}>
       {NAVS.map(({k,lb,I})=>{
         const on=active===k;
         return(
-          <button key={k} className="tap" onClick={()=>onNav(k)} style={{display:"flex",flexDirection:"column",alignItems:"center",gap:2,color:on?T.rose:th.ink4,padding:"2px 3px",transition:"color .15s"}}>
-            <div style={{width:32,height:24,borderRadius:12,background:on?T.roseBg:"transparent",display:"flex",alignItems:"center",justifyContent:"center",transition:"background .15s"}}><I s={17}/></div>
-            <span style={{fontSize:9,fontWeight:on?500:400,letterSpacing:".2px"}}>{lb}</span>
+          <button key={k} className="tap" onClick={()=>onNav(k)} style={{display:"flex",flexDirection:"column",alignItems:"center",gap:4,color:on?T.rose:th.ink4,padding:"4px 10px",minWidth:52,transition:"color .15s"}}>
+            <div style={{width:40,height:32,borderRadius:14,background:on?T.roseBg:"transparent",display:"flex",alignItems:"center",justifyContent:"center",transition:"background .15s"}}><I s={20}/></div>
+            <span style={{fontSize:10,fontWeight:on?500:400,letterSpacing:".2px"}}>{lb}</span>
           </button>
         );
       })}
