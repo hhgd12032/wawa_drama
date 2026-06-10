@@ -10,8 +10,9 @@
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet"/>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-html,body{background:#2A2520;color:#2A2520;font-family:'Noto Sans TC','PingFang TC',sans-serif;font-size:15px;font-weight:400;-webkit-font-smoothing:antialiased;min-height:100vh;display:flex;justify-content:center;overflow-x:hidden;}
-#root{width:375px;max-width:375px;min-height:100vh;padding-bottom:80px;position:relative;overflow-x:hidden;flex-shrink:0;}
+html{background:#2A2520;min-height:100vh;}
+body{background:#2A2520;color:#2A2520;font-family:'Noto Sans TC','PingFang TC',sans-serif;font-size:15px;font-weight:400;-webkit-font-smoothing:antialiased;min-height:100vh;display:flex;justify-content:center;align-items:flex-start;}
+#root{width:100%;max-width:480px;min-height:100vh;padding-bottom:80px;position:relative;overflow-x:hidden;}
 ::-webkit-scrollbar{width:3px;}
 ::-webkit-scrollbar-thumb{background:#C8C0B4;border-radius:2px;}
 input,textarea,select{
@@ -27,6 +28,8 @@ button{cursor:pointer;font-family:inherit;font-weight:400;border:none;outline:no
 .tap{transition:opacity .1s,transform .1s;}
 .tap:active{opacity:.55;transform:scale(.96);}
 .num{font-family:'Space Grotesk','Noto Sans TC',sans-serif;}
+.page{width:100%;padding:20px 18px 8px;}
+.page-inner{width:100%;padding:10px 18px 0;}
 </style>
 </head>
 <body><div id="root"></div>
@@ -224,7 +227,7 @@ function TFilt({value,onChange}){
         {isMo?value.label:"月份"}<ICD/>
       </button>
       {open&&(
-        <div style={{position:"absolute",top:"115%",left:0,zIndex:300,background:T.white,border:`1.5px solid ${T.line}`,borderRadius:14,padding:10,boxShadow:"0 8px 28px rgba(40,30,20,.12)",display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:4,width:200,maxWidth:"calc(375px - 32px)"}}>
+        <div style={{position:"absolute",top:"115%",left:0,zIndex:300,background:T.white,border:`1.5px solid ${T.line}`,borderRadius:14,padding:10,boxShadow:"0 8px 28px rgba(40,30,20,.12)",display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:4,width:200,maxWidth:"calc(100vw - 32px)"}}>
           {months.map(mo=>(
             <button key={mo.label} className="tap" onClick={()=>{onChange(mo);setOpen(false);}} style={{padding:"6px 4px",borderRadius:8,fontSize:11,background:(isMo&&value.label===mo.label)?T.ink:"transparent",color:(isMo&&value.label===mo.label)?"#fff":T.ink3}}>{mo.label}</button>
           ))}
@@ -237,8 +240,8 @@ function TFilt({value,onChange}){
 /* ── BOTTOM SHEET ──────────────────────────────────── */
 function Sheet({title,onClose,children}){
   return(
-    <div style={{position:"fixed",top:0,left:"50%",transform:"translateX(-50%)",width:"375px",height:"100%",background:"rgba(30,25,20,.55)",backdropFilter:"blur(8px)",zIndex:500,display:"flex",alignItems:"flex-end",justifyContent:"center",overflowX:"hidden"}} onClick={onClose}>
-      <div onClick={e=>e.stopPropagation()} style={{background:T.white,borderRadius:"22px 22px 0 0",width:"375px",maxWidth:"375px",maxHeight:"88vh",overflow:"auto",padding:"8px 16px 48px",boxShadow:"0 -2px 30px rgba(40,30,20,.15)"}}>
+    <div style={{position:"fixed",inset:0,background:"rgba(30,25,20,.55)",backdropFilter:"blur(8px)",zIndex:500,display:"flex",alignItems:"flex-end",justifyContent:"center"}} onClick={onClose}>
+      <div onClick={e=>e.stopPropagation()} style={{background:T.white,borderRadius:"22px 22px 0 0",width:"100%",maxWidth:"480px",maxHeight:"88vh",overflow:"auto",padding:"8px 18px 48px",boxShadow:"0 -2px 30px rgba(40,30,20,.15)"}}>
         <div style={{width:36,height:4,borderRadius:2,background:T.lineSoft,margin:"12px auto 18px"}}/>
         {title&&<div style={{fontSize:15,fontWeight:500,color:T.ink,marginBottom:18,letterSpacing:".2px"}}>{title}</div>}
         {children}
@@ -451,7 +454,7 @@ function Home({data,setData,onNav,settings,th}){
   const selEvs=selDay?(calMap[selDay]||[]):[];
 
   return(
-    <div style={{padding:"20px 16px 8px"}}>
+    <div className="page">
       {/* TOP BAR: title + search icon */}
       <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:12}}>
         {editT?(
@@ -614,7 +617,7 @@ function Home({data,setData,onNav,settings,th}){
 
 /* ── PAGE HEADER ───────────────────────────────────── */
 const PH=({title,onAdd,th=T})=>(
-  <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"20px 16px 0",marginBottom:6}}>
+  <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"20px 18px 0",marginBottom:6,width:"100%"}}>
     <h2 style={{fontSize:20,fontWeight:500,color:th.ink,letterSpacing:"-.2px"}}>{title}</h2>
     <AddBtn onClick={onAdd}/>
   </div>
@@ -637,7 +640,7 @@ function Watchlist({data,setData,th=T}){
   return(
     <div>
       <PH title="片單" onAdd={()=>tab==="電影"?setAM(true):setAD(true)} th={th}/>
-      <div style={{padding:"10px 16px 0"}}>
+      <div className="page-inner">
         <TFilt value={tf} onChange={setTf}/>
         <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",borderRadius:12,overflow:"hidden",border:`1.5px solid ${th.line}`,marginBottom:16}}>
           {[["電影",<IFm s={15}/>],["戲劇",<IDr s={15}/>]].map(([t,ic],i)=>(
@@ -680,7 +683,7 @@ function Exhibition({data,setData,th=T}){
   return(
     <div>
       <PH title="展覽" onAdd={()=>setSa(true)} th={th}/>
-      <div style={{padding:"10px 16px 0"}}>
+      <div className="page-inner">
         <TFilt value={tf} onChange={setTf}/>
         <div style={{fontSize:11,color:T.ink4,marginBottom:10,fontWeight:500}}>{items.length} 場展覽</div>
         {items.length===0&&<Mty cat="展覽" th={th}/>}
@@ -701,7 +704,7 @@ function Concert({data,setData,th=T}){
   return(
     <div>
       <PH title="演唱會" onAdd={()=>setSa(true)} th={th}/>
-      <div style={{padding:"10px 16px 0"}}>
+      <div className="page-inner">
         <TFilt value={tf} onChange={setTf}/>
         <div style={{fontSize:11,color:T.ink4,marginBottom:10,fontWeight:500}}>{items.length} 場演唱會</div>
         {items.length===0&&<Mty cat="演唱會" th={th}/>}
@@ -733,7 +736,7 @@ function Search({data,th=T}){
     return aF(data).filter(i=>i.title.toLowerCase().includes(lq)||(i.notes||"").toLowerCase().includes(lq)||(i.venue||"").toLowerCase().includes(lq)).sort((a,b)=>b.date.localeCompare(a.date));
   },[q,data]);
   return(
-    <div style={{padding:"20px 16px 0"}}>
+    <div className="page">
       <h2 style={{fontSize:22,fontWeight:500,color:th.ink,marginBottom:16}}>搜尋</h2>
       <div style={{position:"relative",marginBottom:20}}>
         <div style={{position:"absolute",left:13,top:"50%",transform:"translateY(-50%)",color:th.ink4}}><ISr s={16}/></div>
@@ -969,7 +972,7 @@ function Stats({data,th=T}){
   ];
 
   return(
-    <div style={{padding:"20px 16px 0"}}>
+    <div className="page">
       <h2 style={{fontSize:20,fontWeight:500,color:th.ink,marginBottom:4}}>年度統計</h2>
       <div style={{fontSize:12,color:th.ink3,marginBottom:14,fontWeight:400}}>{TY} · 左右滑動瀏覽</div>
 
@@ -1088,7 +1091,7 @@ function SettingsPage({settings,setSettings,data,setData,th}){
   );
 
   return(
-    <div style={{padding:"20px 16px 0"}}>
+    <div className="page">
       <h2 style={{fontSize:20,fontWeight:500,color:th.ink,marginBottom:20}}>設定</h2>
 
       {/* Profile */}
@@ -1184,7 +1187,7 @@ const NAVS=[
 function BNav({active,onNav,dark,th}){
   const navBg=dark?"rgba(26,23,20,.97)":"rgba(248,246,242,.97)";
   return(
-    <nav style={{position:"fixed",bottom:0,left:"50%",transform:"translateX(-50%)",zIndex:100,width:"375px",background:navBg,backdropFilter:"blur(20px)",borderTop:`1px solid ${th.line}`,display:"flex",justifyContent:"space-around",alignItems:"center",padding:"8px 0 max(10px,env(safe-area-inset-bottom))"}}>
+    <nav style={{position:"fixed",bottom:0,left:0,right:0,zIndex:100,background:navBg,backdropFilter:"blur(20px)",borderTop:`1px solid ${th.line}`,display:"flex",justifyContent:"space-around",alignItems:"center",padding:"8px 0 max(10px,env(safe-area-inset-bottom))"}}>
       {NAVS.map(({k,lb,I})=>{
         const on=active===k;
         return(
@@ -1213,7 +1216,7 @@ function App(){
 
   // Pass th to Stats & other pages via context-like prop threading
   return(
-    <div style={{background:th.bg,minHeight:"100vh",width:"375px",maxWidth:"375px",paddingBottom:80,transition:"background .3s",position:"relative",overflowX:"hidden"}}>
+    <div style={{background:th.bg,minHeight:"100vh",width:"100%",paddingBottom:80,transition:"background .3s",overflowX:"hidden"}}>
       {page==="home"&&<Home data={data} setData={setData} onNav={setPage} settings={settings} th={th}/>}
       {page==="watchlist"&&<Watchlist data={data} setData={setData} th={th}/>}
       {page==="exhibition"&&<Exhibition data={data} setData={setData} th={th}/>}
