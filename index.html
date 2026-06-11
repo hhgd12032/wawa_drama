@@ -407,22 +407,24 @@ const AddBtn=({onClick})=>(
 /* ── OMDB SEARCH ─────────────────────────────────────── */
 const OMDB_KEY="d4667c98";
 
-// Auto-detect: if running from file://, use proxy to bypass CORS
-const isLocal=typeof window!=="undefined"&&window.location.protocol==="file:";
-const omdbFetch=async(params)=>{
-  const base=`https://www.omdbapi.com/?apikey=${OMDB_KEY}&${params}`;
-  if(!isLocal){
-    // Hosted (GitHub Pages etc) - direct call works fine
-    const r=await fetch(base);
-    return r.json();
-  } else {
-    // Local file:// - use allorigins proxy
-    const proxy=`https://api.allorigins.win/get?url=${encodeURIComponent(base)}`;
-    const r=await fetch(proxy);
-    const wrapper=await r.json();
-    return JSON.parse(wrapper.contents);
-  }
-};
+// JSONP - works on both file:// and https://
+const omdbFetch=(params)=>new Promise((resolve,reject)=>{
+  const cbName="omdb_cb_"+Date.now();
+  const script=document.createElement("script");
+  const timer=setTimeout(()=>{
+    cleanup();
+    reject(new Error("timeout"));
+  },10000);
+  const cleanup=()=>{
+    delete window[cbName];
+    if(script.parentNode)script.parentNode.removeChild(script);
+    clearTimeout(timer);
+  };
+  window[cbName]=(data)=>{cleanup();resolve(data);};
+  script.onerror=()=>{cleanup();reject(new Error("load error"));};
+  script.src=`https://www.omdbapi.com/?apikey=${OMDB_KEY}&${params}&callback=${cbName}`;
+  document.head.appendChild(script);
+});
 
 function OmdbSearch({title,onApply,th=T}){
   const[status,setStatus]=useState("idle"); // idle | loading | found | notfound | applied
@@ -437,22 +439,31 @@ function OmdbSearch({title,onApply,th=T}){
     setResult(null);
     try{
       const q=encodeURIComponent(title.trim());
-      const data=await omdbFetch(`t=${q}&type=movie`);
+      let data;
+      try{
+        data=await omdbFetch(`t=${q}&type=movie`);
+      }catch(e){
+        // JSONP failed - likely API key issue or network
+        setStatus("error");
+        return;
+      }
       if(data.Response==="True"&&data.imdbRating&&data.imdbRating!=="N/A"){
         setResult(data);
         setStatus("found");
       } else {
-        const data2=await omdbFetch(`t=${q}`);
-        if(data2.Response==="True"&&data2.imdbRating&&data2.imdbRating!=="N/A"){
-          setResult(data2);
-          setStatus("found");
-        } else {
-          setStatus("notfound");
-        }
+        // try without type restriction
+        try{
+          const data2=await omdbFetch(`t=${q}`);
+          if(data2.Response==="True"&&data2.imdbRating&&data2.imdbRating!=="N/A"){
+            setResult(data2);
+            setStatus("found");
+          } else {
+            setStatus("notfound");
+          }
+        }catch{setStatus("notfound");}
       }
     }catch(e){
-      console.error("OMDB error:",e);
-      setStatus("notfound");
+      setStatus("error");
     }
   };
 
@@ -510,6 +521,13 @@ function OmdbSearch({title,onApply,th=T}){
       {status==="notfound"&&(
         <div style={{fontSize:11,color:T.ink3,marginTop:6,padding:"6px 10px",background:th.line+"22",borderRadius:8}}>
           找不到「{title}」的 IMDb 資料，可手動略過
+        </div>
+      )}
+
+      {status==="error"&&(
+        <div style={{fontSize:11,color:"#906050",marginTop:6,padding:"8px 12px",background:"#FFF0E8",border:"1px solid #E8C0A0",borderRadius:8,lineHeight:1.7}}>
+          ⚠️ 無法連線到 IMDb<br/>
+          <span style={{color:T.ink3}}>請確認網路連線，或先略過此步驟</span>
         </div>
       )}
 
