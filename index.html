@@ -7,7 +7,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.2/babel.min.js"></script>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 html{background:#2A2520;min-height:100vh;}
@@ -239,20 +239,19 @@ function DatePicker({value,onChange,th=T}){
   return(
     <div style={{background:bg,border:`1.5px solid ${border}`,borderRadius:14,overflow:"hidden"}}>
       {/* Month navigation */}
-      <div className="cal-nav" style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"10px 14px",borderBottom:`1px solid ${border}`}}>
-        <button className="tap" type="button" onClick={e=>{e.preventDefault();prevMonth();}} style={{width:28,height:28,borderRadius:"50%",border:`1.5px solid ${border}`,display:"flex",alignItems:"center",justifyContent:"center",color:inkS,background:"none"}}>
+      <div className="cal-nav" style={{display:"flex",alignItems:"center",padding:"10px 14px",borderBottom:`1px solid ${border}`,gap:8}}>
+        <button className="tap" type="button" onClick={e=>{e.preventDefault();prevMonth();}} style={{width:28,height:28,borderRadius:"50%",border:`1.5px solid ${border}`,display:"flex",alignItems:"center",justifyContent:"center",color:inkS,background:"none",flexShrink:0}}>
           <svg width={14} height={14} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} strokeLinecap="round"><polyline points="15 18 9 12 15 6"/></svg>
         </button>
-        <div style={{display:"flex",flexDirection:"row",alignItems:"center",gap:6,whiteSpace:"nowrap"}}>
-          {/* Year quick-select */}
+        <div style={{flex:1,display:"flex",flexDirection:"row",alignItems:"center",justifyContent:"center",gap:4,whiteSpace:"nowrap"}}>
           <select value={viewY} onChange={e=>setViewY(parseInt(e.target.value))}
             onClick={e=>e.stopPropagation()}
-            style={{background:"none",border:"none",fontSize:13,fontWeight:500,color:inkC,cursor:"pointer",outline:"none",appearance:"none",WebkitAppearance:"none",MozAppearance:"none",width:"auto",minWidth:60,flexShrink:0}}>
+            style={{background:"none",border:"none",fontSize:13,fontWeight:500,color:inkC,cursor:"pointer",outline:"none",appearance:"none",WebkitAppearance:"none",MozAppearance:"none",width:"auto",minWidth:56,flexShrink:0,textAlign:"center"}}>
             {Array.from({length:10},(_,i)=>NOW_Y-i).map(y=><option key={y} value={y}>{y}年</option>)}
           </select>
           <span style={{fontSize:13,fontWeight:500,color:inkC,flexShrink:0}}>{viewM}月</span>
         </div>
-        <button className="tap" type="button" onClick={e=>{e.preventDefault();nextMonth();}} style={{width:28,height:28,borderRadius:"50%",border:`1.5px solid ${border}`,display:"flex",alignItems:"center",justifyContent:"center",color:inkS,background:"none"}}>
+        <button className="tap" type="button" onClick={e=>{e.preventDefault();nextMonth();}} style={{width:28,height:28,borderRadius:"50%",border:`1.5px solid ${border}`,display:"flex",alignItems:"center",justifyContent:"center",color:inkS,background:"none",flexShrink:0}}>
           <svg width={14} height={14} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} strokeLinecap="round"><polyline points="9 18 15 12 9 6"/></svg>
         </button>
       </div>
@@ -356,12 +355,16 @@ function Sheet({title,onClose,children,th=T}){
         boxShadow:"0 -4px 40px rgba(0,0,0,.5)",
       }}>
         {/* header */}
-        <div style={{flexShrink:0,padding:"12px 18px 8px",display:"flex",alignItems:"center",justifyContent:"center",position:"relative",borderBottom:`1px solid ${isDark?"#3A2820":T.lineSoft}`}}>
-          <div style={{width:36,height:4,borderRadius:2,background:isDark?"#4A3830":T.lineSoft}}/>
-          <button type="button" onClick={onClose} style={{position:"absolute",right:14,top:"50%",transform:"translateY(-50%)",width:28,height:28,borderRadius:"50%",border:`1px solid ${isDark?"#4A3830":T.line}`,background:isDark?"#3A2820":"#F5F2EE",display:"flex",alignItems:"center",justifyContent:"center",color:isDark?"#9A8878":T.ink3,cursor:"pointer"}}>
-            <svg width={12} height={12} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} strokeLinecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-          </button>
-          {title&&<span style={{fontSize:14,fontWeight:500,color:titleColor,marginLeft:8}}>{title}</span>}
+        <div style={{flexShrink:0,padding:"10px 16px",borderBottom:`1px solid ${isDark?"#3A2820":T.lineSoft}`}}>
+          {/* drag pill */}
+          <div style={{width:36,height:4,borderRadius:2,background:isDark?"#4A3830":T.lineSoft,margin:"0 auto 10px"}}/>
+          {/* title row */}
+          <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",gap:8}}>
+            <span style={{fontSize:14,fontWeight:500,color:titleColor,flex:1,minWidth:0}}>{title||""}</span>
+            <button type="button" onClick={onClose} style={{width:28,height:28,borderRadius:"50%",border:`1px solid ${isDark?"#4A3830":T.line}`,background:isDark?"#3A2820":"#F5F2EE",display:"flex",alignItems:"center",justifyContent:"center",color:isDark?"#9A8878":T.ink3,cursor:"pointer",flexShrink:0}}>
+              <svg width={12} height={12} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} strokeLinecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>
+          </div>
         </div>
         {/* scrollable body */}
         <div className={isDark?"sd":""} style={{overflowY:"auto",padding:"16px 18px 48px",flex:1}}>
@@ -620,18 +623,42 @@ function FDrama({init,onSave,onClose,th=T}){
   );
 }
 
-const ETypes=["藝術","攝影","裝置","歷史","科技","設計","自然"];
+const ETypes=["藝術","攝影","裝置","歷史","科技","設計","自然","其他"];
+const CURRENCIES=["NT$","¥","$","₩"];
 function FExhib({init,onSave,onClose,th=T}){
-  const blank={title:"",venue:"",type:"藝術",date:"",notes:""};
+  const blank={title:"",venue:"",type:"藝術",customType:"",date:"",rating:0,price:"",currency:"NT$",notes:""};
   const[f,sf]=useState(init?{...blank,...init}:blank);
   const fRef=React.useRef(f);
   const s=(k,v)=>{const next={...fRef.current,[k]:v};fRef.current=next;sf(next);};
+  const isDark=th.bg==="#141210";
+  const cb=isDark?"#3A2C26":"#FAFAF7",ct=isDark?"#C8B8B0":T.ink3,cbr=isDark?"#5A3C34":T.line;
   return(
     <Sheet title={init?"編輯展覽":"新增展覽"} onClose={onClose} th={th}>
       <FR label="展覽名稱" th={th}><input value={f.title} onChange={e=>s("title",e.target.value)} placeholder="展覽名稱"/></FR>
       <FR label="展覽館" th={th}><input value={f.venue} onChange={e=>s("venue",e.target.value)} placeholder="場館名稱"/></FR>
-      <FR label="類型" th={th}><select value={f.type} onChange={e=>s("type",e.target.value)}>{ETypes.map(t=><option key={t}>{t}</option>)}</select></FR>
+      <FR label="類型" th={th}>
+        <select value={f.type==="其他"?"其他":f.type} onChange={e=>s("type",e.target.value)}>{ETypes.map(t=><option key={t}>{t}</option>)}</select>
+        {f.type==="其他"&&<input value={f.customType||""} onChange={e=>s("customType",e.target.value)} placeholder="請輸入展覽類型" style={{marginTop:8}}/>}
+      </FR>
       <FR label="觀展日期" th={th}><DatePicker value={f.date} onChange={v=>s("date",v)} th={th}/></FR>
+      <FR label="票價（選填）" th={th}>
+        <div style={{display:"flex",gap:8}}>
+          <div style={{display:"flex",gap:6,flexShrink:0}}>
+            {CURRENCIES.map(cur=>(
+              <button key={cur} type="button" className="tap" onClick={()=>s("currency",cur)}
+                style={{padding:"8px 10px",borderRadius:10,fontSize:12,fontFamily:"'Space Grotesk',sans-serif",background:f.currency===cur?T.sage:cb,color:f.currency===cur?"#fff":ct,border:`1.5px solid ${f.currency===cur?T.sage:cbr}`}}>{cur}</button>
+            ))}
+          </div>
+          <input
+            value={f.price?Number(f.price).toLocaleString():""}
+            onChange={e=>s("price",e.target.value.replace(/[^0-9]/g,""))}
+            onFocus={e=>{e.target.value=f.price||"";}}
+            onBlur={e=>{e.target.value=f.price?Number(f.price).toLocaleString():"";}}
+            placeholder="0" inputMode="numeric"
+            style={{flex:1,fontFamily:"'Space Grotesk',sans-serif",fontWeight:300}}/>
+        </div>
+      </FR>
+      <FR label="心情評分" th={th}><MoodPicker value={f.rating} onChange={v=>s("rating",v)}/></FR>
       <FR label="觀後感" th={th}><textarea value={f.notes} onChange={e=>s("notes",e.target.value)} rows={3} placeholder="寫下你的感受..."/></FR>
       <button type="button" className="tap" onClick={()=>{
         const cur=fRef.current;
@@ -644,16 +671,36 @@ function FExhib({init,onSave,onClose,th=T}){
 }
 
 function FConcert({init,onSave,onClose,th=T}){
-  const blank={title:"",venue:"",city:"",date:"",notes:""};
+  const blank={title:"",venue:"",seat:"",date:"",rating:0,price:"",currency:"NT$",notes:""};
   const[f,sf]=useState(init?{...blank,...init}:blank);
   const fRef=React.useRef(f);
   const s=(k,v)=>{const next={...fRef.current,[k]:v};fRef.current=next;sf(next);};
+  const isDark=th.bg==="#141210";
+  const cb=isDark?"#3A2C26":"#FAFAF7",ct=isDark?"#C8B8B0":T.ink3,cbr=isDark?"#5A3C34":T.line;
   return(
     <Sheet title={init?"編輯演唱會":"新增演唱會"} onClose={onClose} th={th}>
       <FR label="名稱" th={th}><input value={f.title} onChange={e=>s("title",e.target.value)} placeholder="演唱會名稱"/></FR>
       <FR label="場地" th={th}><input value={f.venue} onChange={e=>s("venue",e.target.value)} placeholder="場館名稱"/></FR>
-      <FR label="縣市" th={th}><input value={f.city} onChange={e=>s("city",e.target.value)} placeholder="台北市..."/></FR>
+      <FR label="座位（選填）" th={th}><input value={f.seat} onChange={e=>s("seat",e.target.value)} placeholder="A區 12排 15號"/></FR>
       <FR label="日期" th={th}><DatePicker value={f.date} onChange={v=>s("date",v)} th={th}/></FR>
+      <FR label="票價（選填）" th={th}>
+        <div style={{display:"flex",gap:8}}>
+          <div style={{display:"flex",gap:6,flexShrink:0}}>
+            {CURRENCIES.map(cur=>(
+              <button key={cur} type="button" className="tap" onClick={()=>s("currency",cur)}
+                style={{padding:"8px 10px",borderRadius:10,fontSize:12,fontFamily:"'Space Grotesk',sans-serif",background:f.currency===cur?T.sage:cb,color:f.currency===cur?"#fff":ct,border:`1.5px solid ${f.currency===cur?T.sage:cbr}`}}>{cur}</button>
+            ))}
+          </div>
+          <input
+            value={f.price?Number(f.price).toLocaleString():""}
+            onChange={e=>s("price",e.target.value.replace(/[^0-9]/g,""))}
+            onFocus={e=>{e.target.value=f.price||"";}}
+            onBlur={e=>{e.target.value=f.price?Number(f.price).toLocaleString():"";}}
+            placeholder="0" inputMode="numeric"
+            style={{flex:1,fontFamily:"'Space Grotesk',sans-serif",fontWeight:300}}/>
+        </div>
+      </FR>
+      <FR label="心情評分" th={th}><MoodPicker value={f.rating} onChange={v=>s("rating",v)}/></FR>
       <FR label="觀後感" th={th}><textarea value={f.notes} onChange={e=>s("notes",e.target.value)} rows={3} placeholder="寫下你的感受..."/></FR>
       <button type="button" className="tap" onClick={()=>{
         const cur=fRef.current;
@@ -701,13 +748,50 @@ function DetSheet({item,cat,onClose,onEdit,onDel,th=T}){
           </div>
         )}
       </div>
-      {(item.venue||item.city)&&(
-        <div style={{fontSize:13,color:bodyCol,marginBottom:14,marginTop:10,display:"flex",alignItems:"center",gap:6,fontWeight:400}}>
-          <svg width={13} height={13} viewBox="0 0 24 24" fill="none" stroke={subCol} strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
-          {item.venue}{item.city&&` · ${item.city}`}
+      {/* Meta cards for venue/seat/price */}
+      {(item.venue||item.price||item.seat||cat==="演唱會"||cat==="展覽")&&(
+        <div style={{marginTop:12,marginBottom:14}}>
+          <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8,marginBottom:10}}>
+            {item.venue&&<div style={{gridColumn:"1/-1",background:isDark?"#2A1A18":"#F2ECEA",border:`1px solid ${isDark?"#5A2A22":"#DDD0C8"}`,borderRadius:12,padding:"10px 12px"}}>
+              <div style={{fontSize:9,fontWeight:500,color:subCol,letterSpacing:"1px",textTransform:"uppercase",marginBottom:3}}>場館</div>
+              <div style={{fontSize:13,fontWeight:400,color:th.ink}}>{item.venue}</div>
+            </div>}
+            {cat==="演唱會"&&<div style={{background:isDark?"#201828":"#EDE6F5",border:`1px solid ${isDark?"#3A2850":"#CCC0E0"}`,borderRadius:12,padding:"10px 12px"}}>
+              <div style={{fontSize:9,fontWeight:500,color:subCol,letterSpacing:"1px",textTransform:"uppercase",marginBottom:3}}>座位</div>
+              <div style={{fontSize:13,fontWeight:400,color:item.seat?th.ink:th.ink4}}>{item.seat||"—"}</div>
+            </div>}
+            {(cat==="演唱會"||cat==="展覽")&&<div style={{background:isDark?"#182818":"#E8F5EC",border:`1px solid ${isDark?"#2A4830":"#A8D8B0"}`,borderRadius:12,padding:"10px 12px"}}>
+              <div style={{fontSize:9,fontWeight:500,color:subCol,letterSpacing:"1px",textTransform:"uppercase",marginBottom:3}}>票價</div>
+              <div style={{fontSize:15,fontWeight:300,color:item.price?(isDark?"#7AB890":"#2E7858"):th.ink4,fontFamily:"'Space Grotesk',sans-serif"}}>{item.price?`${item.currency||"NT$"} ${Number(item.price).toLocaleString()}`:"—"}</div>
+            </div>}
+          </div>
+          {/* Google Maps button */}
+          {item.venue&&<button type="button" className="tap" onClick={()=>window.open(`https://www.google.com/maps/search/${encodeURIComponent(item.venue)}`,"_blank")}
+            style={{width:"100%",padding:"11px 14px",borderRadius:12,border:`1.5px solid ${isDark?"#2A4830":"#C8E0D0"}`,background:isDark?"#182818":"#F0FAF5",display:"flex",alignItems:"center",gap:10,cursor:"pointer",marginBottom:8,fontFamily:"inherit"}}>
+            <div style={{width:30,height:30,borderRadius:8,background:isDark?"#2A4830":"#fff",border:`1px solid ${isDark?"#3A6040":"#D0E8D8"}`,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>
+              <svg width={16} height={16} viewBox="0 0 24 24" fill="none"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" fill="#EA4335"/><circle cx="12" cy="9" r="2.5" fill="#fff"/></svg>
+            </div>
+            <div style={{flex:1,textAlign:"left"}}>
+              <div style={{fontSize:12,fontWeight:500,color:th.ink}}>在 Google Maps 查看場館</div>
+              <div style={{fontSize:10,color:th.ink4,marginTop:1}}>{item.venue}</div>
+            </div>
+            <svg width={13} height={13} viewBox="0 0 24 24" fill="none" stroke={th.ink4} strokeWidth={2} strokeLinecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+          </button>}
+          {/* YouTube button for concerts */}
+          {cat==="演唱會"&&<button type="button" className="tap" onClick={()=>window.open(`https://www.youtube.com/results?search_query=${encodeURIComponent(item.title+" 演唱會")}`,"_blank")}
+            style={{width:"100%",padding:"11px 14px",borderRadius:12,border:`1.5px solid ${isDark?"#4A2020":"#E0D0D0"}`,background:isDark?"#2A1818":"#FFF5F5",display:"flex",alignItems:"center",gap:10,cursor:"pointer",marginBottom:8,fontFamily:"inherit"}}>
+            <div style={{width:30,height:30,borderRadius:8,background:"#FF0000",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>
+              <svg width={13} height={9} viewBox="0 0 14 10" fill="white"><path d="M13.7 1.56A1.75 1.75 0 0012.47.32C11.37 0 7 0 7 0S2.63 0 1.53.32A1.75 1.75 0 00.3 1.56C0 2.67 0 5 0 5s0 2.33.3 3.44A1.75 1.75 0 001.53 9.68C2.63 10 7 10 7 10s4.37 0 5.47-.32a1.75 1.75 0 001.23-1.24C14 7.33 14 5 14 5s0-2.33-.3-3.44zM5.6 7.14V2.86L9.24 5 5.6 7.14z"/></svg>
+            </div>
+            <div style={{flex:1,textAlign:"left"}}>
+              <div style={{fontSize:12,fontWeight:500,color:th.ink}}>在 YouTube 搜尋演出影片</div>
+              <div style={{fontSize:10,color:th.ink4,marginTop:1}}>{item.title} 演唱會</div>
+            </div>
+            <svg width={13} height={13} viewBox="0 0 24 24" fill="none" stroke={th.ink4} strokeWidth={2} strokeLinecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+          </button>}
         </div>
       )}
-      {item.rating>0&&<div style={{marginBottom:14,marginTop:10}}><MoodPicker value={item.rating} size={28}/></div>}
+      {item.rating>0&&<div style={{marginBottom:14}}><MoodPicker value={item.rating} size={26}/></div>}
       {item.notes&&(
         <div style={{padding:"13px 15px",background:noteBg,borderRadius:12,fontSize:13,color:bodyCol,lineHeight:1.9,fontWeight:400,marginBottom:18,borderLeft:`3px solid ${dtl.l}`}}>
           {item.notes}
@@ -755,9 +839,11 @@ function RCard({item,cat,onClick,th=T}){
       </div>
       <div style={{marginBottom:8}}><DTag date={item.date} th={th}/></div>
       <div style={{display:"flex",gap:6,flexWrap:"wrap",alignItems:"center"}}>
-        <Tg label={item.subtype||item.type||cat} col={lc}/>
+        <Tg label={item.subtype||(item.type==="其他"&&item.customType?item.customType:item.type)||cat} col={lc}/>
         {item.platform&&<span style={{fontSize:11,color:th.ink3,fontWeight:400}}>{item.platform}{item.stream?` · ${item.stream}`:""}</span>}
-        {(item.venue||item.city)&&<span style={{fontSize:11,color:th.ink4}}>📍 {item.venue||""}{item.city?` ${item.city}`:""}</span>}
+        {item.venue&&<span style={{fontSize:11,color:th.ink4}}>📍 {item.venue}</span>}
+        {item.seat&&<span style={{fontSize:11,color:th.ink4}}>💺 {item.seat}</span>}
+        {item.price&&<span style={{fontSize:10,fontFamily:"'Space Grotesk',sans-serif",fontWeight:300,color:"#5A8A60",border:"1.5px solid #7AB880",borderRadius:20,padding:"1px 8px"}}>{item.currency||"NT$"} {Number(item.price).toLocaleString()}</span>}
       </div>
       {item.notes&&(
         <div style={{fontSize:12,color:th.ink3,marginTop:9,lineHeight:1.7,overflow:"hidden",display:"-webkit-box",WebkitLineClamp:1,WebkitBoxOrient:"vertical",fontWeight:400}}>
@@ -945,12 +1031,12 @@ function Home({data,setData,onNav,settings,th}){
                 <div style={{
                   width:32,height:32,borderRadius:"50%",
                   display:"flex",alignItems:"center",justifyContent:"center",
-                  background:isT?th.ink:isSel?T.rose:haE?T.roseBg:"transparent",
-                  border:`1.5px solid ${isT?th.ink:isSel?T.rose:haE?T.rose+"66":"transparent"}`,
+                  background:isT?th.ink:isSel?T.rose:haE?(th.bg==="#141210"?"rgba(192,144,144,.25)":T.roseBg):"transparent",
+                  border:`1.5px solid ${isT?th.ink:isSel?T.rose:haE?T.rose+(th.bg==="#141210"?"99":"66"):"transparent"}`,
                   transition:"all .15s",
                   flexShrink:0,
                 }}>
-                  <span className="num" style={{fontSize:12,fontWeight:isT||isSel?700:haE?600:400,color:isT?"#fff":isSel?"#fff":haE?T.rose:th.ink3,lineHeight:1}}>{day}</span>
+                  <span className="num" style={{fontSize:12,fontWeight:isT||isSel?700:haE?600:400,color:isT?( th.bg==="#141210"?th.bg:"#fff"):isSel?"#fff":haE?(th.bg==="#141210"?"#F0A8A8":T.rose):th.ink3,lineHeight:1}}>{day}</span>
                 </div>
                 {/* category dots below the circle */}
                 {haE&&(
