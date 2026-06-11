@@ -577,7 +577,7 @@ function FMovie({init,onSave,onClose,th=T}){
 }
 
 function FDrama({init,onSave,onClose,th=T}){
-  const blank={title:"",subtype:"韓劇",date:"",rating:0,platform:"",stream:"",notes:""};
+  const blank={title:"",subtype:"韓劇",date:"",rating:0,platform:"",stream:"",notes:"",imdbRating:"",imdbTitle:"",imdbYear:"",imdbGenre:"",imdbRuntime:""};
   const[f,sf]=useState(init?{...blank,...init}:blank);
   const fRef=React.useRef(f);
   const s=(k,v)=>{const next={...fRef.current,[k]:v};fRef.current=next;sf(next);};
@@ -600,7 +600,13 @@ function FDrama({init,onSave,onClose,th=T}){
           <span style={{fontSize:10,color:"#A09088",alignSelf:"center"}}>可不填</span>
         </div>
       </FR>
-      <FR label="片名" th={th}><input value={f.title} onChange={e=>s("title",e.target.value)} placeholder="輸入片名"/></FR>
+      <FR label="片名" th={th}>
+        <input value={f.title} onChange={e=>s("title",e.target.value)} placeholder="輸入片名"/>
+        <TmdbSearch titleRef={fRef} th={th} onApply={meta=>{
+          const next={...fRef.current,...meta};
+          fRef.current=next; sf(next);
+        }}/>
+      </FR>
       <FR label="觀看日期" th={th}><DatePicker value={f.date} onChange={v=>s("date",v)} th={th}/></FR>
       <FR label="心情評分" th={th}><MoodPicker value={f.rating} onChange={v=>s("rating",v)}/></FR>
       <FR label="觀後感" th={th}><textarea value={f.notes} onChange={e=>s("notes",e.target.value)} rows={3} placeholder="寫下你的感受..."/></FR>
