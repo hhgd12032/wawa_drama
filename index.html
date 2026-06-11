@@ -28,6 +28,7 @@ button{cursor:pointer;font-family:inherit;font-weight:400;border:none;outline:no
 .tap{transition:opacity .1s,transform .1s;}
 .tap:active{opacity:.55;transform:scale(.96);}
 .num{font-family:'Space Grotesk','Noto Sans TC',sans-serif;}
+input[type="date"]{min-width:0;width:100%;}
 .page{width:100%;padding:20px 18px 8px;}
 .page-inner{width:100%;padding:10px 18px 0;}
 </style>
@@ -64,10 +65,10 @@ const T={
   catC:{line:"#9878B8",bg:"#EDE6F5",text:"#684898"},
 };
 const FACE_C=["","#C07068","#B09050","#5A9870","#4878B0","#8860B8"];
-const DSubs=["影集","日劇","韓劇","美劇","實境秀","動漫","紀錄片"];
+const DSubs=["韓劇","美劇","日劇","台劇","實境秀","動漫","紀錄片"];
 const DTC={
-  影集:{l:"#6EA890",t:"#2E7858"},日劇:{l:"#C09090",t:"#906060"},
   韓劇:{l:"#9878B8",t:"#684898"},美劇:{l:"#6E88B0",t:"#3A5A88"},
+  日劇:{l:"#C09090",t:"#906060"},台劇:{l:"#88C0A0",t:"#2E7858"},
   實境秀:{l:"#B8986A",t:"#785828"},動漫:{l:"#88A070",t:"#486030"},
   紀錄片:{l:"#5E9898",t:"#2E6868"},
 };
@@ -77,30 +78,21 @@ const catSt=c=>({電影:T.catM,戲劇:T.catD,展覽:T.catE,演唱會:T.catC}[c]|
 const NOW=new Date(),TY=NOW.getFullYear(),TM=NOW.getMonth()+1;
 const ymd=(y,m,d)=>`${y}-${String(m).padStart(2,"0")}-${String(d).padStart(2,"0")}`;
 const pm=n=>{const d=new Date(TY,TM-1-n,1);return{y:d.getFullYear(),m:d.getMonth()+1};};
-const INIT={
-  title:"我的娛樂手札",
-  movies:[
-    {id:1,title:"怪物",subtype:"電影",date:ymd(TY,TM,5),rating:5,platform:"電影院",notes:"是枝裕和的敘事太細膩，每個角色都藏著自己的怪物。"},
-    {id:2,title:"Dune: Part Two",subtype:"電影",date:ymd(TY,TM,12),rating:4,platform:"電影院",notes:"視覺奇觀，沙蟲戰超震撼。"},
-    {id:3,title:"腦筋急轉彎 2",subtype:"電影",date:ymd(pm(1).y,pm(1).m,20),rating:4,platform:"線上串流",notes:"焦慮設計太真實了。"},
-    {id:4,title:"可憐的東西",subtype:"電影",date:ymd(pm(2).y,pm(2).m,8),rating:5,platform:"電影院",notes:"Yorgos又一傑作。"},
-  ],
-  dramas:[
-    {id:1,title:"The Bear S3",subtype:"美劇",date:ymd(TY,TM,8),rating:5,notes:"廚房裡的生存戰，剪接快到心跳加速。"},
-    {id:2,title:"黑白大廚",subtype:"實境秀",date:ymd(TY,TM,15),rating:4,notes:"直接想吃韓食。"},
-    {id:3,title:"NANA",subtype:"動漫",date:ymd(pm(1).y,pm(1).m,10),rating:5,notes:"時隔多年重看，依然心碎。"},
-    {id:4,title:"地球脈動 III",subtype:"紀錄片",date:ymd(TY,TM,18),rating:5,notes:"每一幀都是桌布。"},
-    {id:5,title:"光之繼承者",subtype:"韓劇",date:ymd(TY,TM,22),rating:3,notes:"節奏流暢。"},
-  ],
-  exhibitions:[
-    {id:1,title:"草間彌生·無限宇宙",venue:"台北市立美術館",type:"藝術",date:ymd(TY,TM,3),notes:"光點裝置房太夢幻了。"},
-    {id:2,title:"荒野之境",venue:"國立故宮博物院",type:"攝影",date:ymd(pm(1).y,pm(1).m,25),notes:"自然攝影的邊界，令人敬畏。"},
-  ],
-  concerts:[
-    {id:1,title:"陳綺貞 2024 光",venue:"臺北小巨蛋",city:"台北市",date:ymd(TY,TM,18),notes:"最後唱旅行的意義，眼眶紅了。"},
-    {id:2,title:"五月天諾亞方舟",venue:"桃園國際棒球場",city:"桃園市",date:ymd(pm(1).y,pm(1).m,8),notes:"下雨了還繼續唱，超燃。"},
-  ],
-};
+const EMPTY_DATA={title:"我的娛樂手札",movies:[],dramas:[],exhibitions:[],concerts:[]};
+function loadData(){
+  try{const s=localStorage.getItem("lumiere_data");return s?JSON.parse(s):EMPTY_DATA;}
+  catch{return EMPTY_DATA;}
+}
+function saveData(d){
+  try{localStorage.setItem("lumiere_data",JSON.stringify(d));}catch{}
+}
+function loadSettings(){
+  try{const s=localStorage.getItem("lumiere_settings");return s?JSON.parse(s):{name:"",dark:false};}
+  catch{return{name:"",dark:false};}
+}
+function saveSettings(s){
+  try{localStorage.setItem("lumiere_settings",JSON.stringify(s));}catch{}
+}
 
 /* ── UTILS ─────────────────────────────────────────── */
 const fD=s=>{if(!s)return"";const[y,m,d]=s.split("-");return`${y} · ${+m}月${+d}日`;};
@@ -157,7 +149,7 @@ const FACES=[null,
   // 5 open mouth laugh
   <g key="e"><circle cx="9" cy="10" r="1.3" fill="currentColor"/><circle cx="15" cy="10" r="1.3" fill="currentColor"/><path d="M8 13c1.5 3.5 8.5 3.5 8 0" stroke="currentColor" strokeWidth={1.4} fill="none" strokeLinecap="round"/><ellipse cx="12" cy="16" rx="2.5" ry="1.5" fill="currentColor" opacity=".25"/></g>,
 ];
-const MLABELS=["","怒","無","微笑","開心","大笑"];
+const MLABELS=["","難看","普通","還行","不錯","讚讚"];
 
 function FaceCircle({n,size=30,active=false}){
   const col=active?FACE_C[n]:"#C0B8B0";
@@ -172,16 +164,15 @@ function FaceCircle({n,size=30,active=false}){
 
 function MoodPicker({value=0,onChange}){
   return(
-    <div style={{display:"flex",gap:8,alignItems:"flex-end"}}>
+    <div style={{display:"flex",gap:6,alignItems:"center"}}>
       {[1,2,3,4,5].map(n=>{
-        const on=n<=value&&value>0&&n===value;
-        const filled=n<=value&&value>0;
+        const isSelected=n===value;
         return(
-          <button key={n} className="tap" onClick={()=>onChange&&onChange(value===n?0:n)}
-            style={{display:"flex",flexDirection:"column",alignItems:"center",gap:4,background:"none",border:"none",padding:0,
-              transform:on?"scale(1.12)":"scale(1)",transition:"transform .15s"}}>
-            <FaceCircle n={n} size={32} active={filled}/>
-            <span style={{fontSize:9,color:filled?FACE_C[n]:"#C0B8B0",fontWeight:filled?500:400,letterSpacing:".2px"}}>{MLABELS[n]}</span>
+          <button key={n} className="tap" type="button" onClick={e=>{e.preventDefault();e.stopPropagation();onChange&&onChange(value===n?0:n);}}
+            style={{display:"flex",flexDirection:"column",alignItems:"center",gap:3,background:"none",border:"none",padding:0,
+              transform:isSelected?"scale(1.1)":"scale(1)",transition:"transform .15s"}}>
+            <FaceCircle n={n} size={30} active={isSelected}/>
+            <span style={{fontSize:9,color:isSelected?FACE_C[n]:"#C0B8B0",fontWeight:isSelected?500:300,letterSpacing:".2px"}}>{isSelected?MLABELS[n]:""}</span>
           </button>
         );
       })}
@@ -189,14 +180,117 @@ function MoodPicker({value=0,onChange}){
   );
 }
 
-function MoodIcon({value,size=24}){
+// Display: show all 5 circles, only the rated one is filled with face
+function MoodIcon({value,size=22}){
   if(!value||value<1)return null;
-  const col=FACE_C[value];
   return(
-    <svg width={size} height={size} viewBox="0 0 24 24" fill="none">
-      <circle cx="12" cy="12" r="10.5" stroke={col} strokeWidth={1.8} fill={col+"18"}/>
-      {FACES[value]&&<g stroke={col} fill={col} transform="translate(0,1)">{FACES[value]}</g>}
-    </svg>
+    <div style={{display:"flex",gap:3,alignItems:"center"}}>
+      {[1,2,3,4,5].map(n=>{
+        const isRated=n===value;
+        const col=isRated?FACE_C[value]:"#D0C8C0";
+        return(
+          <svg key={n} width={size} height={size} viewBox="0 0 24 24" fill="none">
+            <circle cx="12" cy="12" r="10.5" stroke={col} strokeWidth={isRated?1.8:1.2} fill={isRated?col+"18":"none"}/>
+            {isRated&&FACES[value]&&<g stroke={col} fill={col} transform="translate(0,1)">{FACES[value]}</g>}
+          </svg>
+        );
+      })}
+    </div>
+  );
+}
+
+
+/* ── CUSTOM DATE PICKER (3 selects, no jumping) ─────── */
+function DatePicker({value,onChange,th=T}){
+  const isDark=th.bg==="#141210";
+  const NOW_Y=new Date().getFullYear();
+
+  // parse existing value
+  const parts=(value||"").split("-");
+  const selY=parts[0]?parseInt(parts[0]):null;
+  const selM=parts[1]?parseInt(parts[1]):null;
+  const selD=parts[2]?parseInt(parts[2]):null;
+
+  // viewing state — defaults to selected or current month
+  const[viewY,setViewY]=useState(selY||NOW_Y);
+  const[viewM,setViewM]=useState(selM||new Date().getMonth()+1);
+
+  const daysInMonth=new Date(viewY,viewM,0).getDate();
+  const firstDay=new Date(viewY,viewM-1,1).getDay();
+  const isSelected=(d)=>selY===viewY&&selM===viewM&&selD===d;
+  const isToday=(d)=>{const n=new Date();return n.getFullYear()===viewY&&n.getMonth()+1===viewM&&n.getDate()===d;};
+
+  const prevMonth=()=>{if(viewM===1){setViewM(12);setViewY(y=>y-1);}else setViewM(m=>m-1);};
+  const nextMonth=()=>{if(viewM===12){setViewM(1);setViewY(y=>y+1);}else setViewM(m=>m+1);};
+
+  const pick=(d)=>{
+    const yy=String(viewY);
+    const mm=String(viewM).padStart(2,"0");
+    const dd=String(d).padStart(2,"0");
+    onChange(`${yy}-${mm}-${dd}`);
+  };
+
+  const bg=isDark?"#2A201C":"#FBF9F6";
+  const border=isDark?"#4A3830":T.line;
+  const inkC=isDark?"#EDE8E2":T.ink;
+  const inkS=isDark?"#A09088":T.ink3;
+  const inkF=isDark?"#6A5850":T.ink4;
+
+  return(
+    <div style={{background:bg,border:`1.5px solid ${border}`,borderRadius:14,overflow:"hidden"}}>
+      {/* Month navigation */}
+      <div className="cal-nav" style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"10px 14px",borderBottom:`1px solid ${border}`}}>
+        <button className="tap" type="button" onClick={e=>{e.preventDefault();prevMonth();}} style={{width:28,height:28,borderRadius:"50%",border:`1.5px solid ${border}`,display:"flex",alignItems:"center",justifyContent:"center",color:inkS,background:"none"}}>
+          <svg width={14} height={14} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} strokeLinecap="round"><polyline points="15 18 9 12 15 6"/></svg>
+        </button>
+        <div style={{display:"flex",flexDirection:"row",alignItems:"center",gap:6,whiteSpace:"nowrap"}}>
+          {/* Year quick-select */}
+          <select value={viewY} onChange={e=>setViewY(parseInt(e.target.value))}
+            onClick={e=>e.stopPropagation()}
+            style={{background:"none",border:"none",fontSize:13,fontWeight:500,color:inkC,cursor:"pointer",outline:"none",appearance:"none",WebkitAppearance:"none",MozAppearance:"none",width:"auto",minWidth:60,flexShrink:0}}>
+            {Array.from({length:10},(_,i)=>NOW_Y-i).map(y=><option key={y} value={y}>{y}年</option>)}
+          </select>
+          <span style={{fontSize:13,fontWeight:500,color:inkC,flexShrink:0}}>{viewM}月</span>
+        </div>
+        <button className="tap" type="button" onClick={e=>{e.preventDefault();nextMonth();}} style={{width:28,height:28,borderRadius:"50%",border:`1.5px solid ${border}`,display:"flex",alignItems:"center",justifyContent:"center",color:inkS,background:"none"}}>
+          <svg width={14} height={14} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} strokeLinecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+        </button>
+      </div>
+
+      {/* Weekday headers */}
+      <div style={{display:"grid",gridTemplateColumns:"repeat(7,1fr)",padding:"8px 8px 4px"}}>
+        {["日","一","二","三","四","五","六"].map(d=>(
+          <div key={d} style={{textAlign:"center",fontSize:10,color:inkF,fontWeight:500,paddingBottom:4}}>{d}</div>
+        ))}
+      </div>
+
+      {/* Day grid */}
+      <div style={{display:"grid",gridTemplateColumns:"repeat(7,1fr)",gap:2,padding:"0 8px 10px"}}>
+        {Array(firstDay).fill(null).map((_,i)=><div key={`e${i}`}/>)}
+        {Array.from({length:daysInMonth},(_,i)=>i+1).map(d=>{
+          const sel=isSelected(d);
+          const tod=isToday(d);
+          return(
+            <button key={d} className="tap" type="button" onClick={e=>{e.preventDefault();e.stopPropagation();pick(d);}} style={{
+              height:34,borderRadius:34,border:"none",
+              background:sel?T.rose:tod?"transparent":"transparent",
+              color:sel?"#fff":tod?T.rose:inkC,
+              fontSize:12,fontWeight:sel||tod?600:300,
+              outline:tod&&!sel?`1.5px solid ${T.rose}`:"none",
+              cursor:"pointer",
+              transition:"background .12s",
+            }}>{d}</button>
+          );
+        })}
+      </div>
+
+      {/* Selected value display */}
+      {value&&(
+        <div style={{padding:"8px 14px 10px",borderTop:`1px solid ${border}`,fontSize:11,color:T.rose,fontWeight:500,textAlign:"center"}}>
+          已選：{selY}年{selM}月{selD}日
+        </div>
+      )}
+    </div>
   );
 }
 
@@ -243,26 +337,34 @@ function TFilt({value,onChange,th=T}){
 function Sheet({title,onClose,children,th=T}){
   const isDark=th.bg==="#141210";
   const sheetBg=isDark?"#231E1B":T.white;
-  const inputBg=isDark?"#2E2520":"#FBF9F6";
-  const inputBorder=isDark?"#4A3830":"#C0B8B0";
-  const inputColor=isDark?"#EDE8E2":"#2A2520";
   const titleColor=isDark?T.rose:T.ink;
+  const inputCSS=isDark?`
+    .sd input,.sd textarea{background:#2E2520!important;border-color:#4A3830!important;color:#EDE8E2!important;}
+    .sd input::placeholder,.sd textarea::placeholder{color:#786860!important;}
+    .sd .cal-nav select{background:none!important;border:none!important;color:#EDE8E2!important;}
+  `:"";
   return(
-    <div style={{position:"fixed",inset:0,background:"rgba(20,15,12,.7)",backdropFilter:"blur(8px)",zIndex:500,display:"flex",alignItems:"flex-end",justifyContent:"center"}} onClick={onClose}>
-      <div onClick={e=>e.stopPropagation()} style={{background:sheetBg,borderRadius:"22px 22px 0 0",width:"100%",maxWidth:"480px",maxHeight:"88vh",overflow:"auto",padding:"8px 18px 48px",boxShadow:"0 -4px 40px rgba(0,0,0,.4)"}}>
-        <div style={{width:36,height:4,borderRadius:2,background:isDark?"#4A3830":T.lineSoft,margin:"12px auto 18px"}}/>
-        {title&&<div style={{fontSize:15,fontWeight:500,color:titleColor,marginBottom:18,letterSpacing:".2px"}}>{title}</div>}
-        {/* inject input styles for dark mode */}
-        {isDark&&<style>{`
-          .sheet-dark input,.sheet-dark textarea,.sheet-dark select{
-            background:${inputBg}!important;
-            border-color:${inputBorder}!important;
-            color:${inputColor}!important;
-          }
-          .sheet-dark input::placeholder,.sheet-dark textarea::placeholder{color:#786860!important;}
-          .sheet-dark select option{background:${inputBg};}
-        `}</style>}
-        <div className={isDark?"sheet-dark":""}>
+    <div style={{position:"fixed",inset:0,zIndex:500,background:"rgba(20,15,12,.7)",backdropFilter:"blur(8px)"}}
+      onMouseDown={e=>{if(e.target===e.currentTarget)onClose();}}
+      onTouchStart={e=>{if(e.target===e.currentTarget)onClose();}}>
+      {isDark&&<style>{inputCSS}</style>}
+      <div style={{
+        position:"absolute",bottom:0,left:"50%",transform:"translateX(-50%)",
+        width:"100%",maxWidth:480,
+        background:sheetBg,borderRadius:"22px 22px 0 0",
+        maxHeight:"92vh",display:"flex",flexDirection:"column",
+        boxShadow:"0 -4px 40px rgba(0,0,0,.5)",
+      }}>
+        {/* header */}
+        <div style={{flexShrink:0,padding:"12px 18px 8px",display:"flex",alignItems:"center",justifyContent:"center",position:"relative",borderBottom:`1px solid ${isDark?"#3A2820":T.lineSoft}`}}>
+          <div style={{width:36,height:4,borderRadius:2,background:isDark?"#4A3830":T.lineSoft}}/>
+          <button type="button" onClick={onClose} style={{position:"absolute",right:14,top:"50%",transform:"translateY(-50%)",width:28,height:28,borderRadius:"50%",border:`1px solid ${isDark?"#4A3830":T.line}`,background:isDark?"#3A2820":"#F5F2EE",display:"flex",alignItems:"center",justifyContent:"center",color:isDark?"#9A8878":T.ink3,cursor:"pointer"}}>
+            <svg width={12} height={12} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} strokeLinecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
+          {title&&<span style={{fontSize:14,fontWeight:500,color:titleColor,marginLeft:8}}>{title}</span>}
+        </div>
+        {/* scrollable body */}
+        <div className={isDark?"sd":""} style={{overflowY:"auto",padding:"16px 18px 48px",flex:1}}>
           {children}
         </div>
       </div>
@@ -281,7 +383,7 @@ const FR=({label,children,th=T})=>{
 const SvBtn=({onClick,label="儲存",th=T})=>{
   const isDark=th.bg==="#141210";
   return(
-    <button className="tap" onClick={onClick} style={{width:"100%",padding:13,background:isDark?T.rose:T.ink,color:"#fff",borderRadius:12,fontSize:14,fontWeight:500,marginTop:14,letterSpacing:".5px"}}>{label}</button>
+    <button type="button" className="tap" onClick={onClick} style={{width:"100%",padding:13,background:isDark?T.rose:T.ink,color:"#fff",borderRadius:12,fontSize:14,fontWeight:500,marginTop:14,letterSpacing:".5px"}}>{label}</button>
   );
 };
 
@@ -302,80 +404,128 @@ const AddBtn=({onClick})=>(
 );
 
 /* ── FORMS ─────────────────────────────────────────── */
+// Use useRef to always have latest form state, avoiding stale closure on save
 function FMovie({init,onSave,onClose,th=T}){
-  const[f,sf]=useState(init||{title:"",subtype:"電影",date:"",rating:0,platform:"",notes:""});
-  const s=(k,v)=>sf(p=>({...p,[k]:v}));
+  const blank={title:"",subtype:"電影",date:"",rating:0,platform:"",stream:"",notes:""};
+  const[f,sf]=useState(init?{...blank,...init}:blank);
+  const fRef=React.useRef(f);
+  const s=(k,v)=>{
+    const next={...fRef.current,[k]:v};
+    fRef.current=next;
+    sf(next);
+  };
   const isDark=th.bg==="#141210";
-  const chipBase=isDark?"#3A2C26":"#FAFAF7";
-  const chipText=isDark?"#C8B8B0":T.ink3;
-  const chipBorder=isDark?"#5A3C34":T.line;
+  const cb=isDark?"#3A2C26":"#FAFAF7", ct=isDark?"#C8B8B0":T.ink3, cbr=isDark?"#5A3C34":T.line;
   return(
     <Sheet title={init?"編輯電影":"新增電影"} onClose={onClose} th={th}>
       <FR label="片名" th={th}><input value={f.title} onChange={e=>s("title",e.target.value)} placeholder="輸入片名"/></FR>
-      <FR label="觀看日期" th={th}><input type="date" value={f.date} onChange={e=>s("date",e.target.value)}/></FR>
+      <FR label="觀看日期" th={th}><DatePicker value={f.date} onChange={v=>s("date",v)} th={th}/></FR>
       <FR label="觀看方式" th={th}>
-        <div style={{display:"flex",gap:7,flexWrap:"wrap"}}>
+        <div style={{display:"flex",gap:6,flexWrap:"wrap"}}>
           {["電影院","線上串流","飛機上"].map(p=>(
-            <button key={p} className="tap" onClick={()=>s("platform",p)} style={{padding:"6px 14px",borderRadius:20,fontSize:12,background:f.platform===p?T.rose:chipBase,color:f.platform===p?"#fff":chipText,border:`1.5px solid ${f.platform===p?T.rose:chipBorder}`}}>{p}</button>
+            <button key={p} type="button" className="tap" onClick={()=>s("platform",p)} style={{padding:"6px 14px",borderRadius:20,fontSize:12,background:f.platform===p?T.rose:cb,color:f.platform===p?"#fff":ct,border:`1.5px solid ${f.platform===p?T.rose:cbr}`}}>{p}</button>
           ))}
         </div>
+        {f.platform==="線上串流"&&(
+          <div style={{display:"flex",gap:6,flexWrap:"wrap",marginTop:8}}>
+            {["Netflix","Disney+","HBO","其他"].map(sv=>(
+              <button key={sv} type="button" className="tap" onClick={()=>s("stream",sv)} style={{padding:"5px 12px",borderRadius:20,fontSize:11,background:f.stream===sv?T.slate:cb,color:f.stream===sv?"#fff":ct,border:`1.5px solid ${f.stream===sv?T.slate:cbr}`}}>{sv}</button>
+            ))}
+          </div>
+        )}
       </FR>
       <FR label="心情評分" th={th}><MoodPicker value={f.rating} onChange={v=>s("rating",v)}/></FR>
       <FR label="觀後感" th={th}><textarea value={f.notes} onChange={e=>s("notes",e.target.value)} rows={3} placeholder="寫下你的感受..."/></FR>
-      <SvBtn onClick={()=>{if(f.title&&f.date){onSave({...f,subtype:"電影"});onClose();}}} th={th}/>
+      <button type="button" className="tap" onClick={()=>{
+        const cur=fRef.current;
+        if(!cur.title){alert("請輸入片名");return;}
+        if(!cur.date){alert("請選擇日期");return;}
+        onSave({...cur,subtype:"電影"});
+        onClose();
+      }} style={{width:"100%",padding:13,background:T.rose,color:"#fff",borderRadius:12,fontSize:14,fontWeight:500,marginTop:14,border:"none",cursor:"pointer"}}>儲存</button>
     </Sheet>
   );
 }
+
 function FDrama({init,onSave,onClose,th=T}){
-  const[f,sf]=useState(init||{title:"",subtype:"影集",date:"",rating:0,notes:""});
-  const s=(k,v)=>sf(p=>({...p,[k]:v}));
+  const blank={title:"",subtype:"韓劇",date:"",rating:0,platform:"",stream:"",notes:""};
+  const[f,sf]=useState(init?{...blank,...init}:blank);
+  const fRef=React.useRef(f);
+  const s=(k,v)=>{const next={...fRef.current,[k]:v};fRef.current=next;sf(next);};
   const isDark=th.bg==="#141210";
-  const chipBase=isDark?"#3A2C26":"#FAFAF7";
-  const chipText=isDark?"#C8B8B0":T.ink3;
-  const chipBorder=isDark?"#5A3C34":T.line;
+  const cb=isDark?"#3A2C26":"#FAFAF7", ct=isDark?"#C8B8B0":T.ink3, cbr=isDark?"#5A3C34":T.line;
   return(
     <Sheet title={init?"編輯戲劇":"新增戲劇"} onClose={onClose} th={th}>
       <FR label="類型" th={th}>
-        <div style={{display:"flex",gap:7,flexWrap:"wrap"}}>
+        <div style={{display:"flex",gap:6,flexWrap:"wrap"}}>
           {DSubs.map(t=>(
-            <button key={t} className="tap" onClick={()=>s("subtype",t)} style={{padding:"5px 12px",borderRadius:20,fontSize:11,background:f.subtype===t?T.rose:chipBase,color:f.subtype===t?"#fff":chipText,border:`1.5px solid ${f.subtype===t?T.rose:chipBorder}`}}>{t}</button>
+            <button key={t} type="button" className="tap" onClick={()=>s("subtype",t)} style={{padding:"5px 12px",borderRadius:20,fontSize:11,background:f.subtype===t?T.rose:cb,color:f.subtype===t?"#fff":ct,border:`1.5px solid ${f.subtype===t?T.rose:cbr}`}}>{t}</button>
           ))}
         </div>
       </FR>
+      <FR label="串流平台" th={th}>
+        <div style={{display:"flex",gap:6,flexWrap:"wrap"}}>
+          {["Netflix","Disney+","HBO","其他"].map(sv=>(
+            <button key={sv} type="button" className="tap" onClick={()=>s("stream",fRef.current.stream===sv?"":sv)} style={{padding:"5px 12px",borderRadius:20,fontSize:11,background:f.stream===sv?T.slate:cb,color:f.stream===sv?"#fff":ct,border:`1.5px solid ${f.stream===sv?T.slate:cbr}`}}>{sv}</button>
+          ))}
+          <span style={{fontSize:10,color:"#A09088",alignSelf:"center"}}>可不填</span>
+        </div>
+      </FR>
       <FR label="片名" th={th}><input value={f.title} onChange={e=>s("title",e.target.value)} placeholder="輸入片名"/></FR>
-      <FR label="觀看日期" th={th}><input type="date" value={f.date} onChange={e=>s("date",e.target.value)}/></FR>
+      <FR label="觀看日期" th={th}><DatePicker value={f.date} onChange={v=>s("date",v)} th={th}/></FR>
       <FR label="心情評分" th={th}><MoodPicker value={f.rating} onChange={v=>s("rating",v)}/></FR>
       <FR label="觀後感" th={th}><textarea value={f.notes} onChange={e=>s("notes",e.target.value)} rows={3} placeholder="寫下你的感受..."/></FR>
-      <SvBtn onClick={()=>{if(f.title&&f.date){onSave(f);onClose();}}} th={th}/>
+      <button type="button" className="tap" onClick={()=>{
+        const cur=fRef.current;
+        if(!cur.title){alert("請輸入片名");return;}
+        if(!cur.date){alert("請選擇日期");return;}
+        onSave(cur); onClose();
+      }} style={{width:"100%",padding:13,background:T.rose,color:"#fff",borderRadius:12,fontSize:14,fontWeight:500,marginTop:14,border:"none",cursor:"pointer"}}>儲存</button>
     </Sheet>
   );
 }
+
 const ETypes=["藝術","攝影","裝置","歷史","科技","設計","自然"];
 function FExhib({init,onSave,onClose,th=T}){
-  const[f,sf]=useState(init||{title:"",venue:"",type:"藝術",date:"",notes:""});
-  const s=(k,v)=>sf(p=>({...p,[k]:v}));
+  const blank={title:"",venue:"",type:"藝術",date:"",notes:""};
+  const[f,sf]=useState(init?{...blank,...init}:blank);
+  const fRef=React.useRef(f);
+  const s=(k,v)=>{const next={...fRef.current,[k]:v};fRef.current=next;sf(next);};
   return(
     <Sheet title={init?"編輯展覽":"新增展覽"} onClose={onClose} th={th}>
       <FR label="展覽名稱" th={th}><input value={f.title} onChange={e=>s("title",e.target.value)} placeholder="展覽名稱"/></FR>
       <FR label="展覽館" th={th}><input value={f.venue} onChange={e=>s("venue",e.target.value)} placeholder="場館名稱"/></FR>
       <FR label="類型" th={th}><select value={f.type} onChange={e=>s("type",e.target.value)}>{ETypes.map(t=><option key={t}>{t}</option>)}</select></FR>
-      <FR label="觀展日期" th={th}><input type="date" value={f.date} onChange={e=>s("date",e.target.value)}/></FR>
+      <FR label="觀展日期" th={th}><DatePicker value={f.date} onChange={v=>s("date",v)} th={th}/></FR>
       <FR label="觀後感" th={th}><textarea value={f.notes} onChange={e=>s("notes",e.target.value)} rows={3} placeholder="寫下你的感受..."/></FR>
-      <SvBtn onClick={()=>{if(f.title&&f.date){onSave(f);onClose();}}} th={th}/>
+      <button type="button" className="tap" onClick={()=>{
+        const cur=fRef.current;
+        if(!cur.title){alert("請輸入展覽名稱");return;}
+        if(!cur.date){alert("請選擇日期");return;}
+        onSave(cur); onClose();
+      }} style={{width:"100%",padding:13,background:T.rose,color:"#fff",borderRadius:12,fontSize:14,fontWeight:500,marginTop:14,border:"none",cursor:"pointer"}}>儲存</button>
     </Sheet>
   );
 }
+
 function FConcert({init,onSave,onClose,th=T}){
-  const[f,sf]=useState(init||{title:"",venue:"",city:"",date:"",notes:""});
-  const s=(k,v)=>sf(p=>({...p,[k]:v}));
+  const blank={title:"",venue:"",city:"",date:"",notes:""};
+  const[f,sf]=useState(init?{...blank,...init}:blank);
+  const fRef=React.useRef(f);
+  const s=(k,v)=>{const next={...fRef.current,[k]:v};fRef.current=next;sf(next);};
   return(
     <Sheet title={init?"編輯演唱會":"新增演唱會"} onClose={onClose} th={th}>
       <FR label="名稱" th={th}><input value={f.title} onChange={e=>s("title",e.target.value)} placeholder="演唱會名稱"/></FR>
       <FR label="場地" th={th}><input value={f.venue} onChange={e=>s("venue",e.target.value)} placeholder="場館名稱"/></FR>
       <FR label="縣市" th={th}><input value={f.city} onChange={e=>s("city",e.target.value)} placeholder="台北市..."/></FR>
-      <FR label="日期" th={th}><input type="date" value={f.date} onChange={e=>s("date",e.target.value)}/></FR>
+      <FR label="日期" th={th}><DatePicker value={f.date} onChange={v=>s("date",v)} th={th}/></FR>
       <FR label="觀後感" th={th}><textarea value={f.notes} onChange={e=>s("notes",e.target.value)} rows={3} placeholder="寫下你的感受..."/></FR>
-      <SvBtn onClick={()=>{if(f.title&&f.date){onSave(f);onClose();}}} th={th}/>
+      <button type="button" className="tap" onClick={()=>{
+        const cur=fRef.current;
+        if(!cur.title){alert("請輸入名稱");return;}
+        if(!cur.date){alert("請選擇日期");return;}
+        onSave(cur); onClose();
+      }} style={{width:"100%",padding:13,background:T.rose,color:"#fff",borderRadius:12,fontSize:14,fontWeight:500,marginTop:14,border:"none",cursor:"pointer"}}>儲存</button>
     </Sheet>
   );
 }
@@ -399,7 +549,7 @@ function DetSheet({item,cat,onClose,onEdit,onDel,th=T}){
         </div>
         <div style={{fontSize:21,fontWeight:500,color:titleCol,lineHeight:1.35,marginBottom:12}}>{item.title}</div>
         <DTag date={item.date} th={th}/>
-        {item.platform&&<span style={{marginLeft:10,fontSize:11,color:subCol,background:noteBg,padding:"2px 9px",borderRadius:20,fontWeight:400}}>{item.platform}</span>}
+        {item.platform&&<span style={{marginLeft:10,fontSize:11,color:subCol,background:noteBg,padding:"2px 9px",borderRadius:20,fontWeight:400}}>{item.platform}{item.stream?` · ${item.stream}`:""}</span>}
       </div>
       {(item.venue||item.city)&&(
         <div style={{fontSize:13,color:bodyCol,marginBottom:14,marginTop:10,display:"flex",alignItems:"center",gap:6,fontWeight:400}}>
@@ -414,10 +564,10 @@ function DetSheet({item,cat,onClose,onEdit,onDel,th=T}){
         </div>
       )}
       <div style={{display:"flex",gap:10}}>
-        <button className="tap" onClick={()=>{onEdit(item);onClose();}} style={{flex:1,padding:"11px",borderRadius:12,border:`1.5px solid ${editBorder}`,fontSize:13,color:editCol,display:"flex",alignItems:"center",justifyContent:"center",gap:6,background:editBg,fontWeight:400}}>
+        <button className="tap" type="button" onClick={e=>{e.preventDefault();e.stopPropagation();onEdit(item);onClose();}} style={{flex:1,padding:"11px",borderRadius:12,border:`1.5px solid ${editBorder}`,fontSize:13,color:editCol,display:"flex",alignItems:"center",justifyContent:"center",gap:6,background:editBg,fontWeight:400}}>
           <IEd/>編輯
         </button>
-        <button className="tap" onClick={()=>{onDel(item.id);onClose();}} style={{flex:1,padding:"11px",borderRadius:12,border:"1.5px solid #C89090",fontSize:13,color:"#904040",background:"#FAF0F0",display:"flex",alignItems:"center",justifyContent:"center",gap:6,fontWeight:400}}>
+        <button className="tap" type="button" onClick={e=>{e.preventDefault();e.stopPropagation();onDel(item.id);onClose();}} style={{flex:1,padding:"11px",borderRadius:12,border:"1.5px solid #C89090",fontSize:13,color:"#904040",background:"#FAF0F0",display:"flex",alignItems:"center",justifyContent:"center",gap:6,fontWeight:400}}>
           <ITr/>刪除
         </button>
       </div>
@@ -444,7 +594,7 @@ function RCard({item,cat,onClick,th=T}){
       <div style={{marginBottom:8}}><DTag date={item.date} th={th}/></div>
       <div style={{display:"flex",gap:6,flexWrap:"wrap",alignItems:"center"}}>
         <Tg label={item.subtype||item.type||cat} col={lc}/>
-        {item.platform&&<span style={{fontSize:11,color:th.ink3,fontWeight:400}}>{item.platform}</span>}
+        {item.platform&&<span style={{fontSize:11,color:th.ink3,fontWeight:400}}>{item.platform}{item.stream?` · ${item.stream}`:""}</span>}
         {(item.venue||item.city)&&<span style={{fontSize:11,color:th.ink4}}>📍 {item.venue||""}{item.city?` ${item.city}`:""}</span>}
       </div>
       {item.notes&&(
@@ -679,11 +829,50 @@ function Home({data,setData,onNav,settings,th}){
   );
 }
 
+/* ── FLOATING FAB (bottom-right, all pages) ─────────── */
+const FloatFAB=({onClick})=>(
+  <button className="tap" onClick={onClick} style={{
+    position:"fixed",
+    bottom:"max(96px, calc(env(safe-area-inset-bottom) + 80px))",
+    right:"max(18px, calc(50% - 222px))",
+    width:52,height:52,borderRadius:"50%",
+    background:T.rose,border:"none",
+    display:"flex",alignItems:"center",justifyContent:"center",
+    boxShadow:`0 4px 20px ${T.rose}70`,
+    zIndex:95,
+  }}>
+    <svg width={22} height={22} viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth={2.5} strokeLinecap="round">
+      <line x1="12" y1="4" x2="12" y2="20"/>
+      <line x1="4" y1="12" x2="20" y2="12"/>
+    </svg>
+  </button>
+);
+
+/* ── SORT BUTTON ───────────────────────────────────── */
+const SortBtn=({sortDesc,onToggle,th=T})=>(
+  <button className="tap" onClick={onToggle} style={{
+    display:"flex",alignItems:"center",gap:4,
+    padding:"4px 10px",borderRadius:20,
+    fontSize:11,fontWeight:400,
+    background:th.white,color:th.ink3,
+    border:`1.5px solid ${th.line}`,
+    transition:"all .15s",
+  }}>
+    <svg width={12} height={12} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+      {sortDesc
+        ? <><line x1="12" y1="5" x2="12" y2="19"/><polyline points="19 12 12 19 5 12"/></>
+        : <><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/>
+        </>}
+    </svg>
+    {sortDesc?"由新到舊":"由舊到新"}
+  </button>
+);
+
 /* ── PAGE HEADER ───────────────────────────────────── */
 const PH=({title,onAdd,th=T})=>(
   <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"20px 18px 0",marginBottom:6,width:"100%"}}>
     <h2 style={{fontSize:20,fontWeight:500,color:th.ink,letterSpacing:"-.2px"}}>{title}</h2>
-    <AddBtn onClick={onAdd}/>
+    {onAdd&&<AddBtn onClick={onAdd}/>}
   </div>
 );
 
@@ -694,21 +883,23 @@ function Watchlist({data,setData,th=T}){
   const[aM,setAM]=useState(false);const[aD,setAD]=useState(false);
   const[det,setDet]=useState(null);const[ed,setEd]=useState(null);
   const[df,setDf]=useState("全部");
-  const movies=ftm(data.movies,tf);
-  const dramas=ftm(data.dramas,tf);
-  const fdr=df==="全部"?dramas:dramas.filter(i=>i.subtype===df);
+  const[sortDesc,setSortDesc]=useState(true);
+  const sortFn=(a,b)=>sortDesc?b.date.localeCompare(a.date):a.date.localeCompare(b.date);
+  const movies=ftm(data.movies,tf).sort(sortFn);
+  const dramas=ftm(data.dramas,tf).sort(sortFn);
+  const fdr=(df==="全部"?dramas:dramas.filter(i=>i.subtype===df));
   const svM=it=>setData(d=>it.id?{...d,movies:d.movies.map(m=>m.id===it.id?it:m)}:{...d,movies:[{...it,id:nid()},...d.movies]});
   const svD=it=>setData(d=>it.id?{...d,dramas:d.dramas.map(m=>m.id===it.id?it:m)}:{...d,dramas:[{...it,id:nid()},...d.dramas]});
   const dlM=id=>setData(d=>({...d,movies:d.movies.filter(m=>m.id!==id)}));
   const dlD=id=>setData(d=>({...d,dramas:d.dramas.filter(m=>m.id!==id)}));
   return(
-    <div>
-      <PH title="片單" onAdd={()=>tab==="電影"?setAM(true):setAD(true)} th={th}/>
+    <div style={{position:"relative"}}>
+      <PH title="片單" th={th}/>
       <div className="page-inner">
         <TFilt value={tf} onChange={setTf} th={th}/>
         <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",borderRadius:12,overflow:"hidden",border:`1.5px solid ${th.line}`,marginBottom:16}}>
           {[["電影",<IFm s={15}/>],["戲劇",<IDr s={15}/>]].map(([t,ic],i)=>(
-            <button key={t} className="tap" onClick={()=>setTab(t)} style={{
+            <button key={t} className="tap" type="button" onClick={e=>{e.preventDefault();setTab(t);}} style={{
               padding:"10px",fontSize:13,fontWeight:tab===t?500:400,
               background:tab===t?T.rose:th.surface,
               color:tab===t?"#fff":th.ink3,
@@ -720,7 +911,10 @@ function Watchlist({data,setData,th=T}){
         </div>
         {tab==="電影"&&(
           <>
-            <div style={{fontSize:11,color:th.ink4,marginBottom:10,fontWeight:500}}>{movies.length} 部電影</div>
+            <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:10}}>
+              <span style={{fontSize:11,color:th.ink4,fontWeight:500}}>{movies.length} 部電影</span>
+              <SortBtn sortDesc={sortDesc} onToggle={()=>setSortDesc(s=>!s)} th={th}/>
+            </div>
             {movies.length===0&&<Mty cat="電影" th={th}/>}
             {movies.map(it=><RCard key={it.id} item={it} cat="電影" onClick={i=>setDet({item:i,cat:"電影"})} th={th}/>)}
           </>
@@ -729,7 +923,7 @@ function Watchlist({data,setData,th=T}){
           <>
             <div style={{display:"flex",gap:6,flexWrap:"wrap",marginBottom:12}}>
               {["全部",...DSubs].map(t=>(
-                <button key={t} className="tap" onClick={()=>setDf(t)} style={{
+                <button key={t} className="tap" type="button" onClick={e=>{e.preventDefault();setDf(t);}} style={{
                   padding:"4px 11px",borderRadius:20,fontSize:11,fontWeight:500,
                   background:df===t?T.rose:th.white,
                   color:df===t?"#fff":th.ink3,
@@ -738,12 +932,17 @@ function Watchlist({data,setData,th=T}){
                 }}>{t}</button>
               ))}
             </div>
-            <div style={{fontSize:11,color:th.ink4,marginBottom:10,fontWeight:500}}>{fdr.length} 部</div>
+            <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:10}}>
+              <span style={{fontSize:11,color:th.ink4,fontWeight:500}}>{fdr.length} 部</span>
+              <SortBtn sortDesc={sortDesc} onToggle={()=>setSortDesc(s=>!s)} th={th}/>
+            </div>
             {fdr.length===0&&<Mty cat="戲劇" th={th}/>}
             {fdr.map(it=><RCard key={it.id} item={it} cat="戲劇" onClick={i=>setDet({item:i,cat:"戲劇"})} th={th}/>)}
           </>
         )}
       </div>
+      {/* Unified floating FAB bottom-right for both tabs */}
+      <FloatFAB onClick={tab==="電影"?()=>setAM(true):()=>setAD(true)} />
       {aM&&<FMovie onClose={()=>setAM(false)} onSave={svM} th={th}/>}
       {aD&&<FDrama onClose={()=>setAD(false)} onSave={svD} th={th}/>}
       {ed&&(ed.subtype==="電影"?<FMovie init={ed} onClose={()=>setEd(null)} onSave={svM} th={th}/>:<FDrama init={ed} onClose={()=>setEd(null)} onSave={svD} th={th}/>)}
@@ -754,18 +953,24 @@ function Watchlist({data,setData,th=T}){
 
 function Exhibition({data,setData,th=T}){
   const[tf,setTf]=useState("總覽");const[sa,setSa]=useState(false);const[det,setDet]=useState(null);const[ed,setEd]=useState(null);
-  const items=ftm(data.exhibitions,tf);
+  const[sortDesc,setSortDesc]=useState(true);
+  const sortFn=(a,b)=>sortDesc?b.date.localeCompare(a.date):a.date.localeCompare(b.date);
+  const items=ftm(data.exhibitions,tf).sort(sortFn);
   const sv=it=>setData(d=>it.id?{...d,exhibitions:d.exhibitions.map(e=>e.id===it.id?it:e)}:{...d,exhibitions:[{...it,id:nid()},...d.exhibitions]});
   const dl=id=>setData(d=>({...d,exhibitions:d.exhibitions.filter(e=>e.id!==id)}));
   return(
     <div>
-      <PH title="展覽" onAdd={()=>setSa(true)} th={th}/>
+      <PH title="展覽" th={th}/>
       <div className="page-inner">
         <TFilt value={tf} onChange={setTf} th={th}/>
-        <div style={{fontSize:11,color:th.ink4,marginBottom:10,fontWeight:500}}>{items.length} 場展覽</div>
+        <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:10}}>
+          <span style={{fontSize:11,color:th.ink4,fontWeight:500}}>{items.length} 場展覽</span>
+          <SortBtn sortDesc={sortDesc} onToggle={()=>setSortDesc(s=>!s)} th={th}/>
+        </div>
         {items.length===0&&<Mty cat="展覽" th={th}/>}
         {items.map(it=><RCard key={it.id} item={it} cat="展覽" onClick={i=>setDet(i)} th={th}/>)}
       </div>
+      <FloatFAB onClick={()=>setSa(true)}/>
       {sa&&<FExhib onClose={()=>setSa(false)} onSave={sv} th={th}/>}
       {ed&&<FExhib init={ed} onClose={()=>setEd(null)} onSave={sv} th={th}/>}
       {det&&<DetSheet item={det} cat="展覽" onClose={()=>setDet(null)} onEdit={i=>setEd(i)} onDel={dl} th={th}/>}
@@ -775,18 +980,24 @@ function Exhibition({data,setData,th=T}){
 
 function Concert({data,setData,th=T}){
   const[tf,setTf]=useState("總覽");const[sa,setSa]=useState(false);const[det,setDet]=useState(null);const[ed,setEd]=useState(null);
-  const items=ftm(data.concerts,tf);
+  const[sortDesc,setSortDesc]=useState(true);
+  const sortFn=(a,b)=>sortDesc?b.date.localeCompare(a.date):a.date.localeCompare(b.date);
+  const items=ftm(data.concerts,tf).sort(sortFn);
   const sv=it=>setData(d=>it.id?{...d,concerts:d.concerts.map(c=>c.id===it.id?it:c)}:{...d,concerts:[{...it,id:nid()},...d.concerts]});
   const dl=id=>setData(d=>({...d,concerts:d.concerts.filter(c=>c.id!==id)}));
   return(
     <div>
-      <PH title="演唱會" onAdd={()=>setSa(true)} th={th}/>
+      <PH title="演唱會" th={th}/>
       <div className="page-inner">
         <TFilt value={tf} onChange={setTf} th={th}/>
-        <div style={{fontSize:11,color:th.ink4,marginBottom:10,fontWeight:500}}>{items.length} 場演唱會</div>
+        <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:10}}>
+          <span style={{fontSize:11,color:th.ink4,fontWeight:500}}>{items.length} 場演唱會</span>
+          <SortBtn sortDesc={sortDesc} onToggle={()=>setSortDesc(s=>!s)} th={th}/>
+        </div>
         {items.length===0&&<Mty cat="演唱會" th={th}/>}
         {items.map(it=><RCard key={it.id} item={it} cat="演唱會" onClick={i=>setDet(i)} th={th}/>)}
       </div>
+      <FloatFAB onClick={()=>setSa(true)}/>
       {sa&&<FConcert onClose={()=>setSa(false)} onSave={sv} th={th}/>}
       {ed&&<FConcert init={ed} onClose={()=>setEd(null)} onSave={sv} th={th}/>}
       {det&&<DetSheet item={det} cat="演唱會" onClose={()=>setDet(null)} onEdit={i=>setEd(i)} onDel={dl} th={th}/>}
@@ -1274,7 +1485,14 @@ const NAVS=[
 function BNav({active,onNav,dark,th}){
   const navBg=dark?"rgba(22,19,16,.98)":"rgba(250,248,245,.98)";
   return(
-    <nav style={{position:"fixed",bottom:0,left:0,right:0,zIndex:100,background:navBg,backdropFilter:"blur(20px)",borderTop:`1px solid ${th.line}`,display:"flex",justifyContent:"space-around",alignItems:"center",padding:"10px 0 max(16px,env(safe-area-inset-bottom))"}}>
+    <nav style={{
+      position:"fixed",bottom:0,left:"50%",transform:"translateX(-50%)",
+      zIndex:100,width:"100%",maxWidth:480,
+      background:navBg,backdropFilter:"blur(20px)",
+      borderTop:`1px solid ${th.line}`,
+      display:"flex",justifyContent:"space-around",alignItems:"center",
+      padding:"10px 0 max(16px,env(safe-area-inset-bottom))",
+    }}>
       {NAVS.map(({k,lb,I})=>{
         const on=active===k;
         return(
@@ -1291,9 +1509,13 @@ function BNav({active,onNav,dark,th}){
 /* ── APP ───────────────────────────────────────────── */
 function App(){
   const[page,setPage]=useState("home");
-  const[data,setData]=useState(INIT);
-  const[settings,setSettings]=useState({name:"",dark:false});
+  const[data,setData]=useState(()=>loadData());
+  const[settings,setSettings]=useState(()=>loadSettings());
   const th=getTheme(settings.dark);
+
+  // persist data to localStorage whenever it changes
+  useEffect(()=>{ saveData(data); },[data]);
+  useEffect(()=>{ saveSettings(settings); },[settings]);
 
   // apply dark bg to body
   useEffect(()=>{
