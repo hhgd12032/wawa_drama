@@ -65,12 +65,13 @@ const T={
   catC:{line:"#9878B8",bg:"#EDE6F5",text:"#684898"},
 };
 const FACE_C=["","#C07068","#B09050","#5A9870","#4878B0","#8860B8"];
-const DSubs=["韓劇","美劇","日劇","台劇","實境秀","動漫","紀錄片"];
+const DSubs=["韓劇","美劇","日劇","台劇","陸劇","短劇","實境秀","動漫","紀錄片"];
 const DTC={
   韓劇:{l:"#9878B8",t:"#684898"},美劇:{l:"#6E88B0",t:"#3A5A88"},
   日劇:{l:"#C09090",t:"#906060"},台劇:{l:"#88C0A0",t:"#2E7858"},
   實境秀:{l:"#B8986A",t:"#785828"},動漫:{l:"#88A070",t:"#486030"},
   紀錄片:{l:"#5E9898",t:"#2E6868"},
+  陸劇:{l:"#C08060",t:"#804020"},短劇:{l:"#A06898",t:"#604878"},
 };
 const catSt=c=>({電影:T.catM,戲劇:T.catD,展覽:T.catE,演唱會:T.catC}[c]||T.catM);
 
@@ -78,9 +79,9 @@ const catSt=c=>({電影:T.catM,戲劇:T.catD,展覽:T.catE,演唱會:T.catC}[c]|
 const NOW=new Date(),TY=NOW.getFullYear(),TM=NOW.getMonth()+1;
 const ymd=(y,m,d)=>`${y}-${String(m).padStart(2,"0")}-${String(d).padStart(2,"0")}`;
 const pm=n=>{const d=new Date(TY,TM-1-n,1);return{y:d.getFullYear(),m:d.getMonth()+1};};
-const EMPTY_DATA={title:"我的娛樂手札",movies:[],dramas:[],exhibitions:[],concerts:[]};
+const EMPTY_DATA={title:"我的娛樂手札",movies:[],dramas:[],exhibitions:[],concerts:[],watchlater:[]};
 function loadData(){
-  try{const s=localStorage.getItem("lumiere_data");return s?JSON.parse(s):EMPTY_DATA;}
+  try{const s=localStorage.getItem("lumiere_data");const d=s?JSON.parse(s):EMPTY_DATA;if(!d.watchlater)d.watchlater=[];return d;}
   catch{return EMPTY_DATA;}
 }
 function saveData(d){
@@ -102,6 +103,7 @@ const sM=(s,y,m)=>s?.startsWith(`${y}-${String(m).padStart(2,"0")}`);
 const nid=()=>Date.now()+Math.random();
 const ftm=(items,tf)=>{
   if(tf==="總覽")return items;
+  if(tf==="年度")return items.filter(i=>i.date?.startsWith(String(TY)));
   if(tf==="本月")return items.filter(i=>sM(i.date,TY,TM));
   if(typeof tf==="object")return items.filter(i=>sM(i.date,tf.y,tf.m));
   return items;
@@ -306,28 +308,91 @@ const Tg=({label,col})=>(
   <span style={{display:"inline-block",padding:"2px 9px",borderRadius:20,fontSize:11,fontWeight:400,color:col||"#706860",border:`1.5px solid ${col||"#C8C0B8"}`,letterSpacing:".2px"}}>{label}</span>
 );
 
+/* ── STREAMS ────────────────────────────────────────── */
+const STREAMS=["Netflix","Disney+","HBO","iQIYI","Prime","其他"];
+
 /* ── TIME FILTER ───────────────────────────────────── */
-function TFilt({value,onChange,th=T}){
-  const[open,setOpen]=useState(false);
-  const months=Array.from({length:12},(_,i)=>{const d=new Date(TY,TM-1-i,1);return{y:d.getFullYear(),m:d.getMonth()+1,label:`${d.getFullYear()}.${String(d.getMonth()+1).padStart(2,"0")}`};});
+function TFilt({value,onChange,platform,onPlatform,th=T}){
+  const[showMo,setShowMo]=useState(false);
+  const[showPlat,setShowPlat]=useState(false);
+  // value: "總覽" | "年度" | {y,m,label} (月份)
+  const isYear=value==="年度";
   const isMo=typeof value==="object";
-  const chip=(v,lbl,act)=>(
-    <button key={lbl} className="tap" onClick={()=>onChange(v)} style={{padding:"5px 13px",borderRadius:20,fontSize:11,fontWeight:500,background:act?T.rose:th.white,color:act?"#fff":th.ink3,border:`1.5px solid ${act?T.rose:th.line}`,transition:"all .15s"}}>{lbl}</button>
+  const isAll=value==="總覽";
+  const isPlat=platform&&platform!=="全部";
+
+  // months: current month + past 11
+  const months=Array.from({length:12},(_,i)=>{
+    const d=new Date(TY,TM-1-i,1);
+    return{y:d.getFullYear(),m:d.getMonth()+1,label:`${d.getFullYear()}.${String(d.getMonth()+1).padStart(2,"0")}`};
+  });
+  const thisMonth=months[0]; // current month default
+
+  const chip=(v,lbl,act,col=T.rose)=>(
+    <button className="tap" onClick={()=>onChange(v)}
+      style={{padding:"5px 11px",borderRadius:20,fontSize:11,fontWeight:500,
+        background:act?col:th.white,color:act?"#fff":th.ink3,
+        border:`1.5px solid ${act?col:th.line}`,whiteSpace:"nowrap",transition:"all .15s"}}>
+      {lbl}
+    </button>
   );
+
   return(
-    <div style={{display:"flex",gap:6,marginBottom:14,alignItems:"center",flexWrap:"wrap",position:"relative"}}>
-      {chip("總覽","總覽",value==="總覽")}
-      {chip("本月","本月",value==="本月")}
-      <button className="tap" onClick={()=>setOpen(p=>!p)} style={{display:"flex",alignItems:"center",gap:3,padding:"5px 13px",borderRadius:20,fontSize:11,fontWeight:500,background:isMo?T.rose:th.white,color:isMo?"#fff":th.ink3,border:`1.5px solid ${isMo?T.rose:th.line}`}}>
-        {isMo?value.label:"月份"}<ICD/>
-      </button>
-      {open&&(
-        <div style={{position:"absolute",top:"115%",left:0,zIndex:300,background:th.white,border:`1.5px solid ${th.line}`,borderRadius:14,padding:10,boxShadow:"0 8px 28px rgba(40,30,20,.12)",display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:4,width:200,maxWidth:"calc(100vw - 32px)"}}>
-          {months.map(mo=>(
-            <button key={mo.label} className="tap" onClick={()=>{onChange(mo);setOpen(false);}} style={{padding:"6px 4px",borderRadius:8,fontSize:11,background:(isMo&&value.label===mo.label)?T.rose:"transparent",color:(isMo&&value.label===mo.label)?"#fff":th.ink3}}>{mo.label}</button>
-          ))}
-        </div>
-      )}
+    <div style={{marginBottom:14}}>
+      <div style={{display:"flex",gap:6,alignItems:"center",flexWrap:"wrap",position:"relative"}}>
+        {chip("總覽","總覽",isAll)}
+        {chip("年度",`${TY}年`,isYear)}
+        {/* 月份 dropdown */}
+        <button className="tap" onClick={()=>{setShowMo(p=>!p);setShowPlat(false);}}
+          style={{display:"flex",alignItems:"center",gap:3,padding:"5px 11px",borderRadius:20,fontSize:11,fontWeight:500,
+            background:isMo?T.rose:th.white,color:isMo?"#fff":th.ink3,
+            border:`1.5px solid ${isMo?T.rose:th.line}`,whiteSpace:"nowrap"}}>
+          {isMo?value.label:`${TM}月`}<ICD/>
+        </button>
+        {/* 平台 dropdown */}
+        {onPlatform&&(
+          <button className="tap" onClick={()=>{setShowPlat(p=>!p);setShowMo(false);}}
+            style={{display:"flex",alignItems:"center",gap:3,padding:"5px 11px",borderRadius:20,fontSize:11,fontWeight:500,
+              background:isPlat?T.slate:th.white,color:isPlat?"#fff":th.ink3,
+              border:`1.5px solid ${isPlat?T.slate:th.line}`,whiteSpace:"nowrap"}}>
+            {isPlat?platform:"平台"}<ICD/>
+          </button>
+        )}
+        {/* Month picker */}
+        {showMo&&(
+          <div style={{position:"absolute",top:"115%",left:0,zIndex:300,background:th.white,
+            border:`1.5px solid ${th.line}`,borderRadius:14,padding:10,
+            boxShadow:"0 8px 28px rgba(40,30,20,.12)",
+            display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:4,width:200,maxWidth:"calc(100vw - 32px)"}}>
+            {months.map(mo=>(
+              <button key={mo.label} className="tap"
+                onClick={()=>{onChange(mo);setShowMo(false);}}
+                style={{padding:"6px 4px",borderRadius:8,fontSize:11,
+                  background:(isMo&&value.label===mo.label)?T.rose:"transparent",
+                  color:(isMo&&value.label===mo.label)?"#fff":th.ink3}}>
+                {mo.label}
+              </button>
+            ))}
+          </div>
+        )}
+        {/* Platform picker */}
+        {showPlat&&onPlatform&&(
+          <div style={{position:"absolute",top:"115%",right:0,zIndex:300,background:th.white,
+            border:`1.5px solid ${th.line}`,borderRadius:14,padding:10,
+            boxShadow:"0 8px 28px rgba(40,30,20,.12)",
+            display:"flex",flexDirection:"column",gap:4,minWidth:130}}>
+            {["全部",...STREAMS].map(pl=>(
+              <button key={pl} className="tap"
+                onClick={()=>{onPlatform(pl);setShowPlat(false);}}
+                style={{padding:"7px 12px",borderRadius:8,fontSize:11,textAlign:"left",
+                  background:platform===pl?T.slate:"transparent",
+                  color:platform===pl?"#fff":th.ink3}}>
+                {pl}
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 }
@@ -560,7 +625,7 @@ function FMovie({init,onSave,onClose,th=T}){
         </div>
         {f.platform==="線上串流"&&(
           <div style={{display:"flex",gap:6,flexWrap:"wrap",marginTop:8}}>
-            {["Netflix","Disney+","HBO","其他"].map(sv=>(
+            {["Netflix","Disney+","HBO","iQIYI","Prime","其他"].map(sv=>(
               <button key={sv} type="button" className="tap" onClick={()=>s("stream",sv)} style={{padding:"5px 12px",borderRadius:20,fontSize:11,background:f.stream===sv?T.slate:cb,color:f.stream===sv?"#fff":ct,border:`1.5px solid ${f.stream===sv?T.slate:cbr}`}}>{sv}</button>
             ))}
           </div>
@@ -597,7 +662,7 @@ function FDrama({init,onSave,onClose,th=T}){
       </FR>
       <FR label="串流平台" th={th}>
         <div style={{display:"flex",gap:6,flexWrap:"wrap"}}>
-          {["Netflix","Disney+","HBO","其他"].map(sv=>(
+          {["Netflix","Disney+","HBO","iQIYI","Prime","其他"].map(sv=>(
             <button key={sv} type="button" className="tap" onClick={()=>s("stream",fRef.current.stream===sv?"":sv)} style={{padding:"5px 12px",borderRadius:20,fontSize:11,background:f.stream===sv?T.slate:cb,color:f.stream===sv?"#fff":ct,border:`1.5px solid ${f.stream===sv?T.slate:cbr}`}}>{sv}</button>
           ))}
           <span style={{fontSize:10,color:"#A09088",alignSelf:"center"}}>可不填</span>
@@ -970,18 +1035,21 @@ function Home({data,setData,onNav,settings,th}){
         {th.heroOverlay&&<div style={{position:"absolute",inset:0,background:th.heroOverlay,zIndex:0,borderRadius:20}}/>}
         <GridBg/>
         <div style={{position:"relative",zIndex:1}}>
-          <div style={{fontSize:10,fontWeight:500,color:th.ink3,letterSpacing:"2px",marginBottom:3,textTransform:"uppercase"}}>
-            本月紀錄 · {TY}.{String(TM).padStart(2,"0")}
+          <div style={{marginBottom:3}}>
+            <div style={{fontSize:10,fontWeight:500,color:th.ink3,letterSpacing:"2px",textTransform:"uppercase",marginBottom:2}}>
+              {TY} 年度統計
+            </div>
           </div>
           <div className="num" style={{fontSize:13,color:th.ink2,marginBottom:18,fontWeight:500}}>
-            共 <span style={{fontSize:24,color:th.ink,fontWeight:600}}>{total}</span> 筆
+            年度共 <span style={{fontSize:28,color:th.ink,fontWeight:600,fontFamily:"'Space Grotesk',sans-serif"}}>{data.movies.filter(i=>i.date?.startsWith(String(TY))).length+data.dramas.filter(i=>i.date?.startsWith(String(TY))).length+data.exhibitions.filter(i=>i.date?.startsWith(String(TY))).length+data.concerts.filter(i=>i.date?.startsWith(String(TY))).length}</span> 筆
+            <span style={{fontSize:11,color:th.ink4,marginLeft:8}}>本月 {total} 筆</span>
           </div>
           <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:8}}>
             {[
-              {label:"電影",count:mC,col:T.slate,nav:"watchlist"},
-              {label:"戲劇",count:dC,col:T.sage,nav:"watchlist"},
-              {label:"展覽",count:eC,col:T.rose,nav:"exhibition"},
-              {label:"演唱會",count:cC,col:T.mauve,nav:"concert"},
+              {label:"電影",count:data.movies.filter(i=>i.date?.startsWith(String(TY))).length,col:T.slate,nav:"watchlist"},
+              {label:"戲劇",count:data.dramas.filter(i=>i.date?.startsWith(String(TY))).length,col:T.sage,nav:"watchlist"},
+              {label:"展覽",count:data.exhibitions.filter(i=>i.date?.startsWith(String(TY))).length,col:T.rose,nav:"exhibition"},
+              {label:"演唱會",count:data.concerts.filter(i=>i.date?.startsWith(String(TY))).length,col:T.mauve,nav:"concert"},
             ].map(({label,count,col,nav})=>(
               <button key={label} className="tap" onClick={()=>onNav(nav)} style={{
                 background:th.heroCard||"rgba(255,255,255,.75)",
@@ -1074,6 +1142,66 @@ function Home({data,setData,onNav,settings,th}){
           })}
         </div>
       )}
+
+      {/* ── 待看清單 ── */}
+      <WatchLater data={data} setData={setData} th={th}/>
+
+    </div>
+  );
+}
+
+function WatchLater({data,setData,th}){
+  const[input,setInput]=useState("");
+  const[show,setShow]=useState(true);
+  const list=data.watchlater||[];
+  const add=()=>{
+    const t=input.trim();
+    if(!t)return;
+    setData(d=>({...d,watchlater:[{id:Date.now(),title:t,addedAt:new Date().toISOString().slice(0,10)},...(d.watchlater||[])]}));
+    setInput("");
+  };
+  const del=(id)=>setData(d=>({...d,watchlater:(d.watchlater||[]).filter(i=>i.id!==id)}));
+  return(
+    <div style={{marginTop:20}}>
+      <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:12}}>
+        <div style={{fontSize:13,fontWeight:500,color:th.ink,display:"flex",alignItems:"center",gap:6}}>
+          <span>📌</span> 待看清單
+          {list.length>0&&<span style={{fontSize:11,color:T.rose,background:th.roseBg,padding:"1px 8px",borderRadius:20}}>{list.length}</span>}
+        </div>
+        <button className="tap" type="button" onClick={()=>setShow(s=>!s)}
+          style={{fontSize:11,color:th.ink4,background:"none",border:"none",cursor:"pointer"}}>
+          {show?"收起 ▲":"展開 ▼"}
+        </button>
+      </div>
+      {show&&(
+        <>
+          <div style={{display:"flex",gap:8,marginBottom:10}}>
+            <input value={input} onChange={e=>setInput(e.target.value)}
+              onKeyDown={e=>{if(e.key==="Enter")add();}}
+              placeholder="加入待看片名..."
+              style={{flex:1,fontSize:13,padding:"9px 13px",background:th.white,border:`1.5px solid ${th.line}`,color:th.ink,borderRadius:12,fontFamily:"inherit"}}/>
+            <button type="button" className="tap" onClick={add}
+              style={{width:40,height:40,borderRadius:"50%",background:T.rose,border:"none",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0,cursor:"pointer"}}>
+              <svg width={16} height={16} viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth={2.5} strokeLinecap="round"><line x1="12" y1="4" x2="12" y2="20"/><line x1="4" y1="12" x2="20" y2="12"/></svg>
+            </button>
+          </div>
+          {list.length===0&&(
+            <div style={{textAlign:"center",padding:"16px 0",color:th.ink4,fontSize:12}}>還沒有待看的～</div>
+          )}
+          {list.map(item=>(
+            <div key={item.id} style={{display:"flex",alignItems:"center",gap:10,padding:"10px 14px",background:th.white,borderRadius:12,border:`1.5px solid ${th.line}`,marginBottom:8}}>
+              <div style={{flex:1}}>
+                <div style={{fontSize:13,color:th.ink,lineHeight:1.4}}>{item.title}</div>
+                <div style={{fontSize:10,color:th.ink4,marginTop:2}}>加入於 {item.addedAt}</div>
+              </div>
+              <button type="button" className="tap" onClick={()=>del(item.id)}
+                style={{width:28,height:28,borderRadius:"50%",border:`1px solid ${th.line}`,background:th.surface||th.white,display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer",flexShrink:0}}>
+                <svg width={11} height={11} viewBox="0 0 24 24" fill="none" stroke={th.ink3} strokeWidth={2.5} strokeLinecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+              </button>
+            </div>
+          ))}
+        </>
+      )}
     </div>
   );
 }
@@ -1128,14 +1256,16 @@ const PH=({title,onAdd,th=T})=>(
 /* ── WATCHLIST ─────────────────────────────────────── */
 function Watchlist({data,setData,th=T}){
   const[tab,setTab]=useState("電影");
-  const[tf,setTf]=useState("總覽");
+  const[tf,setTf]=useState("年度");
   const[aM,setAM]=useState(false);const[aD,setAD]=useState(false);
   const[det,setDet]=useState(null);const[ed,setEd]=useState(null);
   const[df,setDf]=useState("全部");
   const[sortDesc,setSortDesc]=useState(true);
+  const[platF,setPlatF]=useState("全部");
   const sortFn=(a,b)=>sortDesc?b.date.localeCompare(a.date):a.date.localeCompare(b.date);
-  const movies=ftm(data.movies,tf).sort(sortFn);
-  const dramas=ftm(data.dramas,tf).sort(sortFn);
+  const filterPlat=(items)=>platF==="全部"?items:items.filter(i=>i.stream===platF||i.platform===platF);
+  const movies=filterPlat(ftm(data.movies,tf)).sort(sortFn);
+  const dramas=filterPlat(ftm(data.dramas,tf)).sort(sortFn);
   const fdr=(df==="全部"?dramas:dramas.filter(i=>i.subtype===df));
   const svM=it=>setData(d=>it.id?{...d,movies:d.movies.map(m=>m.id===it.id?it:m)}:{...d,movies:[{...it,id:nid()},...d.movies]});
   const svD=it=>setData(d=>it.id?{...d,dramas:d.dramas.map(m=>m.id===it.id?it:m)}:{...d,dramas:[{...it,id:nid()},...d.dramas]});
@@ -1145,7 +1275,7 @@ function Watchlist({data,setData,th=T}){
     <div style={{position:"relative"}}>
       <PH title="片單" th={th}/>
       <div className="page-inner">
-        <TFilt value={tf} onChange={setTf} th={th}/>
+        <TFilt value={tf} onChange={setTf} platform={platF} onPlatform={setPlatF} th={th}/>
         <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",borderRadius:12,overflow:"hidden",border:`1.5px solid ${th.line}`,marginBottom:16}}>
           {[["電影",<IFm s={15}/>],["戲劇",<IDr s={15}/>]].map(([t,ic],i)=>(
             <button key={t} className="tap" type="button" onClick={e=>{e.preventDefault();setTab(t);}} style={{
@@ -1312,6 +1442,21 @@ function Stats({data,th=T}){
   const topMovies=data.movies.filter(i=>i.date?.startsWith(String(TY))&&i.rating>=4).slice(0,3);
   const topDramas=data.dramas.filter(i=>i.date?.startsWith(String(TY))&&i.rating>=4).slice(0,3);
 
+  // Platform stats
+  const platCount={};
+  const platTypes={};
+  [...data.movies,...data.dramas].filter(i=>i.date?.startsWith(String(TY))&&i.stream).forEach(i=>{
+    platCount[i.stream]=(platCount[i.stream]||0)+1;
+    if(!platTypes[i.stream])platTypes[i.stream]={};
+    const t=i.subtype||i._cat||"電影";
+    platTypes[i.stream][t]=(platTypes[i.stream][t]||0)+1;
+  });
+  const platRanked=Object.entries(platCount).sort((a,b)=>b[1]-a[1]);
+
+  // All-time best (by rating, all categories)
+  const allRated=aF(data).filter(i=>i.date?.startsWith(String(TY))&&i.rating>=4)
+    .sort((a,b)=>b.rating-a.rating||(b.imdbRating||0)-(a.imdbRating||0)).slice(0,8);
+
   const handleAI=async()=>{
     setLoading(true);setAiText(null);
     try{
@@ -1323,8 +1468,8 @@ function Stats({data,th=T}){
   };
 
   // BG colors per slide
-  const slideBgs=["#2A2520","#3A3060","#2A4A38","#503828","#383050","#1E3040","#2A2520"];
-  const slideAccs=[T.rose,T.mauve,T.sage,T.sand,T.slate,T.olive,T.rose];
+  const slideBgs=["#2A2520","#3A3060","#2A4A38","#503828","#383050","#1E3040","#2D3A28","#3A2050","#2A2520"];
+  const slideAccs=[T.rose,T.mauve,T.sage,T.sand,T.slate,T.olive,T.teal||T.sage,T.mauve,T.rose];
 
   const slides=[
     // 0 — Cover
@@ -1481,7 +1626,59 @@ function Stats({data,th=T}){
         ))}
       </div>
     ),
-    // 6 — AI summary
+    // 6 — Platform stats
+    ()=>(
+      <div style={{minHeight:460,padding:"32px 24px",position:"relative",overflow:"hidden"}}>
+        <div style={{fontSize:11,fontWeight:500,color:"rgba(255,255,255,.5)",letterSpacing:"2px",marginBottom:8,textTransform:"uppercase"}}>串流平台</div>
+        <div style={{fontSize:24,fontWeight:600,color:"#fff",marginBottom:4,lineHeight:1.2}}>你最常用的<br/>串流平台</div>
+        {platRanked.length===0&&<div style={{color:"rgba(255,255,255,.4)",fontSize:13,marginTop:20}}>尚無串流記錄</div>}
+        <div style={{display:"flex",flexDirection:"column",gap:10,marginTop:20}}>
+          {platRanked.slice(0,5).map(([plat,cnt],i)=>{
+            const topType=Object.entries(platTypes[plat]||{}).sort((a,b)=>b[1]-a[1])[0]?.[0]||"";
+            const maxCnt=platRanked[0]?.[1]||1;
+            const pct=Math.round(cnt/maxCnt*100);
+            return(
+              <div key={plat} style={{padding:"12px 16px",background:"rgba(255,255,255,.09)",borderRadius:14,border:"1px solid rgba(255,255,255,.12)"}}>
+                <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:8}}>
+                  <span style={{fontSize:15,fontWeight:500,color:"#fff"}}>{plat}</span>
+                  <span className="num" style={{fontSize:18,fontWeight:600,color:T.sage}}>{cnt} 部</span>
+                </div>
+                <div style={{height:4,background:"rgba(255,255,255,.15)",borderRadius:2,marginBottom:6}}>
+                  <div style={{height:"100%",borderRadius:2,background:T.sage,width:`${pct}%`}}/>
+                </div>
+                <div style={{fontSize:10,color:"rgba(255,255,255,.45)"}}>主要類型：{topType||"—"}</div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    ),
+    // 7 — Best of year ranking
+    ()=>(
+      <div style={{minHeight:460,padding:"32px 24px",position:"relative",overflow:"hidden"}}>
+        <div style={{fontSize:11,fontWeight:500,color:"rgba(255,255,255,.5)",letterSpacing:"2px",marginBottom:8,textTransform:"uppercase"}}>年度最佳</div>
+        <div style={{fontSize:24,fontWeight:600,color:"#fff",marginBottom:20,lineHeight:1.2}}>你給出最高<br/>評分的作品</div>
+        {allRated.length===0&&<div style={{color:"rgba(255,255,255,.4)",fontSize:13}}>尚無評分記錄</div>}
+        <div style={{display:"flex",flexDirection:"column",gap:8}}>
+          {allRated.map((it,i)=>{
+            const catIcon=it._cat==="電影"?"🎬":it._cat==="戲劇"?"📺":it._cat==="展覽"?"🎨":"🎵";
+            const rankCol=i===0?"#FFD700":i===1?"#C8C8C8":i===2?"#CD8040":"rgba(255,255,255,.5)";
+            return(
+              <div key={it.id} style={{display:"flex",alignItems:"center",gap:12,padding:"10px 14px",background:"rgba(255,255,255,.08)",borderRadius:12,border:"1px solid rgba(255,255,255,.1)"}}>
+                <span className="num" style={{fontSize:17,fontWeight:700,color:rankCol,width:26,flexShrink:0,textAlign:"center"}}>#{i+1}</span>
+                <span style={{fontSize:14,flexShrink:0}}>{catIcon}</span>
+                <div style={{flex:1,minWidth:0}}>
+                  <div style={{fontSize:13,fontWeight:500,color:"#fff",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{it.title}</div>
+                  {it.imdbRating&&<div style={{fontSize:10,color:"rgba(255,255,255,.4)"}}>⭐ {it.imdbRating}</div>}
+                </div>
+                <MoodIcon value={it.rating} size={20}/>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    ),
+    // 8 — AI summary
     ()=>(
       <div style={{minHeight:480,padding:"36px 28px",display:"flex",flexDirection:"column"}}>
         <GridBg/>
