@@ -104,6 +104,7 @@ const nid=()=>Date.now()+Math.random();
 const ftm=(items,tf)=>{
   if(tf==="總覽")return items;
   if(tf==="年度")return items.filter(i=>i.date?.startsWith(String(TY)));
+  if(typeof tf==="number")return items.filter(i=>i.date?.startsWith(String(tf)));
   if(tf==="本月")return items.filter(i=>sM(i.date,TY,TM));
   if(typeof tf==="object")return items.filter(i=>sM(i.date,tf.y,tf.m));
   return items;
@@ -251,7 +252,11 @@ function DatePicker({value,onChange,th=T}){
             style={{background:"none",border:"none",fontSize:13,fontWeight:500,color:inkC,cursor:"pointer",outline:"none",appearance:"none",WebkitAppearance:"none",MozAppearance:"none",width:"auto",minWidth:56,flexShrink:0,textAlign:"center"}}>
             {Array.from({length:10},(_,i)=>NOW_Y-i).map(y=><option key={y} value={y}>{y}年</option>)}
           </select>
-          <span style={{fontSize:13,fontWeight:500,color:inkC,flexShrink:0}}>{viewM}月</span>
+          <select value={viewM} onChange={e=>setViewM(parseInt(e.target.value))}
+            onClick={e=>e.stopPropagation()}
+            style={{background:"none",border:"none",fontSize:13,fontWeight:500,color:inkC,cursor:"pointer",outline:"none",appearance:"none",WebkitAppearance:"none",MozAppearance:"none",width:"auto",minWidth:40,flexShrink:0,textAlign:"center"}}>
+            {Array.from({length:12},(_,i)=>i+1).map(m=><option key={m} value={m}>{m}月</option>)}
+          </select>
         </div>
         <button className="tap" type="button" onClick={e=>{e.preventDefault();nextMonth();}} style={{width:28,height:28,borderRadius:"50%",border:`1.5px solid ${border}`,display:"flex",alignItems:"center",justifyContent:"center",color:inkS,background:"none",flexShrink:0}}>
           <svg width={14} height={14} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} strokeLinecap="round"><polyline points="9 18 15 12 9 6"/></svg>
@@ -311,86 +316,75 @@ const Tg=({label,col})=>(
 /* ── STREAMS ────────────────────────────────────────── */
 const STREAMS=["Netflix","Disney+","HBO","iQIYI","Prime","其他"];
 
+/* ── CHEVRON DOWN ICON ─────────────────────────────── */
+const IChev=()=><svg width={9} height={9} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} strokeLinecap="round"><polyline points="6 9 12 15 18 9"/></svg>;
+
+/* ── STYLED SELECT ─────────────────────────────────── */
+const selStyle=(active,col,th)=>({
+  padding:"5px 20px 5px 9px",
+  borderRadius:20,fontSize:11,fontWeight:500,
+  background:active?col:th.white,
+  color:active?"#fff":th.ink3,
+  border:`1.5px solid ${active?col:th.line}`,
+  appearance:"none",WebkitAppearance:"none",
+  cursor:"pointer",outline:"none",fontFamily:"inherit",
+  backgroundImage:`url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='9' height='9' viewBox='0 0 24 24' fill='none' stroke='${active?"%23fff":"%23999"}' stroke-width='2.5'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E")`,
+  backgroundRepeat:"no-repeat",backgroundPosition:"right 7px center",
+});
+
 /* ── TIME FILTER ───────────────────────────────────── */
 function TFilt({value,onChange,platform,onPlatform,th=T}){
   const[showMo,setShowMo]=useState(false);
   const[showPlat,setShowPlat]=useState(false);
-  // value: "總覽" | "年度" | {y,m,label} (月份)
   const isYear=value==="年度";
   const isMo=typeof value==="object";
   const isAll=value==="總覽";
   const isPlat=platform&&platform!=="全部";
 
-  // months: current month + past 11
-  const months=Array.from({length:12},(_,i)=>{
-    const d=new Date(TY,TM-1-i,1);
-    return{y:d.getFullYear(),m:d.getMonth()+1,label:`${d.getFullYear()}.${String(d.getMonth()+1).padStart(2,"0")}`};
-  });
-  const thisMonth=months[0]; // current month default
+  const years=Array.from({length:5},(_,i)=>TY-i);
+  const[filterY,setFilterY]=useState(TY);
+  const months=Array.from({length:12},(_,i)=>({
+    y:filterY,m:i+1,label:`${filterY}.${String(i+1).padStart(2,"0")}`
+  }));
 
-  const chip=(v,lbl,act,col=T.rose)=>(
+  const Chip=({v,lbl,act,col=T.rose})=>(
     <button className="tap" onClick={()=>onChange(v)}
-      style={{padding:"5px 11px",borderRadius:20,fontSize:11,fontWeight:500,
+      style={{padding:"5px 9px",borderRadius:20,fontSize:11,fontWeight:500,
         background:act?col:th.white,color:act?"#fff":th.ink3,
-        border:`1.5px solid ${act?col:th.line}`,whiteSpace:"nowrap",transition:"all .15s"}}>
+        border:`1.5px solid ${act?col:th.line}`,whiteSpace:"nowrap",
+        flexShrink:0,transition:"all .15s"}}>
       {lbl}
     </button>
   );
 
   return(
-    <div style={{marginBottom:14}}>
-      <div style={{display:"flex",gap:6,alignItems:"center",flexWrap:"wrap",position:"relative"}}>
-        {chip("總覽","總覽",isAll)}
-        {chip("年度",`${TY}年`,isYear)}
-        {/* 月份 dropdown */}
-        <button className="tap" onClick={()=>{setShowMo(p=>!p);setShowPlat(false);}}
-          style={{display:"flex",alignItems:"center",gap:3,padding:"5px 11px",borderRadius:20,fontSize:11,fontWeight:500,
-            background:isMo?T.rose:th.white,color:isMo?"#fff":th.ink3,
-            border:`1.5px solid ${isMo?T.rose:th.line}`,whiteSpace:"nowrap"}}>
-          {isMo?value.label:`${TM}月`}<ICD/>
-        </button>
-        {/* 平台 dropdown */}
+    <div style={{marginBottom:12,position:"relative"}}>
+      {/* Row: 總覽 ｜ 年份 ｜ 月份 ｜ 平台 — all same height, centered */}
+      <div style={{display:"flex",gap:5,alignItems:"center",flexWrap:"nowrap",overflowX:"auto",paddingBottom:2}}>
+        <Chip v="總覽" lbl="總覽" act={isAll}/>
+        {/* Year select with chevron */}
+        <select value={filterY}
+          onChange={e=>{const y=parseInt(e.target.value);setFilterY(y);onChange("年度");}}
+          style={selStyle(isYear,T.rose,th)}>
+          {years.map(y=><option key={y} value={y}>{y}</option>)}
+        </select>
+        {/* Month select with chevron */}
+        <select value={isMo?value.m:TM}
+          onChange={e=>{const m=parseInt(e.target.value);onChange({y:filterY,m,label:`${filterY}.${String(m).padStart(2,"0")}`});}}
+          style={selStyle(isMo,T.rose,th)}>
+          {Array.from({length:12},(_,i)=>i+1).map(m=>(
+            <option key={m} value={m}>{m}月</option>
+          ))}
+        </select>
+        {/* Platform select */}
         {onPlatform&&(
-          <button className="tap" onClick={()=>{setShowPlat(p=>!p);setShowMo(false);}}
-            style={{display:"flex",alignItems:"center",gap:3,padding:"5px 11px",borderRadius:20,fontSize:11,fontWeight:500,
-              background:isPlat?T.slate:th.white,color:isPlat?"#fff":th.ink3,
-              border:`1.5px solid ${isPlat?T.slate:th.line}`,whiteSpace:"nowrap"}}>
-            {isPlat?platform:"平台"}<ICD/>
-          </button>
-        )}
-        {/* Month picker */}
-        {showMo&&(
-          <div style={{position:"absolute",top:"115%",left:0,zIndex:300,background:th.white,
-            border:`1.5px solid ${th.line}`,borderRadius:14,padding:10,
-            boxShadow:"0 8px 28px rgba(40,30,20,.12)",
-            display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:4,width:200,maxWidth:"calc(100vw - 32px)"}}>
-            {months.map(mo=>(
-              <button key={mo.label} className="tap"
-                onClick={()=>{onChange(mo);setShowMo(false);}}
-                style={{padding:"6px 4px",borderRadius:8,fontSize:11,
-                  background:(isMo&&value.label===mo.label)?T.rose:"transparent",
-                  color:(isMo&&value.label===mo.label)?"#fff":th.ink3}}>
-                {mo.label}
-              </button>
-            ))}
-          </div>
-        )}
-        {/* Platform picker */}
-        {showPlat&&onPlatform&&(
-          <div style={{position:"absolute",top:"115%",right:0,zIndex:300,background:th.white,
-            border:`1.5px solid ${th.line}`,borderRadius:14,padding:10,
-            boxShadow:"0 8px 28px rgba(40,30,20,.12)",
-            display:"flex",flexDirection:"column",gap:4,minWidth:130}}>
+          <select value={platform||"全部"}
+            onChange={e=>onPlatform(e.target.value)}
+            style={selStyle(isPlat,T.slate,th)}>
             {["全部",...STREAMS].map(pl=>(
-              <button key={pl} className="tap"
-                onClick={()=>{onPlatform(pl);setShowPlat(false);}}
-                style={{padding:"7px 12px",borderRadius:8,fontSize:11,textAlign:"left",
-                  background:platform===pl?T.slate:"transparent",
-                  color:platform===pl?"#fff":th.ink3}}>
-                {pl}
-              </button>
+              <option key={pl} value={pl}>{pl==="全部"?"平台":pl}</option>
             ))}
-          </div>
+          </select>
         )}
       </div>
     </div>
@@ -560,7 +554,7 @@ function TmdbSearch({titleRef,onApply,th=T}){
         border:`1.5px solid ${status==="loading"?th.line:isDark?"#3A4060":"#B0C0E8"}`,
         cursor:status==="loading"?"default":"pointer",fontFamily:"inherit",transition:"all .15s",
       }}>
-        {status==="loading"?<><span style={{animation:"spin 1s linear infinite",display:"inline-block"}}>⟳</span> 搜尋中...</>:<>🎬 搜尋評分</>}
+        {status==="loading"?<><span style={{animation:"spin 1s linear infinite",display:"inline-block"}}>⟳</span> 搜尋中...</>:<>搜尋評分</>}
       </button>
 
       {status==="notfound"&&<div style={{fontSize:11,color:T.ink3,marginTop:6,padding:"6px 10px",background:th.line+"22",borderRadius:8}}>找不到「{searchedFor}」，試試其他關鍵字</div>}
@@ -814,7 +808,7 @@ function DetSheet({item,cat,onClose,onEdit,onDel,th=T}){
         )}
       </div>
       {/* Meta cards for venue/seat/price */}
-      {(item.venue||item.price||item.seat||cat==="演唱會"||cat==="展覽")&&(
+      {(item.venue||item.price||item.seat||item.city||cat==="演唱會"||cat==="展覽"||cat==="景點")&&(
         <div style={{marginTop:12,marginBottom:14}}>
           <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8,marginBottom:10}}>
             {item.venue&&<div style={{gridColumn:"1/-1",background:isDark?"#2A1A18":"#F2ECEA",border:`1px solid ${isDark?"#5A2A22":"#DDD0C8"}`,borderRadius:12,padding:"10px 12px"}}>
@@ -825,13 +819,17 @@ function DetSheet({item,cat,onClose,onEdit,onDel,th=T}){
               <div style={{fontSize:9,fontWeight:500,color:subCol,letterSpacing:"1px",textTransform:"uppercase",marginBottom:3}}>座位</div>
               <div style={{fontSize:13,fontWeight:400,color:item.seat?th.ink:th.ink4}}>{item.seat||"—"}</div>
             </div>}
+            {cat==="景點"&&item.city&&<div style={{background:isDark?"#201828":"#EDE6F5",border:`1px solid ${isDark?"#3A2850":"#CCC0E0"}`,borderRadius:12,padding:"10px 12px"}}>
+              <div style={{fontSize:9,fontWeight:500,color:subCol,letterSpacing:"1px",textTransform:"uppercase",marginBottom:3}}>城市</div>
+              <div style={{fontSize:13,fontWeight:400,color:th.ink}}>{item.city}</div>
+            </div>}
             {(cat==="演唱會"||cat==="展覽")&&<div style={{background:isDark?"#182818":"#E8F5EC",border:`1px solid ${isDark?"#2A4830":"#A8D8B0"}`,borderRadius:12,padding:"10px 12px"}}>
               <div style={{fontSize:9,fontWeight:500,color:subCol,letterSpacing:"1px",textTransform:"uppercase",marginBottom:3}}>票價</div>
               <div style={{fontSize:15,fontWeight:300,color:item.price?(isDark?"#7AB890":"#2E7858"):th.ink4,fontFamily:"'Space Grotesk',sans-serif"}}>{item.price?`${item.currency||"NT$"} ${Number(item.price).toLocaleString()}`:"—"}</div>
             </div>}
           </div>
           {/* Google Maps button */}
-          {item.venue&&<button type="button" className="tap" onClick={()=>window.open(`https://www.google.com/maps/search/${encodeURIComponent(item.venue)}`,"_blank")}
+          {(item.venue||(cat==="景點"&&item.title))&&<button type="button" className="tap" onClick={()=>window.open(`https://www.google.com/maps/search/${encodeURIComponent(item.venue||item.title)}`,"_blank")}
             style={{width:"100%",padding:"11px 14px",borderRadius:12,border:`1.5px solid ${isDark?"#2A4830":"#C8E0D0"}`,background:isDark?"#182818":"#F0FAF5",display:"flex",alignItems:"center",gap:10,cursor:"pointer",marginBottom:8,fontFamily:"inherit"}}>
             <div style={{width:30,height:30,borderRadius:8,background:isDark?"#2A4830":"#fff",border:`1px solid ${isDark?"#3A6040":"#D0E8D8"}`,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>
               <svg width={16} height={16} viewBox="0 0 24 24" fill="none"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" fill="#EA4335"/><circle cx="12" cy="9" r="2.5" fill="#fff"/></svg>
@@ -905,7 +903,7 @@ function RCard({item,cat,onClick,th=T}){
       <div style={{marginBottom:8}}><DTag date={item.date} th={th}/></div>
       <div style={{display:"flex",gap:6,flexWrap:"wrap",alignItems:"center"}}>
         <Tg label={item.subtype||(item.type==="其他"&&item.customType?item.customType:item.type)||cat} col={lc}/>
-        {item.platform&&<span style={{fontSize:11,color:th.ink3,fontWeight:400}}>{item.platform}{item.stream?` · ${item.stream}`:""}</span>}
+        {(item.platform||item.stream)&&<span style={{fontSize:11,color:th.ink3,fontWeight:400}}>{item.stream||(item.platform!=="線上串流"?item.platform:"")}{item.stream&&item.platform&&item.platform!=="線上串流"?` · ${item.platform}`:""}</span>}
         {item.venue&&<span style={{fontSize:11,color:th.ink4}}>📍 {item.venue}</span>}
         {item.seat&&<span style={{fontSize:11,color:th.ink4}}>💺 {item.seat}</span>}
         {item.price&&<span style={{fontSize:10,fontFamily:"'Space Grotesk',sans-serif",fontWeight:300,color:"#5A8A60",border:"1.5px solid #7AB880",borderRadius:20,padding:"1px 8px"}}>{item.currency||"NT$"} {Number(item.price).toLocaleString()}</span>}
@@ -1165,7 +1163,7 @@ function WatchLater({data,setData,th}){
     <div style={{marginTop:20}}>
       <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:12}}>
         <div style={{fontSize:13,fontWeight:500,color:th.ink,display:"flex",alignItems:"center",gap:6}}>
-          <span>📌</span> 待看清單
+          <svg width={14} height={14} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg> 待看清單
           {list.length>0&&<span style={{fontSize:11,color:T.rose,background:th.roseBg,padding:"1px 8px",borderRadius:20}}>{list.length}</span>}
         </div>
         <button className="tap" type="button" onClick={()=>setShow(s=>!s)}
@@ -1226,24 +1224,34 @@ const FloatFAB=({onClick})=>(
 );
 
 /* ── SORT BUTTON ───────────────────────────────────── */
-const SortBtn=({sortDesc,onToggle,th=T})=>(
-  <button className="tap" onClick={onToggle} style={{
-    display:"flex",alignItems:"center",gap:4,
-    padding:"4px 10px",borderRadius:20,
-    fontSize:11,fontWeight:400,
-    background:th.white,color:th.ink3,
-    border:`1.5px solid ${th.line}`,
-    transition:"all .15s",
-  }}>
-    <svg width={12} height={12} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
-      {sortDesc
-        ? <><line x1="12" y1="5" x2="12" y2="19"/><polyline points="19 12 12 19 5 12"/></>
-        : <><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/>
-        </>}
-    </svg>
-    {sortDesc?"由新到舊":"由舊到新"}
-  </button>
-);
+// sort modes: "dateDesc" | "dateAsc" | "ratingDesc"
+const SortBtn=({sort,onToggle,th=T})=>{
+  const short={dateDesc:"↓日期",dateAsc:"↑日期",ratingDesc:"↓評分",ratingAsc:"↑評分"};
+  return(
+    <div style={{position:"relative",flexShrink:0}}>
+      <select value={sort} onChange={e=>onToggle(e.target.value)}
+        style={{padding:"4px 18px 4px 7px",borderRadius:20,fontSize:10,fontWeight:400,
+          background:sort!=="dateDesc"?T.rose:th.white,
+          color:sort!=="dateDesc"?"#fff":th.ink3,
+          border:`1.5px solid ${sort!=="dateDesc"?T.rose:th.line}`,
+          appearance:"none",WebkitAppearance:"none",cursor:"pointer",outline:"none",fontFamily:"inherit",
+          backgroundImage:`url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8' viewBox='0 0 24 24' fill='none' stroke='${sort!=="dateDesc"?"%23fff":"%23999"}' stroke-width='2.5'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E")`,
+          backgroundRepeat:"no-repeat",backgroundPosition:"right 5px center",
+        }}>
+        <option value="dateDesc">↓ 由新到舊</option>
+        <option value="dateAsc">↑ 由舊到新</option>
+        <option value="ratingDesc">★ 評分高到低</option>
+        <option value="ratingAsc">☆ 評分低到高</option>
+      </select>
+    </div>
+  );
+};
+function mkSortFn(sort){
+  if(sort==="dateAsc")return(a,b)=>a.date.localeCompare(b.date);
+  if(sort==="ratingDesc")return(a,b)=>(b.rating||0)-(a.rating||0)||b.date.localeCompare(a.date);
+  if(sort==="ratingAsc")return(a,b)=>(a.rating||0)-(b.rating||0)||b.date.localeCompare(a.date);
+  return(a,b)=>b.date.localeCompare(a.date);
+}
 
 /* ── PAGE HEADER ───────────────────────────────────── */
 const PH=({title,onAdd,th=T})=>(
@@ -1260,10 +1268,10 @@ function Watchlist({data,setData,th=T}){
   const[aM,setAM]=useState(false);const[aD,setAD]=useState(false);
   const[det,setDet]=useState(null);const[ed,setEd]=useState(null);
   const[df,setDf]=useState("全部");
-  const[sortDesc,setSortDesc]=useState(true);
+  const[sort,setSort]=useState("dateDesc");
   const[platF,setPlatF]=useState("全部");
-  const sortFn=(a,b)=>sortDesc?b.date.localeCompare(a.date):a.date.localeCompare(b.date);
-  const filterPlat=(items)=>platF==="全部"?items:items.filter(i=>i.stream===platF||i.platform===platF);
+  const sortFn=mkSortFn(sort);
+  const filterPlat=(items)=>platF==="全部"?items:items.filter(i=>i.stream===platF);
   const movies=filterPlat(ftm(data.movies,tf)).sort(sortFn);
   const dramas=filterPlat(ftm(data.dramas,tf)).sort(sortFn);
   const fdr=(df==="全部"?dramas:dramas.filter(i=>i.subtype===df));
@@ -1292,7 +1300,7 @@ function Watchlist({data,setData,th=T}){
           <>
             <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:10}}>
               <span style={{fontSize:11,color:th.ink4,fontWeight:500}}>{movies.length} 部電影</span>
-              <SortBtn sortDesc={sortDesc} onToggle={()=>setSortDesc(s=>!s)} th={th}/>
+              <SortBtn sort={sort} onToggle={(v)=>setSort(v)} th={th}/>
             </div>
             {movies.length===0&&<Mty cat="電影" th={th}/>}
             {movies.map(it=><RCard key={it.id} item={it} cat="電影" onClick={i=>setDet({item:i,cat:"電影"})} th={th}/>)}
@@ -1313,7 +1321,7 @@ function Watchlist({data,setData,th=T}){
             </div>
             <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:10}}>
               <span style={{fontSize:11,color:th.ink4,fontWeight:500}}>{fdr.length} 部</span>
-              <SortBtn sortDesc={sortDesc} onToggle={()=>setSortDesc(s=>!s)} th={th}/>
+              <SortBtn sort={sort} onToggle={(v)=>setSort(v)} th={th}/>
             </div>
             {fdr.length===0&&<Mty cat="戲劇" th={th}/>}
             {fdr.map(it=><RCard key={it.id} item={it} cat="戲劇" onClick={i=>setDet({item:i,cat:"戲劇"})} th={th}/>)}
@@ -1330,37 +1338,84 @@ function Watchlist({data,setData,th=T}){
   );
 }
 
+const STypes=["古蹟","遊樂園","休閒中心","農場","其他"];
+function FSpot({init,onSave,onClose,th=T}){
+  const blank={title:"",city:"",type:"古蹟",customType:"",date:"",rating:0,price:"",currency:"NT$",notes:""};
+  const[f,sf]=useState(init?{...blank,...init}:blank);
+  const fRef=React.useRef(f);
+  const s=(k,v)=>{const next={...fRef.current,[k]:v};fRef.current=next;sf(next);};
+  const isDark=th.bg==="#141210";
+  const cb=isDark?"#3A2C26":"#FAFAF7",ct=isDark?"#C8B8B0":T.ink3,cbr=isDark?"#5A3C34":T.line;
+  return(
+    <Sheet title={init?"編輯景點":"新增景點"} onClose={onClose} th={th}>
+      <FR label="景點名稱" th={th}><input value={f.title} onChange={e=>s("title",e.target.value)} placeholder="景點名稱"/></FR>
+      <FR label="城市" th={th}><input value={f.city} onChange={e=>s("city",e.target.value)} placeholder="台北市、京都..."/></FR>
+      <FR label="類型" th={th}>
+        <select value={f.type} onChange={e=>s("type",e.target.value)}>{STypes.map(t=><option key={t}>{t}</option>)}</select>
+        {f.type==="其他"&&<input value={f.customType||""} onChange={e=>s("customType",e.target.value)} placeholder="請輸入類型" style={{marginTop:8}}/>}
+      </FR>
+      <FR label="日期" th={th}><DatePicker value={f.date} onChange={v=>s("date",v)} th={th}/></FR>
+      <FR label="票價（選填）" th={th}>
+        <div style={{display:"flex",gap:8}}>
+          <div style={{display:"flex",gap:6,flexShrink:0}}>
+            {CURRENCIES.map(cur=>(
+              <button key={cur} type="button" className="tap" onClick={()=>s("currency",cur)}
+                style={{padding:"8px 10px",borderRadius:10,fontSize:12,fontFamily:"'Space Grotesk',sans-serif",background:f.currency===cur?T.sage:cb,color:f.currency===cur?"#fff":ct,border:`1.5px solid ${f.currency===cur?T.sage:cbr}`}}>{cur}</button>
+            ))}
+          </div>
+          <input value={f.price?Number(f.price).toLocaleString():""} onChange={e=>s("price",e.target.value.replace(/[^0-9]/g,""))} onFocus={e=>{e.target.value=f.price||"";}} onBlur={e=>{e.target.value=f.price?Number(f.price).toLocaleString():"";}} placeholder="0" inputMode="numeric" style={{flex:1,fontFamily:"'Space Grotesk',sans-serif",fontWeight:300}}/>
+        </div>
+      </FR>
+      <FR label="心情評分" th={th}><MoodPicker value={f.rating} onChange={v=>s("rating",v)}/></FR>
+      <FR label="感想" th={th}><textarea value={f.notes} onChange={e=>s("notes",e.target.value)} rows={3} placeholder="寫下你的感受..."/></FR>
+      <button type="button" className="tap" onClick={()=>{const cur=fRef.current;if(!cur.title){alert("請輸入景點名稱");return;}if(!cur.date){alert("請選擇日期");return;}onSave({...cur,_isSpot:true});onClose();}} style={{width:"100%",padding:13,background:T.rose,color:"#fff",borderRadius:12,fontSize:14,fontWeight:500,marginTop:14,border:"none",cursor:"pointer"}}>儲存</button>
+    </Sheet>
+  );
+}
+
 function Exhibition({data,setData,th=T}){
+  const[tab,setTab]=useState("展覽");
   const[tf,setTf]=useState("總覽");const[sa,setSa]=useState(false);const[det,setDet]=useState(null);const[ed,setEd]=useState(null);
-  const[sortDesc,setSortDesc]=useState(true);
-  const sortFn=(a,b)=>sortDesc?b.date.localeCompare(a.date):a.date.localeCompare(b.date);
-  const items=ftm(data.exhibitions,tf).sort(sortFn);
+  const[sort,setSort]=useState("dateDesc");
+  const sortFn=mkSortFn(sort);
+  const exItems=ftm(data.exhibitions.filter(i=>!i._isSpot),tf).sort(sortFn);
+  const spItems=ftm(data.exhibitions.filter(i=>i._isSpot),tf).sort(sortFn);
+  const items=tab==="展覽"?exItems:spItems;
   const sv=it=>setData(d=>it.id?{...d,exhibitions:d.exhibitions.map(e=>e.id===it.id?it:e)}:{...d,exhibitions:[{...it,id:nid()},...d.exhibitions]});
   const dl=id=>setData(d=>({...d,exhibitions:d.exhibitions.filter(e=>e.id!==id)}));
   return(
     <div>
-      <PH title="展覽" th={th}/>
+      <PH title="活動" th={th}/>
       <div className="page-inner">
+        {/* Tab */}
+        <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",borderRadius:12,overflow:"hidden",border:`1.5px solid ${th.line}`,marginBottom:14}}>
+          {[
+            ["展覽",<svg width={15} height={15} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>],
+            ["景點",<svg width={15} height={15} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5"/></svg>]
+          ].map(([t,ic],i)=>(
+            <button key={t} type="button" className="tap" onClick={()=>setTab(t)} style={{padding:"10px",fontSize:13,fontWeight:tab===t?500:400,background:tab===t?T.rose:th.surface,color:tab===t?"#fff":th.ink3,borderRight:i===0?`1.5px solid ${th.line}`:"none",display:"flex",alignItems:"center",justifyContent:"center",gap:6,transition:"background .15s"}}>{ic}{t}</button>
+          ))}
+        </div>
         <TFilt value={tf} onChange={setTf} th={th}/>
         <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:10}}>
-          <span style={{fontSize:11,color:th.ink4,fontWeight:500}}>{items.length} 場展覽</span>
-          <SortBtn sortDesc={sortDesc} onToggle={()=>setSortDesc(s=>!s)} th={th}/>
+          <span style={{fontSize:11,color:th.ink4,fontWeight:500}}>{items.length} {tab==="展覽"?"場展覽":"個景點"}</span>
+          <SortBtn sort={sort} onToggle={(v)=>setSort(v)} th={th}/>
         </div>
-        {items.length===0&&<Mty cat="展覽" th={th}/>}
-        {items.map(it=><RCard key={it.id} item={it} cat="展覽" onClick={i=>setDet(i)} th={th}/>)}
+        {items.length===0&&<Mty cat={tab} th={th}/>}
+        {items.map(it=><RCard key={it.id} item={it} cat={tab} onClick={i=>setDet(i)} th={th}/>)}
       </div>
       <FloatFAB onClick={()=>setSa(true)}/>
-      {sa&&<FExhib onClose={()=>setSa(false)} onSave={sv} th={th}/>}
-      {ed&&<FExhib init={ed} onClose={()=>setEd(null)} onSave={sv} th={th}/>}
-      {det&&<DetSheet item={det} cat="展覽" onClose={()=>setDet(null)} onEdit={i=>setEd(i)} onDel={dl} th={th}/>}
+      {sa&&(tab==="展覽"?<FExhib onClose={()=>setSa(false)} onSave={sv} th={th}/>:<FSpot onClose={()=>setSa(false)} onSave={sv} th={th}/>)}
+      {ed&&(ed._isSpot?<FSpot init={ed} onClose={()=>setEd(null)} onSave={sv} th={th}/>:<FExhib init={ed} onClose={()=>setEd(null)} onSave={sv} th={th}/>)}
+      {det&&<DetSheet item={det} cat={det._isSpot?"景點":"展覽"} onClose={()=>setDet(null)} onEdit={i=>setEd(i)} onDel={dl} th={th}/>}
     </div>
   );
 }
 
 function Concert({data,setData,th=T}){
   const[tf,setTf]=useState("總覽");const[sa,setSa]=useState(false);const[det,setDet]=useState(null);const[ed,setEd]=useState(null);
-  const[sortDesc,setSortDesc]=useState(true);
-  const sortFn=(a,b)=>sortDesc?b.date.localeCompare(a.date):a.date.localeCompare(b.date);
+  const[sort,setSort]=useState("dateDesc");
+  const sortFn=mkSortFn(sort);
   const items=ftm(data.concerts,tf).sort(sortFn);
   const sv=it=>setData(d=>it.id?{...d,concerts:d.concerts.map(c=>c.id===it.id?it:c)}:{...d,concerts:[{...it,id:nid()},...d.concerts]});
   const dl=id=>setData(d=>({...d,concerts:d.concerts.filter(c=>c.id!==id)}));
@@ -1371,7 +1426,7 @@ function Concert({data,setData,th=T}){
         <TFilt value={tf} onChange={setTf} th={th}/>
         <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:10}}>
           <span style={{fontSize:11,color:th.ink4,fontWeight:500}}>{items.length} 場演唱會</span>
-          <SortBtn sortDesc={sortDesc} onToggle={()=>setSortDesc(s=>!s)} th={th}/>
+          <SortBtn sort={sort} onToggle={(v)=>setSort(v)} th={th}/>
         </div>
         {items.length===0&&<Mty cat="演唱會" th={th}/>}
         {items.map(it=><RCard key={it.id} item={it} cat="演唱會" onClick={i=>setDet(i)} th={th}/>)}
@@ -1418,12 +1473,77 @@ function Search({data,th=T}){
 }
 
 /* ── STATS — Spotify-Wrapped style full-page slides ── */
+function AIPromptShare({ya,statsY,th}){
+  const[copied,setCopied]=useState(false);
+  const isDark=th.bg==="#141210";
+  const mC=ya.filter(i=>i._cat==="電影").length;
+  const dC=ya.filter(i=>i._cat==="戲劇").length;
+  const eC=ya.filter(i=>i._cat==="展覽"||i._cat==="景點").length;
+  const cC=ya.filter(i=>i._cat==="演唱會").length;
+  const top5=ya.filter(i=>i.rating>=4).sort((a,b)=>b.rating-a.rating).slice(0,5).map(i=>i.title);
+  const worst=ya.filter(i=>i.rating<=2).sort((a,b)=>a.rating-b.rating).slice(0,3).map(i=>i.title);
+  const topPlat=Object.entries(ya.reduce((acc,i)=>{if(i.stream){acc[i.stream]=(acc[i.stream]||0)+1;}return acc;},{})).sort((a,b)=>b[1]-a[1]).slice(0,3);
+  const genres=ya.reduce((acc,i)=>{const t=i.subtype||i._cat;if(t){acc[t]=(acc[t]||0)+1;}return acc;},{});
+  const topGenre=Object.entries(genres).sort((a,b)=>b[1]-a[1]).slice(0,3).map(([k,v])=>k+"("+v+"部)").join("、");
+
+  const prompt="# "+statsY+" 年度娛樂回顧 — AI 生圖指令\n\n## 設計風格\n請設計 4 張 9:16 直式圖卡，風格參考 Spotify Wrapped 2022：\n- 高飽和撞色：亮橘 × 深紫、螢光綠 × 黑、玫瑰紅 × 鮮黃，大膽 POP 配色\n- 超大粗體數字鋪滿版面（類 Spotify Wrapped 第一張），英文大標 + 繁中說明\n- 幾何爆炸圖形、星爆、色塊邊框、閃電、✦ 裝飾\n- 禁止出現任何串流平台 logo、品牌 logo\n- 尺寸 1080×1920px\n\n## 標題規則\n- 大標用英文（有時尚感）\n- 副標、說明、總結用繁體中文\n- 姓名欄請填入：「XXX 的年度回顧」（XXX 請換成你的名字）\n\n---\n\n## Card 1 — BIG NUMBER OPENER\n超大數字「"+(mC+dC+eC+cC)+"」重複鋪滿畫面（撞色多層），底部小字：\n「"+(mC+dC+eC+cC)+" things happened · "+statsY+" YEAR IN REVIEW」\n\n## Card 2 — MY TOP PICKS 年度最愛\n"+(top5.length>0?top5.map((t,i)=>(i+1)+". "+t).join("\n"):"（尚無高評分紀錄）")+"\n每條目用不同色塊區隔，排行數字放大\n\n## Card 3 — WHERE I WATCHED 串流習慣\n"+(topPlat.length>0?topPlat.map(([k,v],i)=>"#"+(i+1)+" "+k+" · "+v+"部").join("\n"):"（尚無串流資料）")+"\n用橫條進度條視覺化，配撞色\n\n## Card 4 — MY VIBE THIS YEAR 年度總結\n請 AI 根據以下資料生成一段有趣、有個性的總結文字（繁中，80字內，可加 emoji）：\n- 今年看了 "+mC+" 部電影、"+dC+" 部戲劇\n- 最愛的片：「"+(top5[0]||"無")+"」\n- 踩雷的片：「"+(worst[0]||"無")+"」\n- 最愛平台："+(topPlat[0]?.[0]||"無")+"\n- 最常看類型："+topGenre+"\n\n生成的總結文字放在大標「MY VIBE」下方，搭配幾何爆炸圖形";
+
+  const copy=async()=>{
+    try{
+      await navigator.clipboard.writeText(prompt);
+      setCopied(true);setTimeout(()=>setCopied(false),2500);
+    }catch{
+      const el=document.createElement("textarea");
+      el.value=prompt;document.body.appendChild(el);el.select();
+      document.execCommand("copy");document.body.removeChild(el);
+      setCopied(true);setTimeout(()=>setCopied(false),2500);
+    }
+  };
+
+  return(
+    <div>
+      <div style={{fontSize:11,fontWeight:500,color:th.ink4,letterSpacing:"1.2px",textTransform:"uppercase",marginBottom:10}}>AI 生圖指令</div>
+      <div style={{background:isDark?"#1C1814":"#F8F5F0",border:"1.5px solid "+th.line,borderRadius:12,padding:"10px 14px",fontSize:10,color:th.ink3,lineHeight:1.7,marginBottom:10,maxHeight:80,overflow:"auto",whiteSpace:"pre-wrap",fontFamily:"monospace"}}>
+        {"Spotify Wrapped POP撞色風 × "+statsY+" 年度 × "+(mC+dC+eC+cC)+" 個紀錄 × 最愛：「"+(top5[0]||"—")+"」"}
+      </div>
+      <button type="button" className="tap" onClick={copy} style={{
+        width:"100%",padding:"12px",borderRadius:12,
+        background:copied?"#5A8A60":T.rose,color:"#fff",
+        fontSize:13,fontWeight:500,border:"none",cursor:"pointer",
+        display:"flex",alignItems:"center",justifyContent:"center",gap:8,
+        transition:"background .2s",
+      }}>
+        {copied?(
+          <><svg width={15} height={15} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} strokeLinecap="round"><polyline points="20 6 9 17 4 12"/></svg>已複製！貼到 GPT 或 Gemini</>
+        ):(
+          <><svg width={15} height={15} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>複製 AI 生圖指令</>
+        )}
+      </button>
+      <div style={{fontSize:10,color:th.ink4,textAlign:"center",marginTop:6,lineHeight:1.7}}>
+        適用 ChatGPT (DALL·E) · Gemini Imagen · Midjourney ✦
+      </div>
+    </div>
+  );
+}
+
+
 function Stats({data,th=T}){
+  const[statsY,setStatsY]=useState(TY);
+  // Build year list from actual data
+  const allDates=aF(data).map(i=>parseInt(i.date?.slice(0,4))).filter(y=>y>2000);
+  const minY=allDates.length?Math.min(...allDates):TY;
+  const years=Array.from({length:TY-minY+1},(_,i)=>TY-i).filter(y=>y>=minY);
+  // Also ensure statsY is valid
+  const validStatsY=years.includes(statsY)?statsY:TY;
   const[slide,setSlide]=useState(0);
   const[aiText,setAiText]=useState(null);
   const[loading,setLoading]=useState(false);
 
-  const ya=aF(data).filter(i=>i.date?.startsWith(String(TY)));
+  const ya=aF(data).filter(i=>i.date?.startsWith(String(validStatsY)));
+  const mC2=ya.filter(i=>i._cat==="電影").length;
+  const dC2=ya.filter(i=>i._cat==="戲劇").length;
+  const eC2=ya.filter(i=>i._cat==="展覽").length;
+  const cC2=ya.filter(i=>i._cat==="演唱會").length;
   const mC=data.movies.filter(i=>i.date?.startsWith(String(TY))).length;
   const dC=data.dramas.filter(i=>i.date?.startsWith(String(TY))).length;
   const eC=data.exhibitions.filter(i=>i.date?.startsWith(String(TY))).length;
@@ -1439,13 +1559,13 @@ function Stats({data,th=T}){
   const rDist=[0,0,0,0,0];
   rated.forEach(i=>{if(i.rating>=1&&i.rating<=5)rDist[i.rating-1]++;});
   const maxR=Math.max(...rDist,1);
-  const topMovies=data.movies.filter(i=>i.date?.startsWith(String(TY))&&i.rating>=4).slice(0,3);
-  const topDramas=data.dramas.filter(i=>i.date?.startsWith(String(TY))&&i.rating>=4).slice(0,3);
+  const topMovies=data.movies.filter(i=>i.date?.startsWith(String(validStatsY))&&i.rating>=4).slice(0,3);
+  const topDramas=data.dramas.filter(i=>i.date?.startsWith(String(validStatsY))&&i.rating>=4).slice(0,3);
 
   // Platform stats
   const platCount={};
   const platTypes={};
-  [...data.movies,...data.dramas].filter(i=>i.date?.startsWith(String(TY))&&i.stream).forEach(i=>{
+  [...data.movies,...data.dramas].filter(i=>i.date?.startsWith(String(validStatsY))&&i.stream).forEach(i=>{
     platCount[i.stream]=(platCount[i.stream]||0)+1;
     if(!platTypes[i.stream])platTypes[i.stream]={};
     const t=i.subtype||i._cat||"電影";
@@ -1454,7 +1574,7 @@ function Stats({data,th=T}){
   const platRanked=Object.entries(platCount).sort((a,b)=>b[1]-a[1]);
 
   // All-time best (by rating, all categories)
-  const allRated=aF(data).filter(i=>i.date?.startsWith(String(TY))&&i.rating>=4)
+  const allRated=aF(data).filter(i=>i.date?.startsWith(String(validStatsY))&&i.rating>=4)
     .sort((a,b)=>b.rating-a.rating||(b.imdbRating||0)-(a.imdbRating||0)).slice(0,8);
 
   const handleAI=async()=>{
@@ -1474,7 +1594,7 @@ function Stats({data,th=T}){
   const slides=[
     // 0 — Cover
     ()=>(
-      <div style={{minHeight:480,display:"flex",flexDirection:"column",justifyContent:"center",alignItems:"flex-start",padding:"40px 32px",position:"relative",overflow:"hidden"}}>
+      <div style={{minHeight:520,display:"flex",flexDirection:"column",justifyContent:"center",alignItems:"flex-start",padding:"40px 32px",position:"relative",overflow:"hidden"}}>
         <GridBg/>
         <div style={{position:"relative",zIndex:1}}>
           <div style={{fontSize:11,fontWeight:500,color:"rgba(255,255,255,.5)",letterSpacing:"3px",marginBottom:12,textTransform:"uppercase"}}>YOUR {TY} RECAP</div>
@@ -1496,7 +1616,7 @@ function Stats({data,th=T}){
     ),
     // 1 — Monthly rhythm
     ()=>(
-      <div style={{minHeight:480,padding:"36px 28px",position:"relative",overflow:"hidden"}}>
+      <div style={{minHeight:520,padding:"36px 28px",position:"relative",overflow:"hidden"}}>
         <div style={{fontSize:11,fontWeight:500,color:"rgba(255,255,255,.5)",letterSpacing:"2px",marginBottom:8,textTransform:"uppercase"}}>每月節奏</div>
         <div style={{fontSize:28,fontWeight:600,color:"#fff",marginBottom:28,lineHeight:1.2}}>你全年都沒有<br/>停下來</div>
         <div style={{display:"flex",alignItems:"flex-end",gap:5,height:140,marginBottom:16}}>
@@ -1517,7 +1637,7 @@ function Stats({data,th=T}){
     ),
     // 2 — Top watched
     ()=>(
-      <div style={{minHeight:480,padding:"36px 28px"}}>
+      <div style={{minHeight:520,padding:"36px 28px"}}>
         <div style={{fontSize:11,fontWeight:500,color:"rgba(255,255,255,.5)",letterSpacing:"2px",marginBottom:8,textTransform:"uppercase"}}>最愛片單</div>
         <div style={{fontSize:26,fontWeight:600,color:"#fff",marginBottom:24,lineHeight:1.2}}>你的年度<br/>最佳選片</div>
         {topMovies.length>0&&(
@@ -1554,7 +1674,7 @@ function Stats({data,th=T}){
     ),
     // 3 — Drama breakdown
     ()=>(
-      <div style={{minHeight:480,padding:"36px 28px"}}>
+      <div style={{minHeight:520,padding:"36px 28px"}}>
         <div style={{fontSize:11,fontWeight:500,color:"rgba(255,255,255,.5)",letterSpacing:"2px",marginBottom:8,textTransform:"uppercase"}}>戲劇偏好</div>
         <div style={{fontSize:26,fontWeight:600,color:"#fff",marginBottom:8,lineHeight:1.2}}>
           你最愛看
@@ -1580,7 +1700,7 @@ function Stats({data,th=T}){
     ),
     // 4 — Mood
     ()=>(
-      <div style={{minHeight:480,padding:"36px 28px"}}>
+      <div style={{minHeight:520,padding:"36px 28px"}}>
         <div style={{fontSize:11,fontWeight:500,color:"rgba(255,255,255,.5)",letterSpacing:"2px",marginBottom:8,textTransform:"uppercase"}}>心情回顧</div>
         <div style={{fontSize:26,fontWeight:600,color:"#fff",marginBottom:6,lineHeight:1.2}}>你的觀影心情</div>
         <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:28}}>
@@ -1605,7 +1725,7 @@ function Stats({data,th=T}){
     ),
     // 5 — Live events
     ()=>(
-      <div style={{minHeight:480,padding:"36px 28px"}}>
+      <div style={{minHeight:520,padding:"36px 28px"}}>
         <div style={{fontSize:11,fontWeight:500,color:"rgba(255,255,255,.5)",letterSpacing:"2px",marginBottom:8,textTransform:"uppercase"}}>現場體驗</div>
         <div style={{fontSize:26,fontWeight:600,color:"#fff",marginBottom:8,lineHeight:1.2}}>你走出家門<br/>感受現場</div>
         <div style={{display:"flex",gap:14,marginBottom:28}}>
@@ -1628,8 +1748,8 @@ function Stats({data,th=T}){
     ),
     // 6 — Platform stats
     ()=>(
-      <div style={{minHeight:460,padding:"32px 24px",position:"relative",overflow:"hidden"}}>
-        <div style={{fontSize:11,fontWeight:500,color:"rgba(255,255,255,.5)",letterSpacing:"2px",marginBottom:8,textTransform:"uppercase"}}>串流平台</div>
+      <div style={{minHeight:520,padding:"32px 24px",position:"relative",overflow:"hidden"}}>
+        <div style={{fontSize:11,fontWeight:500,color:"rgba(255,255,255,.5)",letterSpacing:"2px",marginBottom:8,textTransform:"uppercase"}}>{statsY} 串流平台</div>
         <div style={{fontSize:24,fontWeight:600,color:"#fff",marginBottom:4,lineHeight:1.2}}>你最常用的<br/>串流平台</div>
         {platRanked.length===0&&<div style={{color:"rgba(255,255,255,.4)",fontSize:13,marginTop:20}}>尚無串流記錄</div>}
         <div style={{display:"flex",flexDirection:"column",gap:10,marginTop:20}}>
@@ -1655,7 +1775,7 @@ function Stats({data,th=T}){
     ),
     // 7 — Best of year ranking
     ()=>(
-      <div style={{minHeight:460,padding:"32px 24px",position:"relative",overflow:"hidden"}}>
+      <div style={{minHeight:520,padding:"32px 24px",position:"relative",overflow:"hidden"}}>
         <div style={{fontSize:11,fontWeight:500,color:"rgba(255,255,255,.5)",letterSpacing:"2px",marginBottom:8,textTransform:"uppercase"}}>年度最佳</div>
         <div style={{fontSize:24,fontWeight:600,color:"#fff",marginBottom:20,lineHeight:1.2}}>你給出最高<br/>評分的作品</div>
         {allRated.length===0&&<div style={{color:"rgba(255,255,255,.4)",fontSize:13}}>尚無評分記錄</div>}
@@ -1680,7 +1800,7 @@ function Stats({data,th=T}){
     ),
     // 8 — AI summary
     ()=>(
-      <div style={{minHeight:480,padding:"36px 28px",display:"flex",flexDirection:"column"}}>
+      <div style={{minHeight:520,padding:"36px 28px",display:"flex",flexDirection:"column"}}>
         <GridBg/>
         <div style={{position:"relative",zIndex:1,flex:1,display:"flex",flexDirection:"column"}}>
           <div style={{fontSize:11,fontWeight:500,color:"rgba(255,255,255,.5)",letterSpacing:"2px",marginBottom:8,textTransform:"uppercase"}}>AI 年度總結</div>
@@ -1707,8 +1827,20 @@ function Stats({data,th=T}){
 
   return(
     <div className="page">
-      <h2 style={{fontSize:20,fontWeight:500,color:th.ink,marginBottom:4}}>年度統計</h2>
-      <div style={{fontSize:12,color:th.ink3,marginBottom:14,fontWeight:400}}>{TY} · 左右滑動瀏覽</div>
+      <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:4}}>
+        <h2 style={{fontSize:20,fontWeight:500,color:th.ink}}>年度統計</h2>
+        <div style={{display:"flex",gap:4}}>
+          {years.map(y=>(
+            <button key={y} type="button" className="tap" onClick={()=>setStatsY(y)}
+              style={{padding:"4px 10px",borderRadius:20,fontSize:11,fontWeight:500,
+                background:validStatsY===y?T.rose:th.white,color:validStatsY===y?"#fff":th.ink3,
+                border:`1.5px solid ${validStatsY===y?T.rose:th.line}`,cursor:"pointer",fontFamily:"inherit"}}>
+              {y}
+            </button>
+          ))}
+        </div>
+      </div>
+      <div style={{fontSize:12,color:th.ink3,marginBottom:14,fontWeight:400}}>{validStatsY} · 左右滑動瀏覽</div>
 
       {/* Slide container */}
       <div id="statsSlide" style={{position:"relative",borderRadius:18,overflow:"hidden",background:slideBgs[slide],marginBottom:12,transition:"background .3s"}}>
@@ -1736,41 +1868,7 @@ function Stats({data,th=T}){
 
       {/* ── SHARE / SCREENSHOT ── */}
       <div style={{borderTop:`1px solid ${th.lineSoft}`,paddingTop:18,marginBottom:8}}>
-        <div style={{fontSize:11,fontWeight:500,color:th.ink4,letterSpacing:"1.2px",textTransform:"uppercase",marginBottom:12}}>分享年度回顧</div>
-        <button className="tap" id="shareBtn" onClick={async()=>{
-          const btn=document.getElementById("shareBtn");
-          const slideEl=document.getElementById("statsSlide");
-          if(!slideEl)return;
-          // Use Web Share API if available
-          const shareText=`我的 ${TY} 年度娛樂回顧 ✨\n電影 ${mC} 部 · 戲劇 ${dC} 部 · 展覽 ${eC} 場 · 演唱會 ${cC} 場\n#Lumière娛樂手札`;
-          if(navigator.share){
-            try{await navigator.share({title:"我的年度娛樂回顧",text:shareText});}
-            catch(e){if(e.name!=="AbortError")alert(shareText);}
-          } else {
-            // Fallback: copy to clipboard
-            try{
-              await navigator.clipboard.writeText(shareText);
-              btn.textContent="✓ 已複製到剪貼簿！";
-              setTimeout(()=>{btn.innerHTML='<span style="margin-right:6px">✦</span>複製年度回顧文字';},2000);
-            }catch{alert(shareText);}
-          }
-        }} style={{
-          width:"100%",padding:"13px",borderRadius:14,
-          background:T.rose,color:"#fff",
-          fontSize:13,fontWeight:500,letterSpacing:".3px",
-          display:"flex",alignItems:"center",justifyContent:"center",gap:8,
-          boxShadow:`0 4px 16px ${T.rose}44`,
-          border:"none",marginBottom:10,
-        }}>
-          <svg width={16} height={16} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
-            <circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/>
-            <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
-          </svg>
-          分享年度回顧
-        </button>
-        <div style={{fontSize:10,color:th.ink4,textAlign:"center"}}>
-          手機長截圖或複製文字，分享給朋友 ✨
-        </div>
+        <AIPromptShare ya={ya} statsY={validStatsY} th={th}/>
       </div>
     </div>
   );
@@ -1974,11 +2072,35 @@ function SettingsPage({settings,setSettings,data,setData,th}){
 const NAVS=[
   {k:"home",lb:"首頁",I:IH},
   {k:"watchlist",lb:"片單",I:IFm},
-  {k:"exhibition",lb:"展覽",I:IGl},
+  {k:"exhibition",lb:"活動",I:IGl},
   {k:"concert",lb:"演唱會",I:IMu},
   {k:"stats",lb:"統計",I:ISt},
   {k:"settings",lb:"設定",I:ISettings},
 ];
+
+function ScrollTop({th}){
+  const[show,setShow]=useState(false);
+  useEffect(()=>{
+    const el=document.documentElement;
+    const onScroll=()=>setShow(el.scrollTop>300);
+    window.addEventListener("scroll",onScroll,{passive:true});
+    return()=>window.removeEventListener("scroll",onScroll);
+  },[]);
+  if(!show)return null;
+  return(
+    <button className="tap" onClick={()=>window.scrollTo({top:0,behavior:"smooth"})}
+      style={{
+        position:"fixed",bottom:100,right:"max(16px,calc(50% - 220px))",
+        width:40,height:40,borderRadius:"50%",
+        background:th.white,border:`1.5px solid ${th.line}`,
+        display:"flex",alignItems:"center",justifyContent:"center",
+        boxShadow:"0 2px 12px rgba(0,0,0,.15)",
+        zIndex:89,cursor:"pointer",color:th.ink3,
+      }}>
+      <svg width={16} height={16} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} strokeLinecap="round"><polyline points="18 15 12 9 6 15"/></svg>
+    </button>
+  );
+}
 
 function BNav({active,onNav,dark,th}){
   const navBg=dark?"rgba(22,19,16,.98)":"rgba(250,248,245,.98)";
@@ -2024,6 +2146,7 @@ function App(){
   // Pass th to Stats & other pages via context-like prop threading
   return(
     <div style={{background:th.bg,minHeight:"100vh",width:"100%",paddingBottom:80,transition:"background .3s",overflowX:"hidden"}}>
+      <ScrollTop th={th}/>
       {page==="home"&&<Home data={data} setData={setData} onNav={setPage} settings={settings} th={th}/>}
       {page==="watchlist"&&<Watchlist data={data} setData={setData} th={th}/>}
       {page==="exhibition"&&<Exhibition data={data} setData={setData} th={th}/>}
