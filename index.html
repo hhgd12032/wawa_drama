@@ -7,11 +7,11 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.2/babel.min.js"></script>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@200;300;400;500&family=Noto+Sans+TC:wght@400;500;700&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 html{background:#2A2520;min-height:100vh;}
-body{background:#2A2520;color:#2A2520;font-family:'Noto Sans TC','PingFang TC',sans-serif;font-size:15px;font-weight:400;-webkit-font-smoothing:antialiased;min-height:100vh;display:flex;justify-content:center;align-items:flex-start;}
+body{background:#F4F3F8;color:#2A2520;font-family:'Noto Sans TC','PingFang TC',sans-serif;font-size:15px;font-weight:400;-webkit-font-smoothing:antialiased;min-height:100vh;display:flex;justify-content:center;align-items:flex-start;}
 #root{width:100%;max-width:480px;min-height:100vh;padding-bottom:80px;position:relative;overflow-x:hidden;}
 ::-webkit-scrollbar{width:3px;}
 ::-webkit-scrollbar-thumb{background:#C8C0B4;border-radius:2px;}
@@ -27,8 +27,9 @@ select option{background:#FBF9F6;}
 button{cursor:pointer;font-family:inherit;font-weight:400;border:none;outline:none;background:none;}
 .tap{transition:opacity .1s,transform .1s;}@keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
 .tap:active{opacity:.55;transform:scale(.96);}
-.num{font-family:'Space Grotesk','Noto Sans TC',sans-serif;}
+.num{font-family:'Outfit','Noto Sans TC',sans-serif;font-weight:200;}
 input[type="date"]{min-width:0;width:100%;}
+select{background-image:none!important;-webkit-appearance:none;-moz-appearance:none;appearance:none;}
 .page{width:100%;padding:20px 18px 8px;}
 .page-inner{width:100%;padding:10px 18px 0;}
 </style>
@@ -39,30 +40,39 @@ const {useState,useMemo,useEffect,useRef}=React;
 
 /* ── TOKENS ────────────────────────────────────────── */
 const T={
-  bg:       "#F0EDE6",
-  surface:  "#FAFAF7",
+  /* backgrounds */
+  bg:       "#F4F3F8",   /* 微薰衣草白 */
+  surface:  "#FAFAF8",
   white:    "#FFFFFF",
+  /* ink */
   ink:      "#2A2520",
   ink2:     "#4A4540",
-  ink3:     "#706860",
-  ink4:     "#9A9088",
-  line:     "#C8C0B8",
-  lineSoft: "#E0DAD2",
-  bg2:      "#EDE8DF",
-
-  rose:     "#C09090",   roseBg:"#F5EDEB",
-  sage:     "#6EA890",   sageBg:"#E4F2EC",
-  slate:    "#6E88B0",   slateBg:"#E4EBF5",
+  ink3:     "#706870",
+  ink4:     "#9A90A0",
+  /* lines */
+  line:     "#E0DCE8",
+  lineSoft: "#EEEAF4",
+  bg2:      "#EDECF4",
+  /* JH primary palette */
+  rose:     "#E8A8A0",   roseBg:"#FDF0EE",   /* Coral */
+  navy:     "#3A4A6B",   navyBg:"#EEF1F8",   /* Blue */
+  peri:     "#B0B8D8",   periBg:"#F0F1FA",   /* Periwinkle */
+  /* JH secondary */
+  sage:     "#7A9888",   sageBg:"#EDF4F0",   /* Sage (自補) */
+  maroon:   "#7A3848",   maroonBg:"#F5EBEE", /* Maroon */
+  smoke:    "#8A9098",   smokeBg:"#F0F2F4",  /* Smoke */
+  /* legacy aliases kept for backward compat */
+  slate:    "#6080B8",   slateBg:"#EEF1F8",
+  mauve:    "#C8A0D0",   mauveBg:"#F5F0FA",
   sand:     "#B8986A",   sandBg:"#F2EAE0",
-  mauve:    "#9878B8",   mauveBg:"#EDE6F5",
-  olive:    "#88A070",   oliveBg:"#E8EEE0",
-  coral:    "#C8806A",   coralBg:"#F5EAE6",
-  teal:     "#5E9898",   tealBg:"#E2F0F0",
-
-  catM:{line:"#6E88B0",bg:"#E8EFF8",text:"#3A5A88"},
-  catD:{line:"#6EA890",bg:"#E2F0EA",text:"#2E7858"},
-  catE:{line:"#C09090",bg:"#F5EDEB",text:"#906060"},
-  catC:{line:"#9878B8",bg:"#EDE6F5",text:"#684898"},
+  olive:    "#7A9888",   oliveBg:"#EDF4F0",
+  coral:    "#E8A8A0",   coralBg:"#FDF0EE",
+  teal:     "#6080B8",   tealBg:"#EEF1F8",
+  /* category colour system */
+  catM:{line:"#6080B8",bg:"#EEF1F8",text:"#3A5090"},   /* 電影 — Blue */
+  catD:{line:"#7A9888",bg:"#EDF4F0",text:"#3A6858"},   /* 戲劇 — Sage */
+  catE:{line:"#E8A8A0",bg:"#FDF0EE",text:"#A06060"},   /* 活動 — Coral */
+  catC:{line:"#C8A0D0",bg:"#F5F0FA",text:"#7848A0"},   /* 演唱會 — Mauve/Peri */
 };
 const FACE_C=["","#C07068","#B09050","#5A9870","#4878B0","#8860B8"];
 const DSubs=["韓劇","美劇","日劇","台劇","陸劇","短劇","實境秀","動漫","紀錄片"];
@@ -314,7 +324,7 @@ const Tg=({label,col})=>(
 );
 
 /* ── STREAMS ────────────────────────────────────────── */
-const STREAMS=["Netflix","Disney+","HBO","iQIYI","Prime","其他"];
+const STREAMS=["Netflix","Disney+","HBO","iQIYI","Prime","Apple TV","其他"];
 
 /* ── CHEVRON DOWN ICON ─────────────────────────────── */
 const IChev=()=><svg width={9} height={9} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} strokeLinecap="round"><polyline points="6 9 12 15 18 9"/></svg>;
@@ -328,9 +338,8 @@ const selStyle=(active,col,th)=>({
   border:`1.5px solid ${active?col:th.line}`,
   appearance:"none",WebkitAppearance:"none",
   cursor:"pointer",outline:"none",fontFamily:"inherit",
-  backgroundImage:`url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='9' height='9' viewBox='0 0 24 24' fill='none' stroke='${active?"%23fff":"%23999"}' stroke-width='2.5'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E")`,
-  backgroundRepeat:"no-repeat",backgroundPosition:"right 7px center",
-});
+  paddingRight:"14px",
+  });
 
 /* ── TIME FILTER ───────────────────────────────────── */
 function TFilt({value,onChange,platform,onPlatform,th=T}){
@@ -619,7 +628,7 @@ function FMovie({init,onSave,onClose,th=T}){
         </div>
         {f.platform==="線上串流"&&(
           <div style={{display:"flex",gap:6,flexWrap:"wrap",marginTop:8}}>
-            {["Netflix","Disney+","HBO","iQIYI","Prime","其他"].map(sv=>(
+            {["Netflix","Disney+","HBO","iQIYI","Prime","Apple TV","其他"].map(sv=>(
               <button key={sv} type="button" className="tap" onClick={()=>s("stream",sv)} style={{padding:"5px 12px",borderRadius:20,fontSize:11,background:f.stream===sv?T.slate:cb,color:f.stream===sv?"#fff":ct,border:`1.5px solid ${f.stream===sv?T.slate:cbr}`}}>{sv}</button>
             ))}
           </div>
@@ -656,7 +665,7 @@ function FDrama({init,onSave,onClose,th=T}){
       </FR>
       <FR label="串流平台" th={th}>
         <div style={{display:"flex",gap:6,flexWrap:"wrap"}}>
-          {["Netflix","Disney+","HBO","iQIYI","Prime","其他"].map(sv=>(
+          {["Netflix","Disney+","HBO","iQIYI","Prime","Apple TV","其他"].map(sv=>(
             <button key={sv} type="button" className="tap" onClick={()=>s("stream",fRef.current.stream===sv?"":sv)} style={{padding:"5px 12px",borderRadius:20,fontSize:11,background:f.stream===sv?T.slate:cb,color:f.stream===sv?"#fff":ct,border:`1.5px solid ${f.stream===sv?T.slate:cbr}`}}>{sv}</button>
           ))}
           <span style={{fontSize:10,color:"#A09088",alignSelf:"center"}}>可不填</span>
@@ -1028,50 +1037,63 @@ function Home({data,setData,onNav,settings,th}){
       )}
 
       {/* HERO with grid bg */}
-      <div style={{borderRadius:20,border:`1.5px solid ${th.line}`,padding:"18px 16px 20px",marginBottom:18,position:"relative",overflow:"hidden",background:th.heroBg||"#EAE5DB"}}>
-        {/* colour overlay for dark mode rose tint */}
-        {th.heroOverlay&&<div style={{position:"absolute",inset:0,background:th.heroOverlay,zIndex:0,borderRadius:20}}/>}
-        <GridBg/>
-        <div style={{position:"relative",zIndex:1}}>
+      {/* HERO */}
+      <div style={{position:"relative",overflow:"hidden",marginBottom:0,background:th.heroBg}}>
+        {th.heroOverlay&&<div style={{position:"absolute",inset:0,background:th.heroOverlay,zIndex:0}}/>}
+        <div style={{position:"relative",zIndex:1,padding:"14px 20px 18px"}}>
           <div style={{marginBottom:3}}>
-            <div style={{fontSize:10,fontWeight:500,color:th.ink3,letterSpacing:"2px",textTransform:"uppercase",marginBottom:2}}>
-              {TY} 年度統計
+            <div style={{fontFamily:"'Outfit',sans-serif",fontSize:8,fontWeight:300,color:th.ink4,letterSpacing:"3px",textTransform:"uppercase",marginBottom:4}}>
+              {TY} YEAR IN REVIEW
             </div>
           </div>
-          <div className="num" style={{fontSize:13,color:th.ink2,marginBottom:18,fontWeight:500}}>
-            年度共 <span style={{fontSize:28,color:th.ink,fontWeight:600,fontFamily:"'Space Grotesk',sans-serif"}}>{data.movies.filter(i=>i.date?.startsWith(String(TY))).length+data.dramas.filter(i=>i.date?.startsWith(String(TY))).length+data.exhibitions.filter(i=>i.date?.startsWith(String(TY))).length+data.concerts.filter(i=>i.date?.startsWith(String(TY))).length}</span> 筆
-            <span style={{fontSize:11,color:th.ink4,marginLeft:8}}>本月 {total} 筆</span>
+          <div style={{display:"flex",alignItems:"flex-end",gap:12,marginBottom:16}}>
+            <span style={{fontFamily:"'Outfit',sans-serif",fontSize:80,fontWeight:200,color:th.ink,lineHeight:.85,letterSpacing:"-5px"}}>
+              {data.movies.filter(i=>i.date?.startsWith(String(TY))).length+data.dramas.filter(i=>i.date?.startsWith(String(TY))).length+data.exhibitions.filter(i=>i.date?.startsWith(String(TY))).length+data.concerts.filter(i=>i.date?.startsWith(String(TY))).length}
+            </span>
+            <div style={{paddingBottom:8,display:"flex",flexDirection:"column",gap:2}}>
+              <span style={{fontFamily:"'Outfit',sans-serif",fontSize:9,color:th.ink4,letterSpacing:"1.5px",textTransform:"uppercase"}}>筆紀錄</span>
+              <div style={{width:1,height:16,background:T.peri,opacity:.5,margin:"2px 0"}}/>
+              <span style={{fontFamily:"'Outfit',sans-serif",fontSize:22,fontWeight:200,color:T.rose,letterSpacing:"-1px",lineHeight:1}}>{total}</span>
+              <span style={{fontFamily:"'Outfit',sans-serif",fontSize:8,color:T.rose,letterSpacing:"1px"}}>本月</span>
+            </div>
           </div>
           <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:8}}>
             {[
-              {label:"電影",count:data.movies.filter(i=>i.date?.startsWith(String(TY))).length,col:T.slate,nav:"watchlist"},
-              {label:"戲劇",count:data.dramas.filter(i=>i.date?.startsWith(String(TY))).length,col:T.sage,nav:"watchlist"},
-              {label:"展覽",count:data.exhibitions.filter(i=>i.date?.startsWith(String(TY))).length,col:T.rose,nav:"exhibition"},
-              {label:"演唱會",count:data.concerts.filter(i=>i.date?.startsWith(String(TY))).length,col:T.mauve,nav:"concert"},
+              {label:"電影",count:data.movies.filter(i=>i.date?.startsWith(String(TY))).length,col:T.catM.line,nav:"watchlist"},
+              {label:"戲劇",count:data.dramas.filter(i=>i.date?.startsWith(String(TY))).length,col:T.catD.line,nav:"watchlist"},
+              {label:"活動",count:data.exhibitions.filter(i=>i.date?.startsWith(String(TY))).length,col:T.catE.line,nav:"exhibition"},
+              {label:"演唱會",count:data.concerts.filter(i=>i.date?.startsWith(String(TY))).length,col:T.catC.line,nav:"concert"},
             ].map(({label,count,col,nav})=>(
               <button key={label} className="tap" onClick={()=>onNav(nav)} style={{
-                background:th.heroCard||"rgba(255,255,255,.75)",
-                borderRadius:14,padding:"12px 4px",
+                background:th.heroCard||"rgba(255,255,255,.85)",
+                borderRadius:10,padding:"10px 5px 9px",
                 display:"flex",flexDirection:"column",alignItems:"center",gap:3,
-                border:`1.5px solid ${th.heroCardBorder||"rgba(255,255,255,.9)"}`,
-                backdropFilter:"blur(6px)",
+                border:`1px solid ${th.heroCardBorder||"rgba(224,220,232,.9)"}`,
               }}>
-                <span className="num" style={{fontSize:26,fontWeight:700,color:col,lineHeight:1}}>{count}</span>
-                <span style={{fontSize:10,color:th.ink2,letterSpacing:".3px",fontWeight:500}}>{label}</span>
-                <div style={{width:20,height:3,borderRadius:2,background:col,marginTop:2}}/>
+                <span style={{fontFamily:"'Outfit',sans-serif",fontSize:22,fontWeight:200,color:col,lineHeight:1,letterSpacing:"-1px"}}>{count}</span>
+                <span style={{fontSize:9,color:th.ink3,letterSpacing:".5px"}}>{label}</span>
+                <div style={{width:16,height:1.5,borderRadius:1,background:col,marginTop:3,opacity:.8}}/>
               </button>
             ))}
           </div>
         </div>
         {/* deco circles — more visible in dark mode */}
-        <div style={{position:"absolute",top:-28,right:-28,width:100,height:100,borderRadius:"50%",background:T.rose,opacity:th.heroOverlay?0.26:0.15,zIndex:0}}/>
-        <div style={{position:"absolute",bottom:-20,left:-10,width:70,height:70,borderRadius:"50%",background:T.mauve,opacity:th.heroOverlay?0.20:0.12,zIndex:0}}/>
-        <div style={{position:"absolute",top:10,right:65,width:40,height:40,borderRadius:"50%",background:T.rose,opacity:th.heroOverlay?0.32:0.18,zIndex:0}}/>
-        <div style={{position:"absolute",bottom:10,left:80,width:28,height:28,borderRadius:"50%",background:T.coral||T.rose,opacity:th.heroOverlay?0.22:0.10,zIndex:0}}/>
+        {/* Memphis geometric lines — no circles */}
+        <div style={{position:"absolute",top:0,right:0,bottom:0,width:60,
+          backgroundImage:"repeating-linear-gradient(135deg,transparent,transparent 6px,rgba(176,184,216,.08) 6px,rgba(176,184,216,.08) 7px)",
+          zIndex:0,pointerEvents:"none"}}/>
+        <div style={{position:"absolute",top:0,left:0,right:0,height:2,
+          background:"linear-gradient(90deg,"+T.navy+","+T.peri+","+T.rose+")",
+          opacity:.4,zIndex:0}}/>
       </div>
 
+      {/* CORAL BAND */}
+      <div style={{background:T.rose,padding:"8px 20px",display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:0}}>
+        <span style={{fontFamily:"'Outfit',sans-serif",fontSize:8,letterSpacing:"2.5px",color:"rgba(255,255,255,.8)",textTransform:"uppercase"}}>CALENDAR</span>
+        <span style={{fontFamily:"'Outfit',sans-serif",fontSize:11,fontWeight:200,color:"#fff"}}>{fML(calY,calM)}</span>
+      </div>
       {/* CALENDAR */}
-      <div style={{background:th.white,borderRadius:18,border:`1.5px solid ${th.line}`,padding:"18px 16px"}}>
+      <div style={{background:th.white,borderRadius:0,border:"none",borderBottom:`1px solid ${th.line}`,padding:"14px 16px"}}>
         <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:16}}>
           <button className="tap" onClick={()=>{const d=new Date(calY,calM-2,1);setCY(d.getFullYear());setCM(d.getMonth()+1);setSel(null);}} style={{width:30,height:30,borderRadius:"50%",border:`1.5px solid ${th.line}`,display:"flex",alignItems:"center",justifyContent:"center",color:th.ink2}}>
             <ICL/>
@@ -1097,12 +1119,12 @@ function Home({data,setData,onNav,settings,th}){
                 <div style={{
                   width:32,height:32,borderRadius:"50%",
                   display:"flex",alignItems:"center",justifyContent:"center",
-                  background:isT?th.ink:isSel?T.rose:haE?(th.bg==="#141210"?"rgba(192,144,144,.25)":T.roseBg):"transparent",
-                  border:`1.5px solid ${isT?th.ink:isSel?T.rose:haE?T.rose+(th.bg==="#141210"?"99":"66"):"transparent"}`,
+                  background:isT?T.navy:isSel?T.rose:haE?(th.bg==="#141218"?"rgba(176,184,216,.2)":T.periBg):"transparent",
+                  border:`1.5px solid ${isT?T.navy:isSel?T.rose:haE?T.peri+(th.bg==="#141218"?"80":"60"):"transparent"}`,
                   transition:"all .15s",
                   flexShrink:0,
                 }}>
-                  <span className="num" style={{fontSize:12,fontWeight:isT||isSel?700:haE?600:400,color:isT?( th.bg==="#141210"?th.bg:"#fff"):isSel?"#fff":haE?(th.bg==="#141210"?"#F0A8A8":T.rose):th.ink3,lineHeight:1}}>{day}</span>
+                  <span style={{fontFamily:"'Outfit',sans-serif",fontSize:12,fontWeight:isT||isSel?400:haE?400:300,color:isT?"#fff":isSel?"#fff":haE?T.peri:th.ink3,lineHeight:1}}>{day}</span>
                 </div>
                 {/* category dots below the circle */}
                 {haE&&(
@@ -1234,10 +1256,8 @@ const SortBtn=({sort,onToggle,th=T})=>{
           background:sort!=="dateDesc"?T.rose:th.white,
           color:sort!=="dateDesc"?"#fff":th.ink3,
           border:`1.5px solid ${sort!=="dateDesc"?T.rose:th.line}`,
-          appearance:"none",WebkitAppearance:"none",cursor:"pointer",outline:"none",fontFamily:"inherit",
-          backgroundImage:`url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8' viewBox='0 0 24 24' fill='none' stroke='${sort!=="dateDesc"?"%23fff":"%23999"}' stroke-width='2.5'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E")`,
-          backgroundRepeat:"no-repeat",backgroundPosition:"right 5px center",
-        }}>
+          appearance:"none",WebkitAppearance:"none",cursor:"pointer",outline:"none",fontFamily:"inherit",paddingRight:"14px",
+          }}>
         <option value="dateDesc">↓ 由新到舊</option>
         <option value="dateAsc">↑ 由舊到新</option>
         <option value="ratingDesc">★ 評分高到低</option>
@@ -1263,7 +1283,7 @@ const PH=({title,onAdd,th=T})=>(
 
 /* ── WATCHLIST ─────────────────────────────────────── */
 function Watchlist({data,setData,th=T}){
-  const[tab,setTab]=useState("電影");
+  const[tab,setTab]=useState("戲劇");
   const[tf,setTf]=useState("年度");
   const[aM,setAM]=useState(false);const[aD,setAD]=useState(false);
   const[det,setDet]=useState(null);const[ed,setEd]=useState(null);
@@ -1285,15 +1305,19 @@ function Watchlist({data,setData,th=T}){
       <div className="page-inner">
         <TFilt value={tf} onChange={setTf} platform={platF} onPlatform={setPlatF} th={th}/>
         <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",borderRadius:12,overflow:"hidden",border:`1.5px solid ${th.line}`,marginBottom:16}}>
-          {[["電影",<IFm s={15}/>],["戲劇",<IDr s={15}/>]].map(([t,ic],i)=>(
+          {[["戲劇",<IDr s={15}/>],["電影",<IFm s={15}/>]].map(([t,ic],i)=>(
             <button key={t} className="tap" type="button" onClick={e=>{e.preventDefault();setTab(t);}} style={{
-              padding:"10px",fontSize:13,fontWeight:tab===t?500:400,
-              background:tab===t?T.rose:th.surface,
+              padding:"10px",fontSize:12,fontWeight:400,letterSpacing:".5px",
+              fontFamily:"'Outfit',sans-serif",
+              background:tab===t?T.navy:th.white,
               color:tab===t?"#fff":th.ink3,
               borderRight:i===0?`1.5px solid ${th.line}`:"none",
               display:"flex",alignItems:"center",justifyContent:"center",gap:6,
               transition:"background .15s",
-            }}>{ic}{t}</button>
+              position:"relative",
+            }}>{ic}{t}
+            {tab===t&&<div style={{position:"absolute",bottom:0,left:0,right:0,height:2,background:T.peri,opacity:.8}}/>}
+            </button>
           ))}
         </div>
         {tab==="電影"&&(
@@ -1522,6 +1546,81 @@ function AIPromptShare({ya,statsY,th}){
       <div style={{fontSize:10,color:th.ink4,textAlign:"center",marginTop:6,lineHeight:1.7}}>
         適用 ChatGPT (DALL·E) · Gemini Imagen · Midjourney ✦
       </div>
+    </div>
+  );
+}
+
+
+function AISummaryPrompt({ya}){
+  const[copied,setCopied]=useState(false);
+  const mC=ya.filter(i=>i._cat==="電影").length;
+  const dC=ya.filter(i=>i._cat==="戲劇").length;
+  const eC=ya.filter(i=>i._cat==="展覽"||i._cat==="景點").length;
+  const cC=ya.filter(i=>i._cat==="演唱會").length;
+  const rated5=ya.filter(i=>i.rating===5).map(i=>i.title);
+  const rated4=ya.filter(i=>i.rating===4).map(i=>i.title);
+  const rated12=ya.filter(i=>i.rating<=2&&i.rating>0).map(i=>i.title);
+  const withNotes=ya.filter(i=>i.notes&&i.notes.length>10).slice(0,5);
+  const concerts=ya.filter(i=>i._cat==="演唱會").map(i=>i.title);
+  const spots=ya.filter(i=>i._cat==="景點").map(i=>i.title);
+  const exhis=ya.filter(i=>i._cat==="展覽").map(i=>i.title);
+  const topStream=Object.entries(ya.reduce((a,i)=>{if(i.stream)a[i.stream]=(a[i.stream]||0)+1;return a;},{}))
+    .sort((a,b)=>b[1]-a[1]).slice(0,2).map(([k,v])=>k+"("+v+"部)").join("、");
+  const notesText=withNotes.map(i=>"《"+i.title+"》：「"+i.notes.slice(0,40)+(i.notes.length>40?"...":"")+"」").join("\n");
+
+  const lines=[
+    "你是我的年度娛樂總結助手，請根據以下我今年的觀影與活動記錄，用輕鬆幽默有個性的繁體中文（200字內），",
+    "幫我寫一段年度總結，要像好友在聊天，可以有點嘴砲但又溫暖，結尾給一個「今年的你是：___型觀眾」。",
+    "",
+    "【今年數據】",
+    "電影 "+mC+" 部｜戲劇 "+dC+" 部｜展覽 "+eC+" 場｜演唱會 "+cC+" 場",
+    "",
+    "【滿分（5星）作品】",
+    rated5.length>0?rated5.map(t=>"《"+t+"》").join("、"):"（無）",
+    "",
+    "【好評（4星）作品】",
+    rated4.length>0?rated4.slice(0,5).map(t=>"《"+t+"》").join("、"):"（無）",
+    "",
+    "【踩雷（1-2星）作品】",
+    rated12.length>0?rated12.map(t=>"《"+t+"》").join("、"):"（無）",
+    "",
+    concerts.length>0?"【現場演唱會】\n"+concerts.map(t=>"《"+t+"》").join("、"):"",
+    exhis.length>0?"【展覽】\n"+exhis.join("、"):"",
+    spots.length>0?"【景點】\n"+spots.join("、"):"",
+    topStream?"【最愛串流平台】\n"+topStream:"",
+    notesText?"【部分心得節錄】\n"+notesText:"",
+    "",
+    "請直接輸出總結文字，不要有前言或解釋。",
+  ];
+  const prompt=lines.filter(l=>l!=="").join("\n");
+
+  const copy=async()=>{
+    try{await navigator.clipboard.writeText(prompt);}
+    catch{const el=document.createElement("textarea");el.value=prompt;document.body.appendChild(el);el.select();document.execCommand("copy");document.body.removeChild(el);}
+    setCopied(true);setTimeout(()=>setCopied(false),2500);
+  };
+
+  return(
+    <div style={{flex:1,display:"flex",flexDirection:"column",gap:10}}>
+      <div style={{padding:"12px 14px",background:"rgba(255,255,255,.07)",borderRadius:12,border:"1px solid rgba(255,255,255,.12)",fontSize:11,color:"rgba(255,255,255,.55)",lineHeight:1.8}}>
+        <div style={{fontWeight:500,color:"rgba(255,255,255,.8)",marginBottom:6,fontSize:12}}>包含你的：{mC+dC} 部影劇｜{cC} 場演唱會｜{eC} 場活動</div>
+        {rated5.length>0&&<div>★★★★★ {rated5.slice(0,3).map(t=>"《"+t+"》").join(" ")}</div>}
+        {rated12.length>0&&<div>踩雷 {rated12.slice(0,2).map(t=>"《"+t+"》").join(" ")}</div>}
+        {withNotes.length>0&&<div>含 {withNotes.length} 篇心得紀錄</div>}
+      </div>
+      <button type="button" className="tap" onClick={copy} style={{
+        padding:"11px",borderRadius:12,
+        background:copied?"rgba(90,138,96,.9)":"rgba(255,255,255,.15)",
+        color:"#fff",fontSize:12,fontWeight:500,border:"1.5px solid rgba(255,255,255,.25)",
+        display:"flex",alignItems:"center",justifyContent:"center",gap:7,
+        backdropFilter:"blur(4px)",transition:"background .2s",
+      }}>
+        {copied
+          ?<><svg width={14} height={14} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} strokeLinecap="round"><polyline points="20 6 9 17 4 12"/></svg>已複製！貼到 ChatGPT / Gemini</>
+          :<><svg width={14} height={14} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>複製年度總結 Prompt</>
+        }
+      </button>
+      <div style={{fontSize:10,color:"rgba(255,255,255,.35)",textAlign:"center"}}>包含評分、心得、踩雷紀錄，貼到 AI 生成年度總結</div>
     </div>
   );
 }
@@ -1803,23 +1902,9 @@ function Stats({data,th=T}){
       <div style={{minHeight:520,padding:"36px 28px",display:"flex",flexDirection:"column"}}>
         <GridBg/>
         <div style={{position:"relative",zIndex:1,flex:1,display:"flex",flexDirection:"column"}}>
-          <div style={{fontSize:11,fontWeight:500,color:"rgba(255,255,255,.5)",letterSpacing:"2px",marginBottom:8,textTransform:"uppercase"}}>AI 年度總結</div>
-          <div style={{fontSize:24,fontWeight:600,color:"#fff",marginBottom:20,lineHeight:1.2}}>今年的你<br/>是這樣的</div>
-          {!aiText&&(
-            <button className="tap" onClick={handleAI} disabled={loading} style={{
-              padding:"13px",background:"rgba(255,255,255,.12)",color:"#fff",
-              borderRadius:14,fontSize:14,fontWeight:500,
-              border:"1.5px solid rgba(255,255,255,.2)",letterSpacing:".3px",
-              backdropFilter:"blur(4px)",marginBottom:12,
-            }}>
-              {loading?"分析中...":"✦ 生成我的年度分析"}
-            </button>
-          )}
-          {aiText&&(
-            <div style={{flex:1,padding:"16px",background:"rgba(255,255,255,.08)",borderRadius:14,border:"1px solid rgba(255,255,255,.15)",fontSize:14,color:"rgba(255,255,255,.85)",lineHeight:1.9,fontWeight:400}}>
-              {aiText}
-            </div>
-          )}
+          <div style={{fontSize:11,fontWeight:500,color:"rgba(255,255,255,.5)",letterSpacing:"2px",marginBottom:8,textTransform:"uppercase"}}>年度總結</div>
+          <div style={{fontSize:24,fontWeight:600,color:"#fff",marginBottom:16,lineHeight:1.2}}>今年的你<br/>是這樣的</div>
+          <AISummaryPrompt ya={ya} th={null}/>
         </div>
       </div>
     ),
@@ -1846,14 +1931,12 @@ function Stats({data,th=T}){
       <div id="statsSlide" style={{position:"relative",borderRadius:18,overflow:"hidden",background:slideBgs[slide],marginBottom:12,transition:"background .3s"}}>
         {slides[slide]()}
         {/* prev/next */}
-        <button className="tap" onClick={()=>setSlide(s=>Math.max(0,s-1))}
-          disabled={slide===0}
-          style={{position:"absolute",left:12,bottom:16,width:36,height:36,borderRadius:"50%",background:"rgba(255,255,255,.15)",display:"flex",alignItems:"center",justifyContent:"center",color:"rgba(255,255,255,.8)",border:"1px solid rgba(255,255,255,.2)",opacity:slide===0?.3:1}}>
+        <button className="tap" onClick={()=>setSlide(s=>(s-1+slides.length)%slides.length)}
+          style={{position:"absolute",left:12,bottom:16,width:36,height:36,borderRadius:"50%",background:"rgba(255,255,255,.15)",display:"flex",alignItems:"center",justifyContent:"center",color:"rgba(255,255,255,.8)",border:"1px solid rgba(255,255,255,.2)"}}>
           <ICL s={16}/>
         </button>
-        <button className="tap" onClick={()=>setSlide(s=>Math.min(slides.length-1,s+1))}
-          disabled={slide===slides.length-1}
-          style={{position:"absolute",right:12,bottom:16,width:36,height:36,borderRadius:"50%",background:"rgba(255,255,255,.15)",display:"flex",alignItems:"center",justifyContent:"center",color:"rgba(255,255,255,.8)",border:"1px solid rgba(255,255,255,.2)",opacity:slide===slides.length-1?.3:1}}>
+        <button className="tap" onClick={()=>setSlide(s=>(s+1)%slides.length)}
+          style={{position:"absolute",right:12,bottom:16,width:36,height:36,borderRadius:"50%",background:"rgba(255,255,255,.15)",display:"flex",alignItems:"center",justifyContent:"center",color:"rgba(255,255,255,.8)",border:"1px solid rgba(255,255,255,.2)"}}>
           <ICR s={16}/>
         </button>
       </div>
@@ -1879,30 +1962,31 @@ const ISettings=({s=22})=><Sv s={s} ch={<><circle cx="12" cy="12" r="3"/><path d
 
 /* ── DARK MODE TOKEN OVERRIDES ─────────────────────── */
 const DARK={
-  bg:"#141210",surface:"#1C1916",white:"#231F1C",
-  ink:"#EDE8E2",ink2:"#B8B0A8",ink3:"#7A7268",ink4:"#4E4840",
-  line:"#332E28",lineSoft:"#272320",bg2:"#1A1714",
-  heroBg:"#1C1816",heroCard:"rgba(255,255,255,.06)",heroCardBorder:"rgba(255,255,255,.1)",
+  bg:"#141218",surface:"#1E1C24",white:"#252330",
+  ink:"#EDE8F4",ink2:"#B0A8C0",ink3:"#7A7290",ink4:"#3A3648",
+  line:"#2E2A3A",lineSoft:"#252230",bg2:"#1A1820",
+  heroBg:"#1A1820",heroCard:"rgba(176,184,216,.07)",heroCardBorder:"rgba(176,184,216,.12)",
 };
 
 function getTheme(dark){
   if(!dark)return{...T,
-    heroBg:"#E8E2D8",
-    heroOverlay:null,
-    heroCard:"rgba(255,255,255,.82)",
-    heroCardBorder:"rgba(255,255,255,.95)",
+    heroBg:"#F4F3F8",
+    heroOverlay:"linear-gradient(135deg,rgba(176,184,216,.12) 0%,rgba(232,168,160,.06) 100%)",
+    heroCard:"rgba(255,255,255,.85)",
+    heroCardBorder:"rgba(224,220,232,.9)",
   };
   return{...T,...DARK,
-    roseBg:"#2A1A18",sageBg:"#162220",slateBg:"#161C2A",
-    mauveBg:"#1E1626",sandBg:"#241A0E",
-    catM:{line:"#6E88B0",bg:"#161C2A",text:"#8AAAC8"},
-    catD:{line:"#6EA890",bg:"#162220",text:"#7AB890"},
-    catE:{line:"#C09090",bg:"#2A1A18",text:"#C8A098"},
-    catC:{line:"#9878B8",bg:"#1E1626",text:"#B0A0C8"},
-    heroBg:"#1C1816",
-    heroOverlay:"linear-gradient(135deg, rgba(192,144,144,.13) 0%, rgba(152,120,176,.08) 60%, rgba(110,136,176,.06) 100%)",
-    heroCard:"rgba(255,255,255,.07)",
-    heroCardBorder:"rgba(255,255,255,.12)",
+    roseBg:"#2A1820",sageBg:"#142018",slateBg:"#121828",
+    navyBg:"#121828",periBg:"#1A1830",
+    mauveBg:"#1C1228",maroonBg:"#241018",smokeBg:"#1A1C20",
+    catM:{line:"#6080B8",bg:"#121828",text:"#8098C8"},
+    catD:{line:"#7A9888",bg:"#142018",text:"#8AB4A0"},
+    catE:{line:"#E8A8A0",bg:"#2A1820",text:"#D08888"},
+    catC:{line:"#C8A0D0",bg:"#1C1228",text:"#B888C8"},
+    heroBg:"#141218",
+    heroOverlay:"linear-gradient(135deg,rgba(176,184,216,.1) 0%,rgba(200,120,138,.07) 100%)",
+    heroCard:"rgba(176,184,216,.08)",
+    heroCardBorder:"rgba(176,184,216,.15)",
   };
 }
 
@@ -2103,7 +2187,7 @@ function ScrollTop({th}){
 }
 
 function BNav({active,onNav,dark,th}){
-  const navBg=dark?"rgba(22,19,16,.98)":"rgba(250,248,245,.98)";
+  const navBg=dark?"rgba(20,18,24,.98)":"rgba(244,243,248,.98)";
   return(
     <nav style={{
       position:"fixed",bottom:0,left:"50%",transform:"translateX(-50%)",
@@ -2116,8 +2200,8 @@ function BNav({active,onNav,dark,th}){
       {NAVS.map(({k,lb,I})=>{
         const on=active===k;
         return(
-          <button key={k} className="tap" onClick={()=>onNav(k)} style={{display:"flex",flexDirection:"column",alignItems:"center",gap:4,color:on?T.rose:th.ink4,padding:"4px 10px",minWidth:52,transition:"color .15s"}}>
-            <div style={{width:40,height:32,borderRadius:14,background:on?T.roseBg:"transparent",display:"flex",alignItems:"center",justifyContent:"center",transition:"background .15s"}}><I s={20}/></div>
+          <button key={k} className="tap" onClick={()=>onNav(k)} style={{display:"flex",flexDirection:"column",alignItems:"center",gap:4,color:on?T.navy:th.ink4,padding:"4px 10px",minWidth:52,transition:"color .15s"}}>
+            <div style={{width:40,height:32,borderRadius:14,background:on?T.periBg:"transparent",display:"flex",alignItems:"center",justifyContent:"center",transition:"background .15s"}}><I s={20}/></div>
             <span style={{fontSize:10,fontWeight:on?500:400,letterSpacing:".2px"}}>{lb}</span>
           </button>
         );
