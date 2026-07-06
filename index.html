@@ -215,7 +215,7 @@ function MoodIcon({value,size=22}){
 
 /* ── CUSTOM DATE PICKER (3 selects, no jumping) ─────── */
 function DatePicker({value,onChange,th=T}){
-  const isDark=th.bg==="#141210";
+  const isDark=th.bg==="#141218";
   const NOW_Y=new Date().getFullYear();
 
   // parse existing value
@@ -243,11 +243,11 @@ function DatePicker({value,onChange,th=T}){
     onChange(`${yy}-${mm}-${dd}`);
   };
 
-  const bg=isDark?"#2A201C":"#FBF9F6";
-  const border=isDark?"#4A3830":T.line;
-  const inkC=isDark?"#EDE8E2":T.ink;
-  const inkS=isDark?"#A09088":T.ink3;
-  const inkF=isDark?"#6A5850":T.ink4;
+  const bg=isDark?"#1E1C24":"#FBF9F6";
+  const border=isDark?"#3A3648":T.line;
+  const inkC=isDark?"#EDE8F4":T.ink;
+  const inkS=isDark?"#A8A0C0":T.ink3;
+  const inkF=isDark?"#7A7898":T.ink4;
 
   return(
     <div style={{background:bg,border:`1.5px solid ${border}`,borderRadius:14,overflow:"hidden"}}>
@@ -402,8 +402,8 @@ function TFilt({value,onChange,platform,onPlatform,th=T}){
 
 /* ── BOTTOM SHEET ──────────────────────────────────── */
 function Sheet({title,onClose,children,th=T}){
-  const isDark=th.bg==="#141210";
-  const sheetBg=isDark?"#231E1B":T.white;
+  const isDark=th.bg==="#141218";
+  const sheetBg=isDark?"#1E1C24":T.white;
   const titleColor=isDark?T.rose:T.ink;
   const inputCSS=isDark?`
     .sd input,.sd textarea{background:#2E2520!important;border-color:#4A3830!important;color:#EDE8E2!important;}
@@ -423,13 +423,13 @@ function Sheet({title,onClose,children,th=T}){
         boxShadow:"0 -4px 40px rgba(0,0,0,.5)",
       }}>
         {/* header */}
-        <div style={{flexShrink:0,padding:"10px 16px",borderBottom:`1px solid ${isDark?"#3A2820":T.lineSoft}`}}>
+        <div style={{flexShrink:0,padding:"10px 16px",borderBottom:`1px solid ${isDark?"#2A2838":T.lineSoft}`}}>
           {/* drag pill */}
-          <div style={{width:36,height:4,borderRadius:2,background:isDark?"#4A3830":T.lineSoft,margin:"0 auto 10px"}}/>
+          <div style={{width:36,height:4,borderRadius:2,background:isDark?"#3A3648":T.lineSoft,margin:"0 auto 10px"}}/>
           {/* title row */}
           <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",gap:8}}>
             <span style={{fontSize:14,fontWeight:500,color:titleColor,flex:1,minWidth:0}}>{title||""}</span>
-            <button type="button" onClick={onClose} style={{width:28,height:28,borderRadius:"50%",border:`1px solid ${isDark?"#4A3830":T.line}`,background:isDark?"#3A2820":"#F5F2EE",display:"flex",alignItems:"center",justifyContent:"center",color:isDark?"#9A8878":T.ink3,cursor:"pointer",flexShrink:0}}>
+            <button type="button" onClick={onClose} style={{width:28,height:28,borderRadius:"50%",border:`1px solid ${isDark?"#3A3648":T.line}`,background:isDark?"#2A2838":"#F5F2EE",display:"flex",alignItems:"center",justifyContent:"center",color:isDark?"#9898B8":T.ink3,cursor:"pointer",flexShrink:0}}>
               <svg width={12} height={12} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} strokeLinecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
             </button>
           </div>
@@ -443,7 +443,7 @@ function Sheet({title,onClose,children,th=T}){
   );
 }
 const FR=({label,children,th=T})=>{
-  const isDark=th.bg==="#141210";
+  const isDark=th.bg==="#141218";
   return(
     <div style={{marginBottom:16}}>
       <div style={{fontSize:10,fontWeight:500,color:isDark?T.rose:T.ink4,letterSpacing:"1.2px",marginBottom:7,textTransform:"uppercase"}}>{label}</div>
@@ -452,7 +452,7 @@ const FR=({label,children,th=T})=>{
   );
 };
 const SvBtn=({onClick,label="儲存",th=T})=>{
-  const isDark=th.bg==="#141210";
+  const isDark=th.bg==="#141218";
   return(
     <button type="button" className="tap" onClick={onClick} style={{width:"100%",padding:13,background:isDark?T.rose:T.ink,color:"#fff",borderRadius:12,fontSize:14,fontWeight:500,marginTop:14,letterSpacing:".5px"}}>{label}</button>
   );
@@ -490,7 +490,7 @@ function TmdbSearch({titleRef,onApply,th=T}){
   const[status,setStatus]=useState("idle");
   const[results,setResults]=useState([]);
   const[searchedFor,setSearchedFor]=useState("");
-  const isDark=th.bg==="#141210";
+  const isDark=th.bg==="#141218";
 
   const search=async(e)=>{
     if(e){e.preventDefault();e.stopPropagation();}
@@ -608,8 +608,8 @@ function FMovie({init,onSave,onClose,th=T}){
   const[f,sf]=useState(init?{...blank,...init}:blank);
   const fRef=React.useRef(f);
   const s=(k,v)=>{const next={...fRef.current,[k]:v};fRef.current=next;sf(next);};
-  const isDark=th.bg==="#141210";
-  const cb=isDark?"#3A2C26":"#FAFAF7", ct=isDark?"#C8B8B0":T.ink3, cbr=isDark?"#5A3C34":T.line;
+  const isDark=th.bg==="#141218";
+  const cb=isDark?"#252330":"#FAFAF7", ct=isDark?"#C8C0D8":T.ink3, cbr=isDark?"#3A3648":T.line;
   return(
     <Sheet title={init?"編輯電影":"新增電影"} onClose={onClose} th={th}>
       <FR label="片名" th={th}>
@@ -652,8 +652,8 @@ function FDrama({init,onSave,onClose,th=T}){
   const[f,sf]=useState(init?{...blank,...init}:blank);
   const fRef=React.useRef(f);
   const s=(k,v)=>{const next={...fRef.current,[k]:v};fRef.current=next;sf(next);};
-  const isDark=th.bg==="#141210";
-  const cb=isDark?"#3A2C26":"#FAFAF7", ct=isDark?"#C8B8B0":T.ink3, cbr=isDark?"#5A3C34":T.line;
+  const isDark=th.bg==="#141218";
+  const cb=isDark?"#252330":"#FAFAF7", ct=isDark?"#C8C0D8":T.ink3, cbr=isDark?"#3A3648":T.line;
   return(
     <Sheet title={init?"編輯戲劇":"新增戲劇"} onClose={onClose} th={th}>
       <FR label="類型" th={th}>
@@ -668,7 +668,7 @@ function FDrama({init,onSave,onClose,th=T}){
           {["Netflix","Disney+","HBO","iQIYI","Prime","Apple TV","其他"].map(sv=>(
             <button key={sv} type="button" className="tap" onClick={()=>s("stream",fRef.current.stream===sv?"":sv)} style={{padding:"5px 12px",borderRadius:20,fontSize:11,background:f.stream===sv?T.slate:cb,color:f.stream===sv?"#fff":ct,border:`1.5px solid ${f.stream===sv?T.slate:cbr}`}}>{sv}</button>
           ))}
-          <span style={{fontSize:10,color:"#A09088",alignSelf:"center"}}>可不填</span>
+          <span style={{fontSize:10,color:"#A8A0C0",alignSelf:"center"}}>可不填</span>
         </div>
       </FR>
       <FR label="片名" th={th}>
@@ -698,8 +698,8 @@ function FExhib({init,onSave,onClose,th=T}){
   const[f,sf]=useState(init?{...blank,...init}:blank);
   const fRef=React.useRef(f);
   const s=(k,v)=>{const next={...fRef.current,[k]:v};fRef.current=next;sf(next);};
-  const isDark=th.bg==="#141210";
-  const cb=isDark?"#3A2C26":"#FAFAF7",ct=isDark?"#C8B8B0":T.ink3,cbr=isDark?"#5A3C34":T.line;
+  const isDark=th.bg==="#141218";
+  const cb=isDark?"#252330":"#FAFAF7",ct=isDark?"#C8C0D8":T.ink3,cbr=isDark?"#3A3648":T.line;
   return(
     <Sheet title={init?"編輯展覽":"新增展覽"} onClose={onClose} th={th}>
       <FR label="展覽名稱" th={th}><input value={f.title} onChange={e=>s("title",e.target.value)} placeholder="展覽名稱"/></FR>
@@ -743,8 +743,8 @@ function FConcert({init,onSave,onClose,th=T}){
   const[f,sf]=useState(init?{...blank,...init}:blank);
   const fRef=React.useRef(f);
   const s=(k,v)=>{const next={...fRef.current,[k]:v};fRef.current=next;sf(next);};
-  const isDark=th.bg==="#141210";
-  const cb=isDark?"#3A2C26":"#FAFAF7",ct=isDark?"#C8B8B0":T.ink3,cbr=isDark?"#5A3C34":T.line;
+  const isDark=th.bg==="#141218";
+  const cb=isDark?"#252330":"#FAFAF7",ct=isDark?"#C8C0D8":T.ink3,cbr=isDark?"#3A3648":T.line;
   return(
     <Sheet title={init?"編輯演唱會":"新增演唱會"} onClose={onClose} th={th}>
       <FR label="名稱" th={th}><input value={f.title} onChange={e=>s("title",e.target.value)} placeholder="演唱會名稱"/></FR>
@@ -783,14 +783,14 @@ function FConcert({init,onSave,onClose,th=T}){
 /* ── DETAIL SHEET ──────────────────────────────────── */
 function DetSheet({item,cat,onClose,onEdit,onDel,th=T}){
   const dtl=DTC[item.subtype]||{l:T.rose,t:T.ink3};
-  const isDark=th.bg==="#141210";
-  const titleCol=isDark?T.rose:th.ink;
-  const subCol=isDark?"#A09088":th.ink4;
-  const bodyCol=isDark?"#C8B8A8":th.ink2;
-  const noteBg=isDark?"#2E2018":th.bg2;
-  const editBg=isDark?"#3A3028":"#F5F3EF";
-  const editBorder=isDark?"#5A4838":th.line;
-  const editCol=isDark?"#D8C8B8":th.ink;
+  const isDark=th.bg==="#141218";
+  const titleCol=isDark?"#EDE8F4":th.ink;
+  const subCol=isDark?"#B0A8C0":th.ink4;
+  const bodyCol=isDark?"#D8D0E8":th.ink2;
+  const noteBg=isDark?"#252330":th.bg2;
+  const editBg=isDark?"#252330":"#F5F3EF";
+  const editBorder=isDark?"#3A3648":th.line;
+  const editCol=isDark?"#EDE8F4":th.ink;
   return(
     <Sheet onClose={onClose} th={th}>
       <div style={{marginBottom:6}}>
@@ -799,17 +799,17 @@ function DetSheet({item,cat,onClose,onEdit,onDel,th=T}){
         </div>
         <div style={{marginBottom:12}}>
           <div style={{fontSize:21,fontWeight:500,color:titleCol,lineHeight:1.35}}>{item.title}</div>
-          {item.imdbTitle&&item.imdbTitle!==item.title&&<div style={{fontSize:12,fontWeight:300,color:isDark?"#7A6A60":T.ink3,marginTop:3,letterSpacing:".3px"}}>{item.imdbTitle}</div>}
+          {item.imdbTitle&&item.imdbTitle!==item.title&&<div style={{fontSize:12,fontWeight:300,color:isDark?"#8A8498":T.ink3,marginTop:3,letterSpacing:".3px"}}>{item.imdbTitle}</div>}
         </div>
         <div style={{display:"flex",alignItems:"center",gap:8,flexWrap:"wrap",marginBottom:item.imdbRating?10:0}}>
           <DTag date={item.date} th={th}/>
           {item.platform&&<span style={{fontSize:11,color:subCol,background:noteBg,padding:"2px 9px",borderRadius:20,fontWeight:400}}>{item.platform}{item.stream?` · ${item.stream}`:""}</span>}
         </div>
         {item.imdbRating&&(
-          <div style={{display:"flex",alignItems:"center",gap:8,padding:"10px 14px",background:isDark?"#2E2018":"#FFF8EE",borderRadius:12,border:`1.5px solid ${isDark?"#6A4820":"#E8C870"}`,marginTop:8,marginBottom:4}}>
+          <div style={{display:"flex",alignItems:"center",gap:8,padding:"10px 14px",background:isDark?"#252330":"#FFF8EE",borderRadius:12,border:`1.5px solid ${isDark?"#4A4460":"#E8C870"}`,marginTop:8,marginBottom:4}}>
             <span style={{fontSize:18}}>⭐</span>
-            <span style={{fontFamily:"'Space Grotesk',sans-serif",fontSize:24,fontWeight:700,color:(()=>{const n=parseFloat(item.imdbRating);return n>=8?"#8A6A00":n>=7?"#A07800":"#906050";})()}}>{item.imdbRating}</span>
-            <div style={{fontSize:11,color:isDark?"#A09070":"#806040",lineHeight:1.5}}>
+            <span style={{fontFamily:"'Space Grotesk',sans-serif",fontSize:24,fontWeight:700,color:(()=>{const n=parseFloat(item.imdbRating);return isDark?(n>=8?"#F0C840":n>=7?"#D4A830":"#B09060"):(n>=8?"#8A6A00":n>=7?"#A07800":"#906050");})()}}>{item.imdbRating}</span>
+            <div style={{fontSize:11,color:isDark?"#A0A0C0":"#806040",lineHeight:1.5}}>
               <div style={{fontWeight:500}}>IMDb 評分</div>
               {item.imdbYear&&<div>{item.imdbYear}{item.imdbRuntime&&item.imdbRuntime!=="N/A"?` · ${item.imdbRuntime}`:""}</div>}
             </div>
@@ -820,27 +820,27 @@ function DetSheet({item,cat,onClose,onEdit,onDel,th=T}){
       {(item.venue||item.price||item.seat||item.city||cat==="演唱會"||cat==="展覽"||cat==="景點")&&(
         <div style={{marginTop:12,marginBottom:14}}>
           <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8,marginBottom:10}}>
-            {item.venue&&<div style={{gridColumn:"1/-1",background:isDark?"#2A1A18":"#F2ECEA",border:`1px solid ${isDark?"#5A2A22":"#DDD0C8"}`,borderRadius:12,padding:"10px 12px"}}>
+            {item.venue&&<div style={{gridColumn:"1/-1",background:isDark?"#252330":"#F2ECEA",border:`1px solid ${isDark?"#3A3648":"#DDD0C8"}`,borderRadius:12,padding:"10px 12px"}}>
               <div style={{fontSize:9,fontWeight:500,color:subCol,letterSpacing:"1px",textTransform:"uppercase",marginBottom:3}}>場館</div>
               <div style={{fontSize:13,fontWeight:400,color:th.ink}}>{item.venue}</div>
             </div>}
-            {cat==="演唱會"&&<div style={{background:isDark?"#201828":"#EDE6F5",border:`1px solid ${isDark?"#3A2850":"#CCC0E0"}`,borderRadius:12,padding:"10px 12px"}}>
+            {cat==="演唱會"&&<div style={{background:isDark?"#252330":"#EDE6F5",border:`1px solid ${isDark?"#3A3648":"#CCC0E0"}`,borderRadius:12,padding:"10px 12px"}}>
               <div style={{fontSize:9,fontWeight:500,color:subCol,letterSpacing:"1px",textTransform:"uppercase",marginBottom:3}}>座位</div>
               <div style={{fontSize:13,fontWeight:400,color:item.seat?th.ink:th.ink4}}>{item.seat||"—"}</div>
             </div>}
-            {cat==="景點"&&item.city&&<div style={{background:isDark?"#201828":"#EDE6F5",border:`1px solid ${isDark?"#3A2850":"#CCC0E0"}`,borderRadius:12,padding:"10px 12px"}}>
+            {cat==="景點"&&item.city&&<div style={{background:isDark?"#252330":"#EDE6F5",border:`1px solid ${isDark?"#3A3648":"#CCC0E0"}`,borderRadius:12,padding:"10px 12px"}}>
               <div style={{fontSize:9,fontWeight:500,color:subCol,letterSpacing:"1px",textTransform:"uppercase",marginBottom:3}}>城市</div>
               <div style={{fontSize:13,fontWeight:400,color:th.ink}}>{item.city}</div>
             </div>}
-            {(cat==="演唱會"||cat==="展覽")&&<div style={{background:isDark?"#182818":"#E8F5EC",border:`1px solid ${isDark?"#2A4830":"#A8D8B0"}`,borderRadius:12,padding:"10px 12px"}}>
+            {(cat==="演唱會"||cat==="展覽")&&<div style={{background:isDark?"#252330":"#E8F5EC",border:`1px solid ${isDark?"#3A3648":"#A8D8B0"}`,borderRadius:12,padding:"10px 12px"}}>
               <div style={{fontSize:9,fontWeight:500,color:subCol,letterSpacing:"1px",textTransform:"uppercase",marginBottom:3}}>票價</div>
               <div style={{fontSize:15,fontWeight:300,color:item.price?(isDark?"#7AB890":"#2E7858"):th.ink4,fontFamily:"'Space Grotesk',sans-serif"}}>{item.price?`${item.currency||"NT$"} ${Number(item.price).toLocaleString()}`:"—"}</div>
             </div>}
           </div>
           {/* Google Maps button */}
           {(item.venue||(cat==="景點"&&item.title))&&<button type="button" className="tap" onClick={()=>window.open(`https://www.google.com/maps/search/${encodeURIComponent(item.venue||item.title)}`,"_blank")}
-            style={{width:"100%",padding:"11px 14px",borderRadius:12,border:`1.5px solid ${isDark?"#2A4830":"#C8E0D0"}`,background:isDark?"#182818":"#F0FAF5",display:"flex",alignItems:"center",gap:10,cursor:"pointer",marginBottom:8,fontFamily:"inherit"}}>
-            <div style={{width:30,height:30,borderRadius:8,background:isDark?"#2A4830":"#fff",border:`1px solid ${isDark?"#3A6040":"#D0E8D8"}`,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>
+            style={{width:"100%",padding:"11px 14px",borderRadius:12,border:`1.5px solid ${isDark?"#2E2A3A":"#C8E0D0"}`,background:isDark?"#1E1C24":"#F0FAF5",display:"flex",alignItems:"center",gap:10,cursor:"pointer",marginBottom:8,fontFamily:"inherit"}}>
+            <div style={{width:30,height:30,borderRadius:8,background:isDark?"#2E2A3A":"#fff",border:`1px solid ${isDark?"#3A3648":"#D0E8D8"}`,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>
               <svg width={16} height={16} viewBox="0 0 24 24" fill="none"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" fill="#EA4335"/><circle cx="12" cy="9" r="2.5" fill="#fff"/></svg>
             </div>
             <div style={{flex:1,textAlign:"left"}}>
@@ -851,7 +851,7 @@ function DetSheet({item,cat,onClose,onEdit,onDel,th=T}){
           </button>}
           {/* YouTube button for concerts */}
           {cat==="演唱會"&&<button type="button" className="tap" onClick={()=>window.open(`https://www.youtube.com/results?search_query=${encodeURIComponent(item.title+" 演唱會")}`,"_blank")}
-            style={{width:"100%",padding:"11px 14px",borderRadius:12,border:`1.5px solid ${isDark?"#4A2020":"#E0D0D0"}`,background:isDark?"#2A1818":"#FFF5F5",display:"flex",alignItems:"center",gap:10,cursor:"pointer",marginBottom:8,fontFamily:"inherit"}}>
+            style={{width:"100%",padding:"11px 14px",borderRadius:12,border:`1.5px solid ${isDark?"#2E2A3A":"#E0D0D0"}`,background:isDark?"#1E1C24":"#FFF5F5",display:"flex",alignItems:"center",gap:10,cursor:"pointer",marginBottom:8,fontFamily:"inherit"}}>
             <div style={{width:30,height:30,borderRadius:8,background:"#FF0000",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>
               <svg width={13} height={9} viewBox="0 0 14 10" fill="white"><path d="M13.7 1.56A1.75 1.75 0 0012.47.32C11.37 0 7 0 7 0S2.63 0 1.53.32A1.75 1.75 0 00.3 1.56C0 2.67 0 5 0 5s0 2.33.3 3.44A1.75 1.75 0 001.53 9.68C2.63 10 7 10 7 10s4.37 0 5.47-.32a1.75 1.75 0 001.23-1.24C14 7.33 14 5 14 5s0-2.33-.3-3.44zM5.6 7.14V2.86L9.24 5 5.6 7.14z"/></svg>
             </div>
@@ -873,7 +873,7 @@ function DetSheet({item,cat,onClose,onEdit,onDel,th=T}){
         <button className="tap" type="button" onClick={e=>{e.preventDefault();e.stopPropagation();onEdit(item);onClose();}} style={{flex:1,padding:"11px",borderRadius:12,border:`1.5px solid ${editBorder}`,fontSize:13,color:editCol,display:"flex",alignItems:"center",justifyContent:"center",gap:6,background:editBg,fontWeight:400}}>
           <IEd/>編輯
         </button>
-        <button className="tap" type="button" onClick={e=>{e.preventDefault();e.stopPropagation();onDel(item.id);onClose();}} style={{flex:1,padding:"11px",borderRadius:12,border:"1.5px solid #C89090",fontSize:13,color:"#904040",background:"#FAF0F0",display:"flex",alignItems:"center",justifyContent:"center",gap:6,fontWeight:400}}>
+        <button className="tap" type="button" onClick={e=>{e.preventDefault();e.stopPropagation();onDel(item.id);onClose();}} style={{flex:1,padding:"11px",borderRadius:12,border:`1.5px solid ${isDark?"#5A3040":"#C89090"}`,fontSize:13,color:isDark?"#E88888":"#904040",background:isDark?"#2A1C20":"#FAF0F0",display:"flex",alignItems:"center",justifyContent:"center",gap:6,fontWeight:400}}>
           <ITr/>刪除
         </button>
       </div>
@@ -881,47 +881,63 @@ function DetSheet({item,cat,onClose,onEdit,onDel,th=T}){
   );
 }
 
-/* ── RECORD CARD ───────────────────────────────────── */
-function RCard({item,cat,onClick,th=T}){
+/* ── RECORD CARD — Magazine Index Style ────────────── */
+function RCard({item,cat,onClick,th=T,idx=0}){
   const cs=catSt(item._cat||cat);
   const dtl=DTC[item.subtype]||null;
   const lc=dtl?dtl.l:cs.line;
+  const isDark=th.bg==="#141218";
+  const idxColor=idx===0?T.peri:idx===1?T.rose:isDark?"#2E2A3A":th.line;
+  const num=String(idx+1).padStart(2,"0");
   return(
     <div className="tap" onClick={()=>onClick(item)} style={{
-      background:th.white,borderRadius:14,
-      border:`1.5px solid ${th.line}`,
-      borderLeft:`3.5px solid ${lc}`,
-      padding:"13px 15px 12px",cursor:"pointer",marginBottom:9,
+      display:"grid",gridTemplateColumns:"44px 1fr",
+      borderBottom:`1px solid ${th.line}`,
+      padding:"14px 0",cursor:"pointer",gap:0,
     }}>
-      <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:6}}>
-        <div style={{flex:1,paddingRight:8}}>
-          <div style={{fontSize:15,fontWeight:500,color:th.ink,lineHeight:1.4}}>{item.title}</div>
-          {item.imdbTitle&&item.imdbTitle!==item.title&&<div style={{fontSize:11,fontWeight:300,color:th.ink4,marginTop:1,letterSpacing:".3px"}}>{item.imdbTitle}</div>}
+      {/* Index number */}
+      <div style={{
+        fontFamily:"'Outfit',sans-serif",fontSize:32,fontWeight:200,
+        color:idxColor,lineHeight:.88,letterSpacing:"-2px",paddingTop:2,
+        flexShrink:0,
+      }}>{num}</div>
+      {/* Content */}
+      <div>
+        <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:5}}>
+          <div style={{flex:1,paddingRight:8}}>
+            <div style={{fontSize:14,fontWeight:400,color:th.ink,lineHeight:1.35}}>{item.title}</div>
+            {item.imdbTitle&&item.imdbTitle!==item.title&&(
+              <div style={{fontFamily:"'Outfit',sans-serif",fontSize:9,fontWeight:200,color:th.ink4,marginTop:1,letterSpacing:".3px"}}>{item.imdbTitle}</div>
+            )}
+          </div>
+          <div style={{display:"flex",alignItems:"center",gap:6,flexShrink:0}}>
+            {item.imdbRating&&(
+              <span style={{fontFamily:"'Outfit',sans-serif",fontSize:11,fontWeight:200,color:T.navy}}>{item.imdbRating}</span>
+            )}
+            {item.imdbRating&&item.rating>0&&<div style={{width:1,height:12,background:th.line}}/>}
+            {item.rating>0&&<MoodIcon value={item.rating} size={20}/>}
+          </div>
         </div>
-        <div style={{display:"flex",alignItems:"center",gap:6,flexShrink:0}}>
-          {item.imdbRating&&(
-            <div style={{display:"flex",alignItems:"center",gap:3}}>
-              <span style={{fontSize:10}}>⭐</span>
-              <span style={{fontFamily:"'Space Grotesk',sans-serif",fontSize:12,fontWeight:600,color:(()=>{const n=parseFloat(item.imdbRating);return n>=8?"#8A6A00":n>=7?"#A07800":"#906050";})()}}>{item.imdbRating}</span>
-            </div>
+        {/* Meta row */}
+        <div style={{display:"flex",alignItems:"center",gap:7,marginBottom:item.notes?6:0,flexWrap:"wrap"}}>
+          <span style={{fontFamily:"'Outfit',sans-serif",fontSize:9,fontWeight:200,color:th.ink4}}>{item.date?.slice(0,10).replace(/-/g," · ")}</span>
+          <span style={{
+            fontSize:8,border:`1px solid ${lc}66`,padding:"1px 7px",borderRadius:2,
+            color:lc,letterSpacing:".3px",fontFamily:"'Outfit',sans-serif",
+          }}>{item.subtype||(item.type==="其他"&&item.customType?item.customType:item.type)||cat}</span>
+          {(item.stream||item.platform)&&(
+            <span style={{fontSize:9,color:isDark?"rgba(176,168,192,.5)":T.peri,fontFamily:"'Outfit',sans-serif",fontWeight:200,letterSpacing:".3px",border:`1px solid ${T.peri}44`,borderRadius:2,padding:"1px 7px"}}>
+              {item.stream||(item.platform!=="線上串流"?item.platform:"")}
+            </span>
           )}
-          {item.imdbRating&&item.rating>0&&<div style={{width:1,height:14,background:th.line,flexShrink:0}}/>}
-          {item.rating>0&&<MoodIcon value={item.rating} size={22}/>}
         </div>
+        {item.notes&&(
+          <div style={{
+            fontSize:10,color:th.ink4,lineHeight:1.7,
+            overflow:"hidden",display:"-webkit-box",WebkitLineClamp:1,WebkitBoxOrient:"vertical",
+          }}>{item.notes}</div>
+        )}
       </div>
-      <div style={{marginBottom:8}}><DTag date={item.date} th={th}/></div>
-      <div style={{display:"flex",gap:6,flexWrap:"wrap",alignItems:"center"}}>
-        <Tg label={item.subtype||(item.type==="其他"&&item.customType?item.customType:item.type)||cat} col={lc}/>
-        {(item.platform||item.stream)&&<span style={{fontSize:11,color:th.ink3,fontWeight:400}}>{item.stream||(item.platform!=="線上串流"?item.platform:"")}{item.stream&&item.platform&&item.platform!=="線上串流"?` · ${item.platform}`:""}</span>}
-        {item.venue&&<span style={{fontSize:11,color:th.ink4}}>📍 {item.venue}</span>}
-        {item.seat&&<span style={{fontSize:11,color:th.ink4}}>💺 {item.seat}</span>}
-        {item.price&&<span style={{fontSize:10,fontFamily:"'Space Grotesk',sans-serif",fontWeight:300,color:"#5A8A60",border:"1.5px solid #7AB880",borderRadius:20,padding:"1px 8px"}}>{item.currency||"NT$"} {Number(item.price).toLocaleString()}</span>}
-      </div>
-      {item.notes&&(
-        <div style={{fontSize:12,color:th.ink3,marginTop:9,lineHeight:1.7,overflow:"hidden",display:"-webkit-box",WebkitLineClamp:1,WebkitBoxOrient:"vertical",fontWeight:400}}>
-          {item.notes}
-        </div>
-      )}
     </div>
   );
 }
@@ -1299,60 +1315,83 @@ function Watchlist({data,setData,th=T}){
   const svD=it=>setData(d=>it.id?{...d,dramas:d.dramas.map(m=>m.id===it.id?it:m)}:{...d,dramas:[{...it,id:nid()},...d.dramas]});
   const dlM=id=>setData(d=>({...d,movies:d.movies.filter(m=>m.id!==id)}));
   const dlD=id=>setData(d=>({...d,dramas:d.dramas.filter(m=>m.id!==id)}));
+  const isDark=th.bg==="#141218";
+  const totalShown=tab==="戲劇"?fdr.length:movies.length;
   return(
     <div style={{position:"relative"}}>
-      <PH title="片單" th={th}/>
-      <div className="page-inner">
-        <TFilt value={tf} onChange={setTf} platform={platF} onPlatform={setPlatF} th={th}/>
-        <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",borderRadius:12,overflow:"hidden",border:`1.5px solid ${th.line}`,marginBottom:16}}>
-          {[["戲劇",<IDr s={15}/>],["電影",<IFm s={15}/>]].map(([t,ic],i)=>(
-            <button key={t} className="tap" type="button" onClick={e=>{e.preventDefault();setTab(t);}} style={{
-              padding:"10px",fontSize:12,fontWeight:400,letterSpacing:".5px",
-              fontFamily:"'Outfit',sans-serif",
-              background:tab===t?T.navy:th.white,
-              color:tab===t?"#fff":th.ink3,
-              borderRight:i===0?`1.5px solid ${th.line}`:"none",
-              display:"flex",alignItems:"center",justifyContent:"center",gap:6,
-              transition:"background .15s",
-              position:"relative",
-            }}>{ic}{t}
-            {tab===t&&<div style={{position:"absolute",bottom:0,left:0,right:0,height:2,background:T.peri,opacity:.8}}/>}
-            </button>
-          ))}
+      {/* Magazine top strip */}
+      <div style={{height:3,background:`linear-gradient(90deg,${T.navy},${T.peri},${T.rose})`}}/>
+      {/* Page header — editorial style */}
+      <div style={{padding:"18px 22px 0",position:"relative",overflow:"hidden"}}>
+        <div style={{position:"absolute",fontFamily:"'Outfit',sans-serif",fontSize:140,fontWeight:200,
+          color:isDark?T.peri:T.navy,opacity:.04,top:-20,right:8,lineHeight:1,letterSpacing:"-8px",
+          userSelect:"none",pointerEvents:"none"}}>片</div>
+        <div style={{fontFamily:"'Outfit',sans-serif",fontSize:8,color:th.ink4,letterSpacing:"3px",textTransform:"uppercase",marginBottom:4,position:"relative",zIndex:1}}>WATCHLIST</div>
+        <div style={{fontFamily:"'Outfit',sans-serif",fontSize:28,fontWeight:200,color:th.ink,letterSpacing:"-1px",lineHeight:1,position:"relative",zIndex:1}}>片單</div>
+        <div style={{fontSize:10,color:th.ink4,marginTop:3,marginBottom:16,position:"relative",zIndex:1}}>
+          共 {data.movies.length+data.dramas.length} 部 · {new Date().getFullYear()}年
         </div>
-        {tab==="電影"&&(
-          <>
-            <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:10}}>
-              <span style={{fontSize:11,color:th.ink4,fontWeight:500}}>{movies.length} 部電影</span>
-              <SortBtn sort={sort} onToggle={(v)=>setSort(v)} th={th}/>
-            </div>
-            {movies.length===0&&<Mty cat="電影" th={th}/>}
-            {movies.map(it=><RCard key={it.id} item={it} cat="電影" onClick={i=>setDet({item:i,cat:"電影"})} th={th}/>)}
-          </>
-        )}
+      </div>
+      {/* Sharp editorial tabs */}
+      <div style={{display:"flex",borderBottom:`2px solid ${th.line}`,margin:"0 0 0"}}>
+        {[["戲劇",<IDr s={14}/>],["電影",<IFm s={14}/>]].map(([t,ic],i)=>(
+          <button key={t} className="tap" type="button" onClick={e=>{e.preventDefault();setTab(t);}} style={{
+            flex:1,padding:"10px 0",textAlign:"center",
+            fontFamily:"'Outfit',sans-serif",fontSize:11,fontWeight:tab===t?400:300,
+            color:tab===t?T.navy:th.ink4,letterSpacing:"1px",textTransform:"uppercase",
+            background:"transparent",border:"none",cursor:"pointer",
+            display:"flex",alignItems:"center",justifyContent:"center",gap:5,
+            position:"relative",
+          }}>
+            {ic}{t}
+            {tab===t&&<div style={{position:"absolute",bottom:-2,left:0,right:0,height:2,background:T.peri}}/>}
+          </button>
+        ))}
+      </div>
+      <div className="page-inner" style={{paddingTop:0}}>
+        {/* Filter + sort row */}
+        <div style={{paddingTop:12}}>
+          <TFilt value={tf} onChange={setTf} platform={platF} onPlatform={setPlatF} th={th}/>
+        </div>
         {tab==="戲劇"&&(
           <>
-            <div style={{display:"flex",gap:6,flexWrap:"wrap",marginBottom:12}}>
+            <div style={{display:"flex",gap:5,flexWrap:"wrap",marginBottom:10}}>
               {["全部",...DSubs].map(t=>(
                 <button key={t} className="tap" type="button" onClick={e=>{e.preventDefault();setDf(t);}} style={{
-                  padding:"4px 11px",borderRadius:20,fontSize:11,fontWeight:500,
-                  background:df===t?T.rose:th.white,
-                  color:df===t?"#fff":th.ink3,
-                  border:`1.5px solid ${df===t?T.rose:th.line}`,
+                  padding:"3px 10px",borderRadius:3,fontSize:9,fontWeight:400,
+                  fontFamily:"'Outfit',sans-serif",letterSpacing:".5px",
+                  background:df===t?T.navy:"transparent",
+                  color:df===t?"#fff":th.ink4,
+                  border:`1px solid ${df===t?T.navy:th.line}`,
                   transition:"all .15s",
                 }}>{t}</button>
               ))}
             </div>
-            <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:10}}>
-              <span style={{fontSize:11,color:th.ink4,fontWeight:500}}>{fdr.length} 部</span>
-              <SortBtn sort={sort} onToggle={(v)=>setSort(v)} th={th}/>
-            </div>
-            {fdr.length===0&&<Mty cat="戲劇" th={th}/>}
-            {fdr.map(it=><RCard key={it.id} item={it} cat="戲劇" onClick={i=>setDet({item:i,cat:"戲劇"})} th={th}/>)}
           </>
         )}
+        {/* Count + sort */}
+        <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:0}}>
+          <span style={{fontFamily:"'Outfit',sans-serif",fontSize:9,color:th.ink4,letterSpacing:"1px",textTransform:"uppercase"}}>
+            {totalShown} 部{tab}
+          </span>
+          <div style={{display:"flex",alignItems:"center",gap:5}}>
+            <SortBtn sort={sort} onToggle={(v)=>setSort(v)} th={th}/>
+          </div>
+        </div>
+        {/* Cards container — no padding, magazine list */}
+        <div style={{background:th.white,borderRadius:12,padding:"0 14px",border:`1px solid ${th.line}`,marginTop:8}}>
+          {tab==="電影"&&(
+            movies.length===0
+              ?<div style={{padding:"24px 0",textAlign:"center"}}><Mty cat="電影" th={th}/></div>
+              :movies.map((it,i)=><RCard key={it.id} item={it} cat="電影" onClick={x=>setDet({item:x,cat:"電影"})} th={th} idx={i}/>)
+          )}
+          {tab==="戲劇"&&(
+            fdr.length===0
+              ?<div style={{padding:"24px 0",textAlign:"center"}}><Mty cat="戲劇" th={th}/></div>
+              :fdr.map((it,i)=><RCard key={it.id} item={it} cat="戲劇" onClick={x=>setDet({item:x,cat:"戲劇"})} th={th} idx={i}/>)
+          )}
+        </div>
       </div>
-      {/* Unified floating FAB bottom-right for both tabs */}
       <FloatFAB onClick={tab==="電影"?()=>setAM(true):()=>setAD(true)} />
       {aM&&<FMovie onClose={()=>setAM(false)} onSave={svM} th={th}/>}
       {aD&&<FDrama onClose={()=>setAD(false)} onSave={svD} th={th}/>}
@@ -1368,8 +1407,8 @@ function FSpot({init,onSave,onClose,th=T}){
   const[f,sf]=useState(init?{...blank,...init}:blank);
   const fRef=React.useRef(f);
   const s=(k,v)=>{const next={...fRef.current,[k]:v};fRef.current=next;sf(next);};
-  const isDark=th.bg==="#141210";
-  const cb=isDark?"#3A2C26":"#FAFAF7",ct=isDark?"#C8B8B0":T.ink3,cbr=isDark?"#5A3C34":T.line;
+  const isDark=th.bg==="#141218";
+  const cb=isDark?"#252330":"#FAFAF7",ct=isDark?"#C8C0D8":T.ink3,cbr=isDark?"#3A3648":T.line;
   return(
     <Sheet title={init?"編輯景點":"新增景點"} onClose={onClose} th={th}>
       <FR label="景點名稱" th={th}><input value={f.title} onChange={e=>s("title",e.target.value)} placeholder="景點名稱"/></FR>
@@ -1407,26 +1446,120 @@ function Exhibition({data,setData,th=T}){
   const items=tab==="展覽"?exItems:spItems;
   const sv=it=>setData(d=>it.id?{...d,exhibitions:d.exhibitions.map(e=>e.id===it.id?it:e)}:{...d,exhibitions:[{...it,id:nid()},...d.exhibitions]});
   const dl=id=>setData(d=>({...d,exhibitions:d.exhibitions.filter(e=>e.id!==id)}));
+  const isDark=th.bg==="#141218";
+
+  /* Gallery card component */
+  const GCard=({it})=>{
+    const cs=catSt(it._cat||tab);
+    const bandCol=it._isSpot?T.sage:(it.type==="攝影"?T.peri:it.type==="設計"?T.catD.line:it.type==="藝術"?T.rose:T.catE.line);
+    const typeLabel=(it.type==="其他"&&it.customType?it.customType:it.type)||tab;
+    return(
+      <div className="tap" onClick={()=>setDet(it)} style={{
+        background:th.white,borderRadius:12,overflow:"hidden",
+        border:`1px solid ${th.line}`,marginBottom:10,cursor:"pointer",
+        display:"flex",
+      }}>
+        {/* Left full-height colour band */}
+        <div style={{width:4,background:bandCol,flexShrink:0}}/>
+        <div style={{flex:1,padding:"13px 14px"}}>
+          <div style={{fontFamily:"'Outfit',sans-serif",fontSize:8,letterSpacing:"2px",
+            textTransform:"uppercase",color:th.ink4,marginBottom:5}}>
+            {typeLabel} {it._isSpot?"SPOT":"EXHIBITION"}
+          </div>
+          <div style={{fontSize:14,fontWeight:400,color:th.ink,marginBottom:8,lineHeight:1.4}}>{it.title}</div>
+          <div style={{display:"flex",alignItems:"center",justifyContent:"space-between"}}>
+            <div style={{display:"flex",gap:6,alignItems:"center",flexWrap:"wrap"}}>
+              {it.venue&&(
+                <span style={{fontSize:9,color:isDark?"#8098C8":T.navy,
+                  background:isDark?"rgba(96,128,184,.12)":T.navyBg,
+                  padding:"2px 8px",borderRadius:3,fontFamily:"'Outfit',sans-serif",
+                  border:`1px solid ${isDark?"rgba(96,128,184,.2)":T.peri+"44"}`}}>
+                  {it.venue}
+                </span>
+              )}
+              {it.city&&!it.venue&&(
+                <span style={{fontSize:9,color:isDark?"#8098C8":T.navy,
+                  background:isDark?"rgba(96,128,184,.12)":T.navyBg,
+                  padding:"2px 8px",borderRadius:3,fontFamily:"'Outfit',sans-serif",
+                  border:`1px solid ${isDark?"rgba(96,128,184,.2)":T.peri+"44"}`}}>
+                  {it.city}
+                </span>
+              )}
+              <span style={{fontFamily:"'Outfit',sans-serif",fontSize:9,color:th.ink4,fontWeight:200}}>
+                {it.date?.slice(0,7).replace("-"," · ")}
+              </span>
+              {it.price&&<span style={{fontFamily:"'Outfit',sans-serif",fontSize:9,color:T.sage,fontWeight:300}}>{it.currency||"NT$"} {Number(it.price).toLocaleString()}</span>}
+            </div>
+            {it.rating>0&&<MoodIcon value={it.rating} size={20}/>}
+          </div>
+          {it.notes&&(
+            <div style={{fontSize:10,color:th.ink4,marginTop:7,lineHeight:1.7,
+              overflow:"hidden",display:"-webkit-box",WebkitLineClamp:1,WebkitBoxOrient:"vertical"}}>
+              {it.notes}
+            </div>
+          )}
+          {it.venue&&(
+            <button type="button" className="tap" onClick={e=>{e.stopPropagation();window.open(`https://www.google.com/maps/search/${encodeURIComponent(it.venue)}`,"_blank");}} style={{
+              marginTop:8,padding:"5px 12px",borderRadius:4,
+              border:`1px solid ${th.line}`,background:isDark?th.surface:th.bg,
+              fontSize:9,fontFamily:"'Outfit',sans-serif",color:isDark?"#8098C8":T.navy,
+              display:"inline-flex",alignItems:"center",gap:4,letterSpacing:".8px",textTransform:"uppercase",
+            }}>
+              <svg width={10} height={10} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5"/></svg>
+              查看場館
+            </button>
+          )}
+        </div>
+      </div>
+    );
+  };
+
   return(
-    <div>
-      <PH title="活動" th={th}/>
-      <div className="page-inner">
-        {/* Tab */}
-        <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",borderRadius:12,overflow:"hidden",border:`1.5px solid ${th.line}`,marginBottom:14}}>
-          {[
-            ["展覽",<svg width={15} height={15} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>],
-            ["景點",<svg width={15} height={15} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5"/></svg>]
-          ].map(([t,ic],i)=>(
-            <button key={t} type="button" className="tap" onClick={()=>setTab(t)} style={{padding:"10px",fontSize:13,fontWeight:tab===t?500:400,background:tab===t?T.rose:th.surface,color:tab===t?"#fff":th.ink3,borderRight:i===0?`1.5px solid ${th.line}`:"none",display:"flex",alignItems:"center",justifyContent:"center",gap:6,transition:"background .15s"}}>{ic}{t}</button>
+    <div style={{position:"relative"}}>
+      {/* Full-bleed navy banner */}
+      <div style={{background:isDark?"#1A2240":T.navy,padding:"22px 22px 18px",position:"relative",overflow:"hidden"}}>
+        {/* Memphis vertical lines deco */}
+        <div style={{position:"absolute",right:20,top:"50%",transform:"translateY(-50%)",display:"flex",gap:3,alignItems:"flex-end"}}>
+          {[14,22,16,28,12,20].map((h,i)=>(
+            <div key={i} style={{width:1.5,height:h,background:isDark?"rgba(176,184,216,.15)":"rgba(255,255,255,.12)"}}/>
           ))}
         </div>
-        <TFilt value={tf} onChange={setTf} th={th}/>
-        <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:10}}>
-          <span style={{fontSize:11,color:th.ink4,fontWeight:500}}>{items.length} {tab==="展覽"?"場展覽":"個景點"}</span>
-          <SortBtn sort={sort} onToggle={(v)=>setSort(v)} th={th}/>
+        {/* Periwinkle corner accent */}
+        <div style={{position:"absolute",bottom:0,right:0,width:60,height:60,
+          background:T.peri,opacity:.15,clipPath:"polygon(100% 0,100% 100%,0 100%)"}}/>
+        <div style={{position:"relative",zIndex:1}}>
+          <div style={{fontFamily:"'Outfit',sans-serif",fontSize:8,color:"rgba(255,255,255,.4)",letterSpacing:"3px",textTransform:"uppercase",marginBottom:6}}>ACTIVITIES</div>
+          <div style={{fontFamily:"'Outfit',sans-serif",fontSize:32,fontWeight:200,color:"#fff",letterSpacing:"-1px",lineHeight:1}}>活動</div>
+          <div style={{fontSize:10,color:"rgba(255,255,255,.4)",marginTop:5}}>
+            展覽 {exItems.length} 場 · 景點 {spItems.length} 處
+          </div>
         </div>
-        {items.length===0&&<Mty cat={tab} th={th}/>}
-        {items.map(it=><RCard key={it.id} item={it} cat={tab} onClick={i=>setDet(i)} th={th}/>)}
+      </div>
+      {/* Tabs below banner — coral active underline */}
+      <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",borderBottom:`1.5px solid ${th.line}`}}>
+        {[
+          ["展覽",<svg width={11} height={11} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>],
+          ["景點",<svg width={11} height={11} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5"/></svg>]
+        ].map(([t,ic],i)=>(
+          <button key={t} type="button" className="tap" onClick={()=>setTab(t)} style={{
+            padding:"11px 0",fontFamily:"'Outfit',sans-serif",fontSize:11,
+            fontWeight:tab===t?400:300,color:tab===t?T.navy:th.ink4,
+            background:tab===t?th.white:isDark?"#141218":th.bg,
+            borderRight:i===0?`1px solid ${th.line}`:"none",
+            display:"flex",alignItems:"center",justifyContent:"center",gap:5,
+            letterSpacing:".5px",position:"relative",
+          }}>
+            {ic}{t}
+            {tab===t&&<div style={{position:"absolute",bottom:-1.5,left:0,right:0,height:2,background:T.rose}}/>}
+          </button>
+        ))}
+      </div>
+      <div className="page-inner" style={{paddingTop:12}}>
+        <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:10}}>
+          <TFilt value={tf} onChange={setTf} th={th}/>
+          <SortBtn sort={sort} onToggle={v=>setSort(v)} th={th}/>
+        </div>
+        {items.length===0?<Mty cat={tab} th={th}/>:items.map(it=><GCard key={it.id} it={it}/>)}
       </div>
       <FloatFAB onClick={()=>setSa(true)}/>
       {sa&&(tab==="展覽"?<FExhib onClose={()=>setSa(false)} onSave={sv} th={th}/>:<FSpot onClose={()=>setSa(false)} onSave={sv} th={th}/>)}
@@ -1443,17 +1576,154 @@ function Concert({data,setData,th=T}){
   const items=ftm(data.concerts,tf).sort(sortFn);
   const sv=it=>setData(d=>it.id?{...d,concerts:d.concerts.map(c=>c.id===it.id?it:c)}:{...d,concerts:[{...it,id:nid()},...d.concerts]});
   const dl=id=>setData(d=>({...d,concerts:d.concerts.filter(c=>c.id!==id)}));
-  return(
-    <div>
-      <PH title="演唱會" th={th}/>
-      <div className="page-inner">
-        <TFilt value={tf} onChange={setTf} th={th}/>
-        <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:10}}>
-          <span style={{fontSize:11,color:th.ink4,fontWeight:500}}>{items.length} 場演唱會</span>
-          <SortBtn sort={sort} onToggle={(v)=>setSort(v)} th={th}/>
+  const isDark=th.bg==="#141218";
+
+  /* Ticket card component */
+  const Ticket=({it})=>{
+    const perfBg=isDark?"#1A1620":"#EDECF2";
+    return(
+      <div style={{
+        background:th.white,borderRadius:14,overflow:"hidden",marginBottom:14,
+        boxShadow:isDark?"0 4px 24px rgba(0,0,0,.35)":"0 2px 20px rgba(58,74,107,.08)",
+      }}>
+        {/* Ticket header — dark mauve/navy gradient */}
+        <div style={{
+          background:isDark
+            ?"linear-gradient(135deg,#4A5878 0%,#7A6090 60%,#C8788A 100%)"
+            :"linear-gradient(135deg,#3A4A6B 0%,#6A6080 50%,#B8789A 100%)",
+          padding:"16px 18px 14px",position:"relative",overflow:"hidden",
+        }}>
+          {/* Diagonal stripe */}
+          <div style={{position:"absolute",top:0,right:0,bottom:0,width:80,
+            backgroundImage:"repeating-linear-gradient(135deg,transparent,transparent 5px,rgba(255,255,255,.06) 5px,rgba(255,255,255,.06) 6px)"}}/>
+          {/* Periwinkle dot accent */}
+          <div style={{position:"absolute",top:14,right:14,width:10,height:10,borderRadius:"50%",background:T.peri,opacity:.6}}/>
+          <div style={{fontFamily:"'Outfit',sans-serif",fontSize:8,color:"rgba(255,255,255,.45)",
+            letterSpacing:"2px",textTransform:"uppercase",marginBottom:4,position:"relative",zIndex:1}}>
+            {it.venue||"演唱會"} · {it.date?.slice(0,10).replace(/-/g,".")}
+          </div>
+          <div style={{fontSize:16,fontWeight:400,color:"#fff",lineHeight:1.35,position:"relative",zIndex:1}}>
+            {it.title}
+          </div>
         </div>
-        {items.length===0&&<Mty cat="演唱會" th={th}/>}
-        {items.map(it=><RCard key={it.id} item={it} cat="演唱會" onClick={i=>setDet(i)} th={th}/>)}
+        {/* Perforation */}
+        <div style={{height:1,borderTop:"1.5px dashed "+perfBg,margin:"0 18px",position:"relative"}}>
+          <div style={{position:"absolute",width:10,height:20,background:perfBg,top:-10,left:-18,borderRadius:"10px 0 0 10px"}}/>
+          <div style={{position:"absolute",width:10,height:20,background:perfBg,top:-10,right:-18,borderRadius:"0 10px 10px 0"}}/>
+        </div>
+        {/* Ticket body */}
+        <div style={{padding:"14px 18px"}}>
+          <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:12,marginBottom:12}}>
+            {[
+              ["TICKET PRICE", it.price?(it.currency||"NT$")+" "+Number(it.price).toLocaleString():null,"#7A9888"],
+              ["SEAT", it.seat||null,null],
+              ["DATE", it.date?.slice(0,10).replace(/-/g,"."),null],
+              ["VENUE", it.venue||null,null],
+            ].map(([label,val,valCol])=>(
+              <div key={label} style={{borderBottom:`1px solid ${isDark?"#2E2838":th.lineSoft}`,paddingBottom:8}}>
+                <div style={{fontFamily:"'Outfit',sans-serif",fontSize:7,
+                  color:isDark?"#9098C0":T.peri,letterSpacing:"2px",textTransform:"uppercase",marginBottom:3}}>
+                  {label}
+                </div>
+                <div style={{fontFamily:"'Outfit',sans-serif",fontSize:13,fontWeight:300,
+                  color:val?(valCol||th.ink):(th.ink4),letterSpacing:"-.3px"}}>
+                  {val||"—"}
+                </div>
+              </div>
+            ))}
+          </div>
+          {/* Rating */}
+          <div style={{display:"flex",alignItems:"center",gap:6,marginBottom:10}}>
+            <span style={{fontFamily:"'Outfit',sans-serif",fontSize:7,
+              color:isDark?"#9098C0":T.peri,letterSpacing:"2px",textTransform:"uppercase"}}>RATING</span>
+            <MoodIcon value={it.rating||0} size={18}/>
+          </div>
+          {it.notes&&(
+            <div style={{fontSize:11,color:th.ink4,lineHeight:1.7,marginBottom:12,
+              overflow:"hidden",display:"-webkit-box",WebkitLineClamp:2,WebkitBoxOrient:"vertical"}}>
+              {it.notes}
+            </div>
+          )}
+          {/* Action buttons */}
+          <div style={{display:"flex",gap:6}}>
+            {it.venue&&(
+              <button type="button" className="tap" onClick={()=>window.open(`https://www.google.com/maps/search/${encodeURIComponent(it.venue)}`,"_blank")} style={{
+                flex:1,padding:8,borderRadius:6,fontSize:9,fontFamily:"'Outfit',sans-serif",
+                letterSpacing:".8px",textTransform:"uppercase",
+                background:isDark?"rgba(96,128,184,.12)":"rgba(176,184,216,.12)",
+                color:isDark?"#8098C8":T.navy,
+                border:`1px solid ${isDark?"rgba(96,128,184,.2)":"rgba(176,184,216,.35)"}`,
+                display:"flex",alignItems:"center",justifyContent:"center",gap:4,
+              }}>
+                <svg width={10} height={10} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5"/></svg>
+                MAPS
+              </button>
+            )}
+            <button type="button" className="tap" onClick={()=>window.open(`https://www.youtube.com/results?search_query=${encodeURIComponent(it.title)}`,"_blank")} style={{
+              flex:1,padding:8,borderRadius:6,fontSize:9,fontFamily:"'Outfit',sans-serif",
+              letterSpacing:".8px",textTransform:"uppercase",
+              background:isDark?"rgba(255,60,60,.08)":"rgba(255,0,0,.04)",
+              color:isDark?"#FF6060":"#C04040",
+              border:`1px solid ${isDark?"rgba(255,60,60,.15)":"rgba(255,0,0,.12)"}`,
+              display:"flex",alignItems:"center",justifyContent:"center",gap:4,
+            }}>
+              <svg width={10} height={10} viewBox="0 0 24 24" fill="none"><path d="M22.54 6.42a2.78 2.78 0 00-1.94-1.96C18.88 4 12 4 12 4s-6.88 0-8.6.46A2.78 2.78 0 001.46 6.42 29 29 0 001 12a29 29 0 00.46 5.58A2.78 2.78 0 003.4 19.54C5.12 20 12 20 12 20s6.88 0 8.6-.46a2.78 2.78 0 001.94-1.96A29 29 0 0023 12a29 29 0 00-.46-5.58z" fill="#FF3C3C"/><polygon points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02" fill="white"/></svg>
+              YOUTUBE
+            </button>
+            <button type="button" className="tap" onClick={()=>setDet(it)} style={{
+              flex:1,padding:8,borderRadius:6,fontSize:9,fontFamily:"'Outfit',sans-serif",
+              letterSpacing:".8px",textTransform:"uppercase",
+              background:isDark?"rgba(138,180,160,.1)":"rgba(122,152,136,.08)",
+              color:isDark?"#8AB4A0":T.sage,
+              border:`1px solid ${isDark?"rgba(138,180,160,.2)":"rgba(122,152,136,.25)"}`,
+              display:"flex",alignItems:"center",justifyContent:"center",gap:4,
+            }}>
+              <svg width={10} height={10} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round"><path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5M18.5 2.5a2.12 2.12 0 013 3L12 15l-4 1 1-4z"/></svg>
+              EDIT
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  return(
+    <div style={{position:"relative"}}>
+      {/* Dark mauve header */}
+      <div style={{
+        background:isDark
+          ?"linear-gradient(135deg,#2A1E2E 0%,#3A2840 50%,#4A2E4A 100%)"
+          :"linear-gradient(135deg,#C8788A 0%,#7A4878 50%,#3A4A6B 100%)",
+        padding:"22px 22px 20px",position:"relative",overflow:"hidden",
+      }}>
+        <div style={{position:"absolute",inset:0,
+          backgroundImage:"radial-gradient(circle,rgba(232,168,160,.08) 1px,transparent 1px)",
+          backgroundSize:"16px 16px"}}/>
+        <div style={{position:"absolute",top:0,left:0,right:0,height:2,
+          background:"linear-gradient(90deg,transparent,rgba(255,255,255,.4),transparent)"}}/>
+        <div style={{position:"absolute",top:0,right:0,bottom:0,width:100,
+          backgroundImage:"repeating-linear-gradient(135deg,transparent,transparent 8px,rgba(200,120,138,.05) 8px,rgba(200,120,138,.05) 9px)"}}/>
+        <div style={{position:"relative",zIndex:1}}>
+          <div style={{fontFamily:"'Outfit',sans-serif",fontSize:8,
+            color:"rgba(255,255,255,.5)",letterSpacing:"3px",textTransform:"uppercase",marginBottom:6}}>CONCERTS</div>
+          <div style={{fontFamily:"'Outfit',sans-serif",fontSize:30,fontWeight:200,
+            color:"#fff",letterSpacing:"-1px",lineHeight:1}}>演唱會</div>
+          <div style={{fontSize:10,color:"rgba(255,255,255,.4)",marginTop:4}}>
+            {items.length} 場記錄 · {new Date().getFullYear()}年
+          </div>
+        </div>
+      </div>
+      <div style={{display:"flex",gap:5,padding:"12px 16px 6px",overflow:"auto"}}>
+        <TFilt value={tf} onChange={setTf} th={th}/>
+        <SortBtn sort={sort} onToggle={v=>setSort(v)} th={th}/>
+      </div>
+      <div style={{padding:"6px 16px 80px"}}>
+        {items.length===0?(
+          <div style={{margin:"20px 0",border:`1.5px dashed ${isDark?"#2E2838":th.line}`,borderRadius:12,padding:20,textAlign:"center"}}>
+            <svg width={22} height={22} viewBox="0 0 24 24" fill="none" stroke={isDark?"#3A3050":th.line} strokeWidth={1.4} strokeLinecap="round" style={{marginBottom:7}}><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+            <div style={{fontFamily:"'Outfit',sans-serif",fontSize:11,color:th.ink4,fontWeight:200,letterSpacing:".5px"}}>新增演唱會記錄</div>
+          </div>
+        ):items.map(it=><Ticket key={it.id} it={it}/>)}
       </div>
       <FloatFAB onClick={()=>setSa(true)}/>
       {sa&&<FConcert onClose={()=>setSa(false)} onSave={sv} th={th}/>}
@@ -1499,7 +1769,7 @@ function Search({data,th=T}){
 /* ── STATS — Spotify-Wrapped style full-page slides ── */
 function AIPromptShare({ya,statsY,th}){
   const[copied,setCopied]=useState(false);
-  const isDark=th.bg==="#141210";
+  const isDark=th.bg==="#141218";
   const mC=ya.filter(i=>i._cat==="電影").length;
   const dC=ya.filter(i=>i._cat==="戲劇").length;
   const eC=ya.filter(i=>i._cat==="展覽"||i._cat==="景點").length;
@@ -1686,225 +1956,380 @@ function Stats({data,th=T}){
     setLoading(false);
   };
 
-  // BG colors per slide
-  const slideBgs=["#2A2520","#3A3060","#2A4A38","#503828","#383050","#1E3040","#2D3A28","#3A2050","#2A2520"];
-  const slideAccs=[T.rose,T.mauve,T.sage,T.sand,T.slate,T.olive,T.teal||T.sage,T.mauve,T.rose];
+  // BG colors per slide — JH palette alternating dark/light
+  const slideBgs=["#1E1C24","#FAF7F2","#F4F3F8","#1E1C24","#FAF7F2","#1E1C24","#F4F3F8","#1E1C24","#FAF7F2"];
+  const maxMCval=Math.max(...mc,1);
+  const peakM=mc.indexOf(Math.max(...mc))+1;
+  const rankCol=i=>i===0?"#FFD700":i===1?"#C8C8D8":i===2?"#CD8040":"rgba(255,255,255,.22)";
+  const isDarkSlide=i=>[0,3,5,7].includes(i);
+
+  const MiniDash=()=>(
+    <div style={{display:"flex",gap:3,marginTop:18}}>
+      {[18,18,18,9,9].map((w,i)=>(
+        <div key={i} style={{width:w,height:1.5,borderRadius:1,
+          background:i<3?"rgba(176,184,216,.35)":"rgba(232,168,160,.4)"}}/>
+      ))}
+    </div>
+  );
 
   const slides=[
-    // 0 — Cover
+    // ── S0: COVER ──────────────────────────────────────────────
     ()=>(
-      <div style={{minHeight:520,display:"flex",flexDirection:"column",justifyContent:"center",alignItems:"flex-start",padding:"40px 32px",position:"relative",overflow:"hidden"}}>
-        <GridBg/>
-        <div style={{position:"relative",zIndex:1}}>
-          <div style={{fontSize:11,fontWeight:500,color:"rgba(255,255,255,.5)",letterSpacing:"3px",marginBottom:12,textTransform:"uppercase"}}>YOUR {TY} RECAP</div>
-          <div className="num" style={{fontSize:64,fontWeight:700,color:"#fff",lineHeight:.9,marginBottom:4,letterSpacing:"-3px"}}>{total}</div>
-          <div style={{fontSize:18,fontWeight:400,color:"rgba(255,255,255,.7)",marginBottom:32}}>筆娛樂紀錄</div>
-          <div style={{display:"flex",flexDirection:"column",gap:10}}>
-            {[["🎬","電影",mC,"部"],[" 📺","戲劇",dC,"部"],["🎨","展覽",eC,"場"],["🎵","演唱會",cC,"場"]].map(([ic,lb,n,u])=>(
-              <div key={lb} style={{display:"flex",alignItems:"center",gap:10}}>
-                <span style={{fontSize:16}}>{ic}</span>
-                <span className="num" style={{fontSize:22,fontWeight:600,color:"#fff"}}>{n}</span>
-                <span style={{fontSize:13,color:"rgba(255,255,255,.55)"}}>{lb} {u}</span>
+      <div style={{minHeight:460,position:"relative",overflow:"hidden"}}>
+        {/* dot grid */}
+        <div style={{position:"absolute",inset:0,backgroundImage:"radial-gradient(circle,rgba(176,184,216,.07) 1px,transparent 1px)",backgroundSize:"18px 18px"}}/>
+        {/* top 3-color strip */}
+        <div style={{position:"absolute",top:0,left:0,right:0,height:2,background:`linear-gradient(90deg,${T.navy},${T.peri} 45%,${T.rose})`}}/>
+        {/* right diagonal stripe */}
+        <div style={{position:"absolute",top:0,right:0,bottom:0,width:70,backgroundImage:"repeating-linear-gradient(135deg,transparent,transparent 5px,rgba(176,184,216,.06) 5px,rgba(176,184,216,.06) 6px)"}}/>
+        {/* small rect + dot Memphis deco */}
+        <div style={{position:"absolute",top:32,right:28,width:28,height:6,background:T.navy,opacity:.55}}/>
+        <div style={{position:"absolute",top:28,right:70,width:10,height:10,borderRadius:"50%",background:T.rose,opacity:.65}}/>
+        <div style={{position:"relative",zIndex:1,padding:"28px 26px 26px"}}>
+          <div style={{fontFamily:"'Outfit',sans-serif",fontSize:8,letterSpacing:"3px",textTransform:"uppercase",color:"rgba(176,184,216,.45)",marginBottom:10}}>YOUR {validStatsY} RECAP</div>
+          {/* huge number */}
+          <div style={{fontFamily:"'Outfit',sans-serif",fontSize:88,fontWeight:200,color:"#EDE8F4",lineHeight:.85,letterSpacing:"-5px",marginBottom:4}}>{mC+dC+eC+cC}</div>
+          <div style={{fontFamily:"'Outfit',sans-serif",fontSize:12,fontWeight:200,color:"rgba(232,168,160,.75)",letterSpacing:"2px",textTransform:"uppercase",marginBottom:24}}>筆娛樂紀錄</div>
+          {/* 4 category rows */}
+          {[[mC,"部電影",T.catM.line],[dC,"部戲劇",T.catD.line],[eC,"場活動",T.catE.line],[cC,"場演唱會",T.catC.line]].map(([n,lb,col])=>(
+            <div key={lb} style={{display:"flex",alignItems:"center",gap:10,marginBottom:10}}>
+              <div style={{width:3,height:32,borderRadius:2,background:col,flexShrink:0}}/>
+              <div>
+                <div style={{fontFamily:"'Outfit',sans-serif",fontSize:26,fontWeight:200,color:"#EDE8F4",letterSpacing:"-1.5px",lineHeight:1}}>{n}</div>
+                <div style={{fontSize:10,color:"rgba(255,255,255,.38)",marginTop:-1}}>{lb}</div>
+              </div>
+              <div style={{flex:1,height:1,background:`${col}22`,marginLeft:4}}/>
+            </div>
+          ))}
+          <MiniDash/>
+        </div>
+      </div>
+    ),
+
+    // ── S1: MONTHLY RHYTHM ─────────────────────────────────────
+    ()=>(
+      <div style={{minHeight:460,position:"relative",overflow:"hidden"}}>
+        {/* Navy left sidebar */}
+        <div style={{position:"absolute",left:0,top:0,bottom:0,width:5,background:T.navy}}/>
+        {/* Navy top bar */}
+        <div style={{background:T.navy,padding:"14px 20px 12px 22px",position:"relative",overflow:"hidden"}}>
+          <div style={{position:"absolute",right:0,top:0,bottom:0,width:60,backgroundImage:"radial-gradient(circle,rgba(176,184,216,.15) 1.5px,transparent 1.5px)",backgroundSize:"9px 9px"}}/>
+          <div style={{fontFamily:"'Outfit',sans-serif",fontSize:8,letterSpacing:"3px",textTransform:"uppercase",color:"rgba(255,255,255,.45)",marginBottom:3}}>MONTHLY RHYTHM</div>
+          <div style={{fontFamily:"'Outfit',sans-serif",fontSize:18,fontWeight:200,color:"#fff",letterSpacing:"-.5px"}}>每月節奏</div>
+        </div>
+        <div style={{padding:"16px 18px 20px 22px"}}>
+          {/* Peak month card */}
+          <div style={{background:"#fff",borderRadius:8,border:`1px solid ${T.line}`,padding:"10px 14px",marginBottom:14,display:"flex",alignItems:"center",justifyContent:"space-between"}}>
+            <div>
+              <div style={{fontFamily:"'Outfit',sans-serif",fontSize:7,color:"#9A9088",letterSpacing:"2px",textTransform:"uppercase",marginBottom:3}}>最活躍月份</div>
+              <div style={{fontFamily:"'Outfit',sans-serif",fontSize:22,fontWeight:200,color:T.navy,letterSpacing:"-1px",lineHeight:1}}>{peakM}月</div>
+            </div>
+            <div style={{textAlign:"right"}}>
+              <div style={{fontFamily:"'Outfit',sans-serif",fontSize:7,color:"#9A9088",letterSpacing:"2px",textTransform:"uppercase",marginBottom:3}}>最高筆數</div>
+              <div style={{fontFamily:"'Outfit',sans-serif",fontSize:22,fontWeight:200,color:T.rose,letterSpacing:"-1px",lineHeight:1}}>{Math.max(...mc)}</div>
+            </div>
+          </div>
+          {/* Bar chart */}
+          <div style={{display:"flex",alignItems:"flex-end",gap:4,height:90,marginBottom:8}}>
+            {mc.map((n,mi)=>{
+              const h=Math.max((n/maxMCval)*86,n>0?4:0);
+              const cols=[T.catM.line,T.catD.line,T.peri,T.rose,T.catC.line,T.sage,T.smoke,T.catM.line,T.catD.line,T.peri,T.rose,T.catC.line];
+              const isPeak=mi===peakM-1;
+              return(
+                <div key={mi} style={{flex:1,display:"flex",flexDirection:"column",alignItems:"center",gap:2}}>
+                  <div style={{fontFamily:"'Outfit',sans-serif",fontSize:7,color:isPeak?T.rose:"#9A9088",height:13,display:"flex",alignItems:"flex-end"}}>{n>0?n:""}</div>
+                  <div style={{width:"100%",borderRadius:"3px 3px 0 0",background:n>0?cols[mi]:"#EAE8F0",height:h,minHeight:n>0?4:0,outline:isPeak?`2px solid ${T.rose}`:""}}/>
+                  <div style={{fontFamily:"'Outfit',sans-serif",fontSize:7,color:isPeak?T.rose:"#9A9088"}}>{mi+1}</div>
+                </div>
+              );
+            })}
+          </div>
+          <div style={{display:"flex",gap:3,marginTop:4}}>
+            {[18,18,18,9].map((w,i)=>(
+              <div key={i} style={{width:w,height:1.5,borderRadius:1,background:i<3?`${T.peri}55`:`${T.rose}55`}}/>
+            ))}
+          </div>
+        </div>
+      </div>
+    ),
+
+    // ── S2: TOP PICKS ───────────────────────────────────────────
+    ()=>(
+      <div style={{minHeight:460,position:"relative",overflow:"hidden",background:"#F4F3F8"}}>
+        {/* Coral header */}
+        <div style={{background:T.rose,padding:"20px 20px 16px",position:"relative",overflow:"hidden"}}>
+          <div style={{position:"absolute",top:0,right:0,bottom:0,width:70,backgroundImage:"repeating-linear-gradient(135deg,transparent,transparent 5px,rgba(255,255,255,.08) 5px,rgba(255,255,255,.08) 6px)"}}/>
+          <div style={{position:"absolute",top:14,right:18,width:6,height:22,background:T.navy,opacity:.35}}/>
+          <div style={{fontFamily:"'Outfit',sans-serif",fontSize:8,letterSpacing:"3px",textTransform:"uppercase",color:"rgba(255,255,255,.6)",marginBottom:4,position:"relative",zIndex:1}}>MY TOP PICKS</div>
+          <div style={{fontFamily:"'Outfit',sans-serif",fontSize:20,fontWeight:200,color:"#fff",letterSpacing:"-.5px",lineHeight:1.2,position:"relative",zIndex:1}}>你的年度<br/>最佳選片</div>
+        </div>
+        <div style={{padding:"10px 20px 20px"}}>
+          <div style={{fontFamily:"'Outfit',sans-serif",fontSize:7,letterSpacing:"2px",color:"#9A9088",textTransform:"uppercase",padding:"8px 0 4px",borderBottom:`1px solid ${T.line}`}}>電影 FILM</div>
+          {topMovies.length===0&&<div style={{fontSize:11,color:"#9A9088",padding:"12px 0"}}>尚無高評分電影</div>}
+          {topMovies.map((it,i)=>(
+            <div key={it.id} style={{borderBottom:`1px solid ${T.lineSoft}`,padding:"9px 0",display:"grid",gridTemplateColumns:"36px 1fr",gap:0}}>
+              <div style={{fontFamily:"'Outfit',sans-serif",fontSize:26,fontWeight:200,color:i%2===0?T.peri:T.rose,lineHeight:.88,letterSpacing:"-1.5px"}}>{String(i+1).padStart(2,"0")}</div>
+              <div style={{paddingTop:2}}>
+                <div style={{fontSize:13,color:"#2A2520"}}>{it.title}</div>
+                {it.imdbTitle&&it.imdbTitle!==it.title&&<div style={{fontFamily:"'Outfit',sans-serif",fontSize:8,color:"#9A9088",fontWeight:200,marginTop:1}}>{it.imdbTitle}</div>}
+              </div>
+            </div>
+          ))}
+          {/* Drama divider */}
+          <div style={{display:"flex",alignItems:"center",gap:8,margin:"10px 0 0"}}>
+            <div style={{height:1,flex:1,background:T.line}}/>
+            <div style={{fontFamily:"'Outfit',sans-serif",fontSize:7,letterSpacing:"2px",color:"#9A9088",textTransform:"uppercase"}}>戲劇 DRAMA</div>
+            <div style={{height:1,flex:1,background:T.line}}/>
+          </div>
+          {topDramas.length===0&&<div style={{fontSize:11,color:"#9A9088",padding:"12px 0"}}>尚無高評分戲劇</div>}
+          {topDramas.map((it,i)=>(
+            <div key={it.id} style={{borderBottom:i<topDramas.length-1?`1px solid ${T.lineSoft}`:"none",padding:"9px 0",display:"grid",gridTemplateColumns:"36px 1fr",gap:0}}>
+              <div style={{fontFamily:"'Outfit',sans-serif",fontSize:26,fontWeight:200,color:i%2===0?T.peri:T.rose,lineHeight:.88,letterSpacing:"-1.5px"}}>{String(i+1).padStart(2,"0")}</div>
+              <div style={{paddingTop:2}}>
+                <div style={{fontSize:13,color:"#2A2520"}}>{it.title}</div>
+                {it.subtype&&<div style={{fontFamily:"'Outfit',sans-serif",fontSize:8,color:"#9A9088",fontWeight:200,marginTop:1}}>{it.subtype}</div>}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    ),
+
+    // ── S3: DRAMA BREAKDOWN ─────────────────────────────────────
+    ()=>(
+      <div style={{minHeight:460,position:"relative",overflow:"hidden"}}>
+        {/* Watermark */}
+        <div style={{position:"absolute",fontFamily:"'Outfit',sans-serif",fontSize:150,fontWeight:200,color:T.peri,opacity:.05,top:-8,right:-8,lineHeight:1,letterSpacing:"-8px",userSelect:"none",pointerEvents:"none"}}>劇</div>
+        {/* dual-color top bar */}
+        <div style={{height:4,background:T.peri}}/>
+        <div style={{height:2,background:T.rose}}/>
+        <div style={{padding:"20px 22px 22px",position:"relative",zIndex:1}}>
+          <div style={{fontFamily:"'Outfit',sans-serif",fontSize:8,letterSpacing:"3px",textTransform:"uppercase",color:"rgba(176,184,216,.4)",marginBottom:5}}>DRAMA PROFILE</div>
+          <div style={{fontFamily:"'Outfit',sans-serif",fontSize:18,fontWeight:200,color:"rgba(255,255,255,.7)",letterSpacing:"-.5px",marginBottom:2}}>你最愛看</div>
+          <div style={{fontFamily:"'Outfit',sans-serif",fontSize:44,fontWeight:200,color:T.peri,letterSpacing:"-2px",lineHeight:1,marginBottom:22}}>{de[0]?.[0]||"—"}</div>
+          {de.length===0&&<div style={{fontSize:12,color:"rgba(255,255,255,.4)"}}>尚無戲劇記錄</div>}
+          <div style={{display:"flex",flexDirection:"column",gap:12}}>
+            {de.slice(0,6).map(([type,count],i)=>{
+              const dtc=DTC[type]||{l:T.sage};
+              return(
+                <div key={type}>
+                  <div style={{display:"flex",justifyContent:"space-between",alignItems:"baseline",marginBottom:5}}>
+                    <span style={{fontSize:12,color:"rgba(255,255,255,.75)"}}>{type}</span>
+                    <span style={{fontFamily:"'Outfit',sans-serif",fontSize:10,color:"rgba(255,255,255,.4)",fontWeight:200}}>{count}</span>
+                  </div>
+                  <div style={{height:4,background:"rgba(255,255,255,.07)",borderRadius:2,overflow:"hidden"}}>
+                    <div style={{height:"100%",borderRadius:2,background:dtc.l,width:`${(count/de[0][1])*100}%`}}/>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+          <MiniDash/>
+        </div>
+      </div>
+    ),
+
+    // ── S4: MOOD ────────────────────────────────────────────────
+    ()=>(
+      <div style={{minHeight:460,position:"relative",overflow:"hidden",background:"#FAF7F2"}}>
+        {/* Navy left band */}
+        <div style={{position:"absolute",left:0,top:0,bottom:0,width:4,background:T.navy}}/>
+        {/* Coral top-right triangle */}
+        <div style={{position:"absolute",top:0,right:0,width:56,height:56,background:T.rose,opacity:.14,clipPath:"polygon(100% 0,100% 100%,0 0)"}}/>
+        <div style={{padding:"22px 20px 20px 24px",position:"relative",zIndex:1}}>
+          <div style={{fontFamily:"'Outfit',sans-serif",fontSize:8,letterSpacing:"3px",textTransform:"uppercase",color:"#9A9088",marginBottom:5}}>MOOD RECAP</div>
+          <div style={{fontFamily:"'Outfit',sans-serif",fontSize:20,fontWeight:200,color:"#2A2520",letterSpacing:"-.5px",lineHeight:1.25,marginBottom:18}}>你的觀影<br/>心情</div>
+          {/* Avg card */}
+          <div style={{background:"#fff",borderRadius:8,border:`1px solid ${T.line}`,padding:"10px 14px",marginBottom:14,display:"flex",alignItems:"center",gap:12}}>
+            <div>
+              <div style={{fontFamily:"'Outfit',sans-serif",fontSize:7,color:"#9A9088",letterSpacing:"2px",textTransform:"uppercase",marginBottom:2}}>平均評分</div>
+              <div style={{fontFamily:"'Outfit',sans-serif",fontSize:28,fontWeight:200,color:T.navy,letterSpacing:"-1.5px",lineHeight:1}}>{avg||"—"}</div>
+            </div>
+            <div style={{width:1,height:36,background:T.line}}/>
+            <div style={{flex:1}}>
+              <div style={{fontFamily:"'Outfit',sans-serif",fontSize:7,color:"#9A9088",letterSpacing:"2px",textTransform:"uppercase",marginBottom:6}}>評分分布</div>
+              <div style={{display:"flex",gap:3,alignItems:"flex-end",height:24}}>
+                {rDist.map((n,i)=>{
+                  const h=Math.max((n/maxR)*24,n>0?3:0);
+                  const cols=[T.smoke,T.peri,T.navy,T.sage,T.rose];
+                  return <div key={i} style={{flex:1,background:n>0?cols[i]:"#EAE8F0",borderRadius:"2px 2px 0 0",height:h,minHeight:n>0?3:0}}/>;
+                })}
+              </div>
+              <div style={{display:"flex",gap:3,marginTop:2}}>
+                {[1,2,3,4,5].map(n=><div key={n} style={{flex:1,fontFamily:"'Outfit',sans-serif",fontSize:6,color:"#B0A8C0",textAlign:"center"}}>{n}</div>)}
+              </div>
+            </div>
+          </div>
+          {/* 2×2 stat tiles */}
+          <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8}}>
+            {[
+              ["滿分作品",rated.filter(i=>i.rating===5).length,"5星評分",T.navy],
+              ["踩雷紀錄",rated.filter(i=>i.rating<=2).length,"1-2星評分",T.rose],
+              ["已寫心得",ya.filter(i=>i.notes).length,"篇記錄",T.peri],
+              ["最常心情",rDist.indexOf(Math.max(...rDist))+1||"—","分",T.sage],
+            ].map(([label,val,unit,col])=>(
+              <div key={label} style={{background:"#fff",borderRadius:8,border:`1px solid ${T.line}`,padding:"11px 12px",borderTop:`2px solid ${col}`}}>
+                <div style={{fontFamily:"'Outfit',sans-serif",fontSize:7,color:"#9A9088",letterSpacing:"1.5px",textTransform:"uppercase",marginBottom:4}}>{label}</div>
+                <div style={{fontFamily:"'Outfit',sans-serif",fontSize:24,fontWeight:200,color:col,letterSpacing:"-1px",lineHeight:1}}>{val}</div>
+                <div style={{fontSize:9,color:"#9A9088",marginTop:2}}>{unit}</div>
               </div>
             ))}
           </div>
         </div>
-        <div style={{position:"absolute",bottom:-30,right:-30,width:140,height:140,borderRadius:"50%",background:slideAccs[0],opacity:.2}}/>
-        <div style={{position:"absolute",top:20,right:20,width:60,height:60,borderRadius:"50%",background:slideAccs[0],opacity:.15}}/>
       </div>
     ),
-    // 1 — Monthly rhythm
+
+    // ── S5: LIVE EVENTS ─────────────────────────────────────────
     ()=>(
-      <div style={{minHeight:520,padding:"36px 28px",position:"relative",overflow:"hidden"}}>
-        <div style={{fontSize:11,fontWeight:500,color:"rgba(255,255,255,.5)",letterSpacing:"2px",marginBottom:8,textTransform:"uppercase"}}>每月節奏</div>
-        <div style={{fontSize:28,fontWeight:600,color:"#fff",marginBottom:28,lineHeight:1.2}}>你全年都沒有<br/>停下來</div>
-        <div style={{display:"flex",alignItems:"flex-end",gap:5,height:140,marginBottom:16}}>
-          {mc.map((n,mi)=>{
-            const h=Math.max((n/maxMC)*120,n>0?6:0);
-            const cols=[T.slate,T.sage,T.rose,T.mauve,T.sand,T.olive];
-            return(
-              <div key={mi} style={{flex:1,display:"flex",flexDirection:"column",alignItems:"center",gap:3}}>
-                <div className="num" style={{fontSize:9,color:"rgba(255,255,255,.5)",height:16,display:"flex",alignItems:"flex-end"}}>{n>0?n:""}</div>
-                <div style={{width:"100%",borderRadius:"5px 5px 0 0",background:n>0?cols[mi%6]:"rgba(255,255,255,.1)",height:h,minHeight:n>0?4:0,transition:"height .4s"}}/>
-                <div className="num" style={{fontSize:9,color:"rgba(255,255,255,.4)"}}>{mi+1}</div>
-              </div>
-            );
-          })}
+      <div style={{minHeight:460,position:"relative",overflow:"hidden"}}>
+        {/* Coral-Maroon header */}
+        <div style={{background:`linear-gradient(135deg,${T.rose} 0%,${T.maroon} 100%)`,padding:"20px 20px 16px",position:"relative",overflow:"hidden"}}>
+          <div style={{position:"absolute",top:0,right:0,bottom:0,width:70,backgroundImage:"repeating-linear-gradient(135deg,transparent,transparent 5px,rgba(255,255,255,.06) 5px,rgba(255,255,255,.06) 6px)"}}/>
+          <div style={{position:"absolute",top:14,right:18,width:20,height:4,background:T.peri,opacity:.55}}/>
+          <div style={{fontFamily:"'Outfit',sans-serif",fontSize:8,letterSpacing:"3px",textTransform:"uppercase",color:"rgba(255,255,255,.55)",marginBottom:4,position:"relative",zIndex:1}}>LIVE EVENTS</div>
+          <div style={{fontFamily:"'Outfit',sans-serif",fontSize:20,fontWeight:200,color:"#fff",letterSpacing:"-.5px",lineHeight:1.2,position:"relative",zIndex:1}}>你走出家門<br/>感受現場</div>
         </div>
-        <div style={{fontSize:13,color:"rgba(255,255,255,.55)",fontWeight:400}}>月份活躍分布</div>
+        <div style={{padding:"14px 20px 20px"}}>
+          {/* Count tiles */}
+          <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8,marginBottom:14}}>
+            <div style={{background:"rgba(232,168,160,.1)",borderRadius:8,padding:"12px",border:`1px solid rgba(232,168,160,.2)`}}>
+              <div style={{fontFamily:"'Outfit',sans-serif",fontSize:30,fontWeight:200,color:T.rose,letterSpacing:"-1.5px",lineHeight:1}}>{eC}</div>
+              <div style={{fontFamily:"'Outfit',sans-serif",fontSize:8,color:"rgba(232,168,160,.65)",marginTop:3,letterSpacing:".5px"}}>場活動</div>
+            </div>
+            <div style={{background:"rgba(200,160,208,.1)",borderRadius:8,padding:"12px",border:`1px solid rgba(200,160,208,.2)`}}>
+              <div style={{fontFamily:"'Outfit',sans-serif",fontSize:30,fontWeight:200,color:T.catC.line,letterSpacing:"-1.5px",lineHeight:1}}>{cC}</div>
+              <div style={{fontFamily:"'Outfit',sans-serif",fontSize:8,color:"rgba(200,160,208,.65)",marginTop:3,letterSpacing:".5px"}}>場演唱會</div>
+            </div>
+          </div>
+          {/* Concert mini ticket */}
+          {data.concerts.filter(i=>i.date?.startsWith(String(validStatsY))).slice(0,1).map(it=>(
+            <div key={it.id} style={{background:"#252330",borderRadius:10,overflow:"hidden",border:"1px solid rgba(255,255,255,.07)"}}>
+              <div style={{background:"linear-gradient(135deg,#4A5878,#7A6090,#C8788A)",padding:"10px 14px",position:"relative",overflow:"hidden"}}>
+                <div style={{position:"absolute",top:0,right:0,bottom:0,width:50,backgroundImage:"repeating-linear-gradient(135deg,transparent,transparent 5px,rgba(255,255,255,.06) 5px,rgba(255,255,255,.06) 6px)"}}/>
+                <div style={{fontFamily:"'Outfit',sans-serif",fontSize:7,color:"rgba(255,255,255,.4)",letterSpacing:"2px",textTransform:"uppercase",marginBottom:2,position:"relative",zIndex:1}}>{it.venue||"演唱會"} · {it.date?.slice(0,10).replace(/-/g,".")}</div>
+                <div style={{fontSize:13,color:"#fff",fontWeight:400,position:"relative",zIndex:1}}>{it.title}</div>
+              </div>
+              <div style={{height:1,borderTop:"1.5px dashed #1E1C24",margin:"0 14px",position:"relative"}}>
+                <div style={{position:"absolute",left:-14,top:-10,width:9,height:19,background:"#1E1C24",borderRadius:"10px 0 0 10px"}}/>
+                <div style={{position:"absolute",right:-14,top:-10,width:9,height:19,background:"#1E1C24",borderRadius:"0 10px 10px 0"}}/>
+              </div>
+              <div style={{padding:"9px 14px",display:"grid",gridTemplateColumns:"1fr 1fr",gap:8}}>
+                <div>
+                  <div style={{fontFamily:"'Outfit',sans-serif",fontSize:7,color:"#9098C0",letterSpacing:"1.5px",textTransform:"uppercase",marginBottom:2}}>PRICE</div>
+                  <div style={{fontFamily:"'Outfit',sans-serif",fontSize:12,fontWeight:200,color:"#EDE8F4",letterSpacing:"-.3px"}}>{it.price?(it.currency||"NT$")+" "+Number(it.price).toLocaleString():"—"}</div>
+                </div>
+                <div>
+                  <div style={{fontFamily:"'Outfit',sans-serif",fontSize:7,color:"#9098C0",letterSpacing:"1.5px",textTransform:"uppercase",marginBottom:2}}>VENUE</div>
+                  <div style={{fontFamily:"'Outfit',sans-serif",fontSize:12,fontWeight:200,color:"#EDE8F4",letterSpacing:"-.3px"}}>{it.venue||"—"}</div>
+                </div>
+              </div>
+            </div>
+          ))}
+          {data.concerts.filter(i=>i.date?.startsWith(String(validStatsY))).length===0&&(
+            <div style={{fontSize:12,color:"rgba(255,255,255,.4)",textAlign:"center",padding:"16px 0"}}>尚無演唱會記錄</div>
+          )}
+          <MiniDash/>
+        </div>
       </div>
     ),
-    // 2 — Top watched
+
+    // ── S6: PLATFORM ────────────────────────────────────────────
     ()=>(
-      <div style={{minHeight:520,padding:"36px 28px"}}>
-        <div style={{fontSize:11,fontWeight:500,color:"rgba(255,255,255,.5)",letterSpacing:"2px",marginBottom:8,textTransform:"uppercase"}}>最愛片單</div>
-        <div style={{fontSize:26,fontWeight:600,color:"#fff",marginBottom:24,lineHeight:1.2}}>你的年度<br/>最佳選片</div>
-        {topMovies.length>0&&(
-          <div style={{marginBottom:20}}>
-            <div style={{fontSize:11,color:"rgba(255,255,255,.4)",letterSpacing:"1px",marginBottom:10,textTransform:"uppercase"}}>⭐ 電影</div>
-            {topMovies.map((it,i)=>(
-              <div key={it.id} style={{display:"flex",alignItems:"center",gap:12,marginBottom:10,padding:"10px 14px",background:"rgba(255,255,255,.08)",borderRadius:12,border:"1px solid rgba(255,255,255,.1)"}}>
-                <span className="num" style={{fontSize:20,fontWeight:700,color:slideAccs[2],width:24}}>{i+1}</span>
-                <div style={{flex:1}}>
-                  <div style={{fontSize:14,fontWeight:500,color:"#fff"}}>{it.title}</div>
-                  <div style={{fontSize:11,color:"rgba(255,255,255,.4)"}}>{it.platform||""}</div>
+      <div style={{minHeight:460,position:"relative",overflow:"hidden",background:"#F4F3F8"}}>
+        {/* Navy header */}
+        <div style={{background:T.navy,padding:"18px 20px 16px",position:"relative",overflow:"hidden"}}>
+          <div style={{position:"absolute",right:0,top:0,bottom:0,width:80,backgroundImage:"radial-gradient(circle,rgba(176,184,216,.12) 1.5px,transparent 1.5px)",backgroundSize:"9px 9px"}}/>
+          <div style={{position:"absolute",bottom:12,right:18,width:20,height:3,background:T.rose,opacity:.6}}/>
+          <div style={{fontFamily:"'Outfit',sans-serif",fontSize:8,letterSpacing:"3px",textTransform:"uppercase",color:"rgba(255,255,255,.45)",marginBottom:4,position:"relative",zIndex:1}}>WHERE I WATCHED</div>
+          <div style={{fontFamily:"'Outfit',sans-serif",fontSize:20,fontWeight:200,color:"#fff",letterSpacing:"-.5px",position:"relative",zIndex:1,lineHeight:1.2}}>最常用的<br/>串流平台</div>
+        </div>
+        <div style={{padding:"14px 20px 20px"}}>
+          {platRanked.length===0&&<div style={{fontSize:12,color:"#9A9088",padding:"16px 0"}}>尚無串流記錄</div>}
+          <div style={{display:"flex",flexDirection:"column",gap:11}}>
+            {platRanked.slice(0,5).map(([plat,cnt],i)=>{
+              const rankCols=["#B0B8D8","#B0B8D8",T.rose,"#9A9088","#9A9088"];
+              const barCols=[T.navy,"#6080B8",T.rose,T.catC.line,T.sage];
+              const maxCnt=platRanked[0]?.[1]||1;
+              return(
+                <div key={plat} style={{display:"grid",gridTemplateColumns:"28px 1fr",gap:10,alignItems:"center"}}>
+                  <div style={{fontFamily:"'Outfit',sans-serif",fontSize:13,fontWeight:200,color:rankCols[i],lineHeight:1}}>#{i+1}</div>
+                  <div>
+                    <div style={{display:"flex",justifyContent:"space-between",alignItems:"baseline",marginBottom:4}}>
+                      <span style={{fontSize:13,color:"#2A2520"}}>{plat}</span>
+                      <span style={{fontFamily:"'Outfit',sans-serif",fontSize:10,color:"#9A9088",fontWeight:200}}>{cnt}</span>
+                    </div>
+                    <div style={{height:3,background:T.lineSoft,borderRadius:2,overflow:"hidden"}}>
+                      <div style={{height:"100%",borderRadius:2,background:barCols[i],width:`${(cnt/maxCnt)*100}%`}}/>
+                    </div>
+                  </div>
                 </div>
-                <MoodIcon value={it.rating} size={22}/>
+              );
+            })}
+          </div>
+          <div style={{display:"flex",gap:3,marginTop:16}}>
+            {[16,16,16,9,9].map((w,i)=>(
+              <div key={i} style={{width:w,height:1.5,borderRadius:1,background:i<3?`${T.peri}55`:`${T.rose}55`}}/>
+            ))}
+          </div>
+        </div>
+      </div>
+    ),
+
+    // ── S7: BEST OF YEAR ────────────────────────────────────────
+    ()=>(
+      <div style={{minHeight:460,position:"relative",overflow:"hidden"}}>
+        {/* Periwinkle left band */}
+        <div style={{position:"absolute",left:0,top:0,bottom:0,width:4,background:T.peri}}/>
+        {/* dot cluster deco */}
+        <div style={{position:"absolute",right:14,top:18,width:40,height:40,backgroundImage:"radial-gradient(circle,rgba(176,184,216,.1) 1px,transparent 1px)",backgroundSize:"6px 6px"}}/>
+        <div style={{padding:"22px 22px 22px 26px",position:"relative",zIndex:1}}>
+          <div style={{fontFamily:"'Outfit',sans-serif",fontSize:8,letterSpacing:"3px",textTransform:"uppercase",color:"rgba(176,184,216,.4)",marginBottom:5}}>BEST OF THE YEAR</div>
+          <div style={{fontFamily:"'Outfit',sans-serif",fontSize:20,fontWeight:200,color:"#EDE8F4",letterSpacing:"-.5px",lineHeight:1.2,marginBottom:18}}>你給出最高<br/>評分的作品</div>
+          {allRated.length===0&&<div style={{fontSize:12,color:"rgba(255,255,255,.4)"}}>尚無評分記錄</div>}
+          {allRated.slice(0,5).map((it,i)=>(
+            <div key={it.id} style={{borderBottom:i<Math.min(allRated.length,5)-1?"1px solid rgba(255,255,255,.07)":"none",padding:"10px 0",display:"grid",gridTemplateColumns:"40px 1fr",gap:8,alignItems:"center"}}>
+              <div style={{fontFamily:"'Outfit',sans-serif",fontSize:24,fontWeight:200,color:rankCol(i),lineHeight:.9,letterSpacing:"-1.5px"}}>#{i+1}</div>
+              <div>
+                <div style={{fontSize:13,color:"#EDE8F4",marginBottom:2,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{it.title}</div>
+                <div style={{display:"flex",alignItems:"center",gap:6}}>
+                  <span style={{fontFamily:"'Outfit',sans-serif",fontSize:7,color:`${rankCol(i)}88`,border:`1px solid ${rankCol(i)}44`,padding:"1px 6px",borderRadius:2,letterSpacing:".5px"}}>{it._cat}</span>
+                  {it.imdbRating&&<span style={{fontFamily:"'Outfit',sans-serif",fontSize:7,color:"rgba(255,255,255,.25)",fontWeight:200}}>⭐ {it.imdbRating}</span>}
+                </div>
+              </div>
+            </div>
+          ))}
+          <MiniDash/>
+        </div>
+      </div>
+    ),
+
+    // ── S8: AI SUMMARY ──────────────────────────────────────────
+    ()=>(
+      <div style={{minHeight:460,position:"relative",overflow:"hidden",background:"#FAF7F2"}}>
+        {/* Navy→Peri gradient header */}
+        <div style={{background:`linear-gradient(135deg,${T.navy} 0%,#6070A0 100%)`,padding:"20px 20px 16px",position:"relative",overflow:"hidden"}}>
+          <div style={{position:"absolute",top:0,right:0,bottom:0,width:60,backgroundImage:"repeating-linear-gradient(135deg,transparent,transparent 4px,rgba(176,184,216,.1) 4px,rgba(176,184,216,.1) 5px)"}}/>
+          <div style={{position:"absolute",bottom:14,right:20,width:10,height:10,borderRadius:"50%",background:T.rose,opacity:.65,zIndex:1}}/>
+          <div style={{fontFamily:"'Outfit',sans-serif",fontSize:8,letterSpacing:"3px",textTransform:"uppercase",color:"rgba(255,255,255,.45)",marginBottom:4,position:"relative",zIndex:1}}>年度總結</div>
+          <div style={{fontFamily:"'Outfit',sans-serif",fontSize:20,fontWeight:200,color:"#fff",letterSpacing:"-.5px",lineHeight:1.2,position:"relative",zIndex:1}}>今年的你<br/>是這樣的</div>
+        </div>
+        <div style={{padding:"14px 18px 20px"}}>
+          {/* Summary info card */}
+          <div style={{background:"#fff",borderRadius:10,padding:"12px 14px",border:`1px solid ${T.line}`,marginBottom:10}}>
+            <div style={{fontFamily:"'Outfit',sans-serif",fontSize:7,color:"#9A9088",letterSpacing:"2px",textTransform:"uppercase",marginBottom:8}}>包含你的紀錄</div>
+            {[
+              [T.catM.line,`${mC} 部電影 · ${dC} 部戲劇 · ${eC} 場活動 · ${cC} 場演唱會`],
+              [T.rose,`共 ${ya.filter(i=>i.notes).length} 篇心得 · 平均評分 ${avg||"—"}`],
+              [T.sage,`最愛：${topMovies[0]?.title||topDramas[0]?.title||"—"}`],
+            ].map(([col,text],i)=>(
+              <div key={i} style={{display:"flex",alignItems:"center",gap:7,fontSize:11,color:"#4A4540",marginBottom:i<2?5:0}}>
+                <div style={{width:3,height:3,borderRadius:"50%",background:col,flexShrink:0}}/>
+                {text}
               </div>
             ))}
           </div>
-        )}
-        {topDramas.length>0&&(
-          <div>
-            <div style={{fontSize:11,color:"rgba(255,255,255,.4)",letterSpacing:"1px",marginBottom:10,textTransform:"uppercase"}}>📺 戲劇</div>
-            {topDramas.map((it,i)=>(
-              <div key={it.id} style={{display:"flex",alignItems:"center",gap:12,marginBottom:10,padding:"10px 14px",background:"rgba(255,255,255,.08)",borderRadius:12,border:"1px solid rgba(255,255,255,.1)"}}>
-                <span className="num" style={{fontSize:20,fontWeight:700,color:slideAccs[2],width:24}}>{i+1}</span>
-                <div style={{flex:1}}>
-                  <div style={{fontSize:14,fontWeight:500,color:"#fff"}}>{it.title}</div>
-                  <div style={{fontSize:11,color:"rgba(255,255,255,.4)"}}>{it.subtype}</div>
-                </div>
-                <MoodIcon value={it.rating} size={22}/>
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
-    ),
-    // 3 — Drama breakdown
-    ()=>(
-      <div style={{minHeight:520,padding:"36px 28px"}}>
-        <div style={{fontSize:11,fontWeight:500,color:"rgba(255,255,255,.5)",letterSpacing:"2px",marginBottom:8,textTransform:"uppercase"}}>戲劇偏好</div>
-        <div style={{fontSize:26,fontWeight:600,color:"#fff",marginBottom:8,lineHeight:1.2}}>
-          你最愛看
-        </div>
-        {de[0]&&<div className="num" style={{fontSize:52,fontWeight:700,color:slideAccs[3],lineHeight:1,marginBottom:24,letterSpacing:"-2px"}}>{de[0][0]}</div>}
-        <div style={{display:"flex",flexDirection:"column",gap:10}}>
-          {de.map(([type,count])=>{
-            const dtc=DTC[type]||{l:T.sage};
-            return(
-              <div key={type}>
-                <div style={{display:"flex",justifyContent:"space-between",marginBottom:5}}>
-                  <span style={{fontSize:13,color:"rgba(255,255,255,.8)",fontWeight:400}}>{type}</span>
-                  <span className="num" style={{fontSize:13,color:"rgba(255,255,255,.6)",fontWeight:500}}>{count}</span>
-                </div>
-                <div style={{height:8,background:"rgba(255,255,255,.1)",borderRadius:8,overflow:"hidden"}}>
-                  <div style={{height:"100%",borderRadius:8,background:dtc.l,width:`${(count/dC)*100}%`,transition:"width .5s"}}/>
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      </div>
-    ),
-    // 4 — Mood
-    ()=>(
-      <div style={{minHeight:520,padding:"36px 28px"}}>
-        <div style={{fontSize:11,fontWeight:500,color:"rgba(255,255,255,.5)",letterSpacing:"2px",marginBottom:8,textTransform:"uppercase"}}>心情回顧</div>
-        <div style={{fontSize:26,fontWeight:600,color:"#fff",marginBottom:6,lineHeight:1.2}}>你的觀影心情</div>
-        <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:28}}>
-          <span style={{fontSize:11,color:"rgba(255,255,255,.4)"}}>平均</span>
-          <MoodIcon value={Math.round(parseFloat(avg))||3} size={30}/>
-          <span className="num" style={{fontSize:28,fontWeight:700,color:FACE_C[Math.round(parseFloat(avg))||3]}}>{avg||"—"}</span>
-          <span style={{fontSize:11,color:"rgba(255,255,255,.35)"}}>/5</span>
-        </div>
-        <div style={{display:"flex",gap:10,alignItems:"flex-end",height:120}}>
-          {rDist.map((n,i)=>{
-            const h=Math.max((n/maxR)*100,n>0?5:0);
-            return(
-              <div key={i} style={{flex:1,display:"flex",flexDirection:"column",alignItems:"center",gap:6}}>
-                <span className="num" style={{fontSize:10,color:"rgba(255,255,255,.5)",height:14,display:"flex",alignItems:"flex-end"}}>{n>0?n:""}</span>
-                <div style={{width:"100%",borderRadius:"6px 6px 0 0",background:n>0?FACE_C[i+1]:"rgba(255,255,255,.1)",height:h,minHeight:n>0?4:0}}/>
-                <MoodIcon value={i+1} size={24}/>
-              </div>
-            );
-          })}
-        </div>
-      </div>
-    ),
-    // 5 — Live events
-    ()=>(
-      <div style={{minHeight:520,padding:"36px 28px"}}>
-        <div style={{fontSize:11,fontWeight:500,color:"rgba(255,255,255,.5)",letterSpacing:"2px",marginBottom:8,textTransform:"uppercase"}}>現場體驗</div>
-        <div style={{fontSize:26,fontWeight:600,color:"#fff",marginBottom:8,lineHeight:1.2}}>你走出家門<br/>感受現場</div>
-        <div style={{display:"flex",gap:14,marginBottom:28}}>
-          <div style={{flex:1,background:"rgba(255,255,255,.08)",borderRadius:14,padding:"16px",border:"1px solid rgba(255,255,255,.1)"}}>
-            <div className="num" style={{fontSize:36,fontWeight:700,color:T.rose,lineHeight:1}}>{eC}</div>
-            <div style={{fontSize:12,color:"rgba(255,255,255,.5)",marginTop:4}}>場展覽</div>
-          </div>
-          <div style={{flex:1,background:"rgba(255,255,255,.08)",borderRadius:14,padding:"16px",border:"1px solid rgba(255,255,255,.1)"}}>
-            <div className="num" style={{fontSize:36,fontWeight:700,color:T.mauve,lineHeight:1}}>{cC}</div>
-            <div style={{fontSize:12,color:"rgba(255,255,255,.5)",marginTop:4}}>場演唱會</div>
-          </div>
-        </div>
-        {data.concerts.filter(i=>i.date?.startsWith(String(TY))).slice(0,2).map(it=>(
-          <div key={it.id} style={{padding:"12px 14px",background:"rgba(255,255,255,.06)",borderRadius:12,border:"1px solid rgba(255,255,255,.08)",marginBottom:8}}>
-            <div style={{fontSize:14,fontWeight:500,color:"#fff",marginBottom:3}}>{it.title}</div>
-            <div style={{fontSize:11,color:"rgba(255,255,255,.4)"}}>{it.venue} · {it.city}</div>
-          </div>
-        ))}
-      </div>
-    ),
-    // 6 — Platform stats
-    ()=>(
-      <div style={{minHeight:520,padding:"32px 24px",position:"relative",overflow:"hidden"}}>
-        <div style={{fontSize:11,fontWeight:500,color:"rgba(255,255,255,.5)",letterSpacing:"2px",marginBottom:8,textTransform:"uppercase"}}>{statsY} 串流平台</div>
-        <div style={{fontSize:24,fontWeight:600,color:"#fff",marginBottom:4,lineHeight:1.2}}>你最常用的<br/>串流平台</div>
-        {platRanked.length===0&&<div style={{color:"rgba(255,255,255,.4)",fontSize:13,marginTop:20}}>尚無串流記錄</div>}
-        <div style={{display:"flex",flexDirection:"column",gap:10,marginTop:20}}>
-          {platRanked.slice(0,5).map(([plat,cnt],i)=>{
-            const topType=Object.entries(platTypes[plat]||{}).sort((a,b)=>b[1]-a[1])[0]?.[0]||"";
-            const maxCnt=platRanked[0]?.[1]||1;
-            const pct=Math.round(cnt/maxCnt*100);
-            return(
-              <div key={plat} style={{padding:"12px 16px",background:"rgba(255,255,255,.09)",borderRadius:14,border:"1px solid rgba(255,255,255,.12)"}}>
-                <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:8}}>
-                  <span style={{fontSize:15,fontWeight:500,color:"#fff"}}>{plat}</span>
-                  <span className="num" style={{fontSize:18,fontWeight:600,color:T.sage}}>{cnt} 部</span>
-                </div>
-                <div style={{height:4,background:"rgba(255,255,255,.15)",borderRadius:2,marginBottom:6}}>
-                  <div style={{height:"100%",borderRadius:2,background:T.sage,width:`${pct}%`}}/>
-                </div>
-                <div style={{fontSize:10,color:"rgba(255,255,255,.45)"}}>主要類型：{topType||"—"}</div>
-              </div>
-            );
-          })}
-        </div>
-      </div>
-    ),
-    // 7 — Best of year ranking
-    ()=>(
-      <div style={{minHeight:520,padding:"32px 24px",position:"relative",overflow:"hidden"}}>
-        <div style={{fontSize:11,fontWeight:500,color:"rgba(255,255,255,.5)",letterSpacing:"2px",marginBottom:8,textTransform:"uppercase"}}>年度最佳</div>
-        <div style={{fontSize:24,fontWeight:600,color:"#fff",marginBottom:20,lineHeight:1.2}}>你給出最高<br/>評分的作品</div>
-        {allRated.length===0&&<div style={{color:"rgba(255,255,255,.4)",fontSize:13}}>尚無評分記錄</div>}
-        <div style={{display:"flex",flexDirection:"column",gap:8}}>
-          {allRated.map((it,i)=>{
-            const catIcon=it._cat==="電影"?"🎬":it._cat==="戲劇"?"📺":it._cat==="展覽"?"🎨":"🎵";
-            const rankCol=i===0?"#FFD700":i===1?"#C8C8C8":i===2?"#CD8040":"rgba(255,255,255,.5)";
-            return(
-              <div key={it.id} style={{display:"flex",alignItems:"center",gap:12,padding:"10px 14px",background:"rgba(255,255,255,.08)",borderRadius:12,border:"1px solid rgba(255,255,255,.1)"}}>
-                <span className="num" style={{fontSize:17,fontWeight:700,color:rankCol,width:26,flexShrink:0,textAlign:"center"}}>#{i+1}</span>
-                <span style={{fontSize:14,flexShrink:0}}>{catIcon}</span>
-                <div style={{flex:1,minWidth:0}}>
-                  <div style={{fontSize:13,fontWeight:500,color:"#fff",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{it.title}</div>
-                  {it.imdbRating&&<div style={{fontSize:10,color:"rgba(255,255,255,.4)"}}>⭐ {it.imdbRating}</div>}
-                </div>
-                <MoodIcon value={it.rating} size={20}/>
-              </div>
-            );
-          })}
-        </div>
-      </div>
-    ),
-    // 8 — AI summary
-    ()=>(
-      <div style={{minHeight:520,padding:"36px 28px",display:"flex",flexDirection:"column"}}>
-        <GridBg/>
-        <div style={{position:"relative",zIndex:1,flex:1,display:"flex",flexDirection:"column"}}>
-          <div style={{fontSize:11,fontWeight:500,color:"rgba(255,255,255,.5)",letterSpacing:"2px",marginBottom:8,textTransform:"uppercase"}}>年度總結</div>
-          <div style={{fontSize:24,fontWeight:600,color:"#fff",marginBottom:16,lineHeight:1.2}}>今年的你<br/>是這樣的</div>
-          <AISummaryPrompt ya={ya} th={null}/>
+          {/* AI summary text */}
+          <AISummaryPrompt ya={ya} th={{bg:"#FAF7F2",ink:"#2A2520",ink4:"#9A9088"}}/>
         </div>
       </div>
     ),
@@ -1913,13 +2338,13 @@ function Stats({data,th=T}){
   return(
     <div className="page">
       <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:4}}>
-        <h2 style={{fontSize:20,fontWeight:500,color:th.ink}}>年度統計</h2>
+        <h2 style={{fontFamily:"'Outfit',sans-serif",fontSize:20,fontWeight:200,color:th.ink,letterSpacing:"-.5px"}}>年度統計</h2>
         <div style={{display:"flex",gap:4}}>
           {years.map(y=>(
             <button key={y} type="button" className="tap" onClick={()=>setStatsY(y)}
               style={{padding:"4px 10px",borderRadius:20,fontSize:11,fontWeight:500,
-                background:validStatsY===y?T.rose:th.white,color:validStatsY===y?"#fff":th.ink3,
-                border:`1.5px solid ${validStatsY===y?T.rose:th.line}`,cursor:"pointer",fontFamily:"inherit"}}>
+                background:validStatsY===y?T.navy:th.white,color:validStatsY===y?"#fff":th.ink3,
+                border:`1.5px solid ${validStatsY===y?T.navy:th.line}`,cursor:"pointer",fontFamily:"inherit"}}>
               {y}
             </button>
           ))}
@@ -1932,11 +2357,11 @@ function Stats({data,th=T}){
         {slides[slide]()}
         {/* prev/next */}
         <button className="tap" onClick={()=>setSlide(s=>(s-1+slides.length)%slides.length)}
-          style={{position:"absolute",left:12,bottom:16,width:36,height:36,borderRadius:"50%",background:"rgba(255,255,255,.15)",display:"flex",alignItems:"center",justifyContent:"center",color:"rgba(255,255,255,.8)",border:"1px solid rgba(255,255,255,.2)"}}>
+          style={{position:"absolute",left:12,bottom:16,width:32,height:32,borderRadius:"50%",background:"rgba(128,120,160,.2)",display:"flex",alignItems:"center",justifyContent:"center",color:"rgba(255,255,255,.7)",border:"1px solid rgba(255,255,255,.15)"}}>
           <ICL s={16}/>
         </button>
         <button className="tap" onClick={()=>setSlide(s=>(s+1)%slides.length)}
-          style={{position:"absolute",right:12,bottom:16,width:36,height:36,borderRadius:"50%",background:"rgba(255,255,255,.15)",display:"flex",alignItems:"center",justifyContent:"center",color:"rgba(255,255,255,.8)",border:"1px solid rgba(255,255,255,.2)"}}>
+          style={{position:"absolute",right:12,bottom:16,width:32,height:32,borderRadius:"50%",background:"rgba(128,120,160,.2)",display:"flex",alignItems:"center",justifyContent:"center",color:"rgba(255,255,255,.7)",border:"1px solid rgba(255,255,255,.15)"}}>
           <ICR s={16}/>
         </button>
       </div>
@@ -1944,7 +2369,7 @@ function Stats({data,th=T}){
       {/* dots */}
       <div style={{display:"flex",justifyContent:"center",gap:6,marginBottom:8}}>
         {slides.map((_,i)=>(
-          <button key={i} onClick={()=>setSlide(i)} style={{width:i===slide?20:7,height:7,borderRadius:4,background:i===slide?T.rose:T.line,transition:"all .2s",border:"none"}}/>
+          <button key={i} onClick={()=>setSlide(i)} style={{width:i===slide?20:7,height:7,borderRadius:4,background:i===slide?T.navy:T.line,transition:"all .2s",border:"none"}}/>
         ))}
       </div>
       <div style={{textAlign:"center",fontSize:11,color:th.ink4,marginBottom:20}}>{slide+1} / {slides.length}</div>
