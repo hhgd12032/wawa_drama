@@ -893,7 +893,8 @@ function RCard({item,cat,onClick,th=T,idx=0,total=null}){
   const dtl=DTC[item.subtype]||null;
   const lc=dtl?dtl.l:cs.line;
   const isDark=th.bg==="#1C1A22";
-  const idxColor=idx===0?T.peri:idx===1?T.rose:isDark?"#4A4860":th.line;
+  const idxPalette=[T.peri,T.rose,T.sage,"#C8A0D0",T.smoke,T.peri,T.rose,T.sage,"#C8A0D0",T.smoke];
+  const idxColor=idxPalette[idx%idxPalette.length]||(isDark?"#4A4860":th.line);
   const num=total!=null?String(total-idx).padStart(2,"0"):String(idx+1).padStart(2,"0");
   return(
     <div className="tap" onClick={()=>onClick(item)} style={{
@@ -913,7 +914,7 @@ function RCard({item,cat,onClick,th=T,idx=0,total=null}){
           <div style={{flex:1,paddingRight:8}}>
             <div style={{fontSize:14,fontWeight:400,color:isDark?'#EDE8F4':th.ink,lineHeight:1.35}}>{item.title}</div>
             {item.imdbTitle&&item.imdbTitle!==item.title&&(
-              <div style={{fontFamily:"'Outfit',sans-serif",fontSize:9,fontWeight:200,color:isDark?'#6A6888':th.ink4,marginTop:1,letterSpacing:".3px"}}>{item.imdbTitle}</div>
+              <div style={{fontFamily:"'Outfit',sans-serif",fontSize:9,fontWeight:200,color:isDark?'#8A88A8':th.ink4,marginTop:1,letterSpacing:".3px"}}>{item.imdbTitle}</div>
             )}
           </div>
           <div style={{display:"flex",alignItems:"center",gap:6,flexShrink:0}}>
@@ -926,7 +927,7 @@ function RCard({item,cat,onClick,th=T,idx=0,total=null}){
         </div>
         {/* Meta row */}
         <div style={{display:"flex",alignItems:"center",gap:7,marginBottom:item.notes?6:0,flexWrap:"wrap"}}>
-          <span style={{fontFamily:"'Outfit',sans-serif",fontSize:11,fontWeight:200,color:th.ink4}}>{item.date?.slice(0,10).replace(/-/g," · ")}</span>
+          <span style={{fontFamily:"'Outfit',sans-serif",fontSize:12,fontWeight:200,color:isDark?"#B0B0CC":th.ink4}}>{item.date?.slice(0,10).replace(/-/g," · ")}</span>
           <span style={{
             fontSize:8,border:`1px solid ${lc}66`,padding:"1px 7px",borderRadius:2,
             color:lc,letterSpacing:".3px",fontFamily:"'Outfit',sans-serif",
@@ -939,7 +940,7 @@ function RCard({item,cat,onClick,th=T,idx=0,total=null}){
         </div>
         {item.notes&&(
           <div style={{
-            fontSize:11,color:isDark?"#8A88A8":th.ink4,lineHeight:1.7,
+            fontSize:12,color:isDark?"#A0A0C0":th.ink4,lineHeight:1.7,
             overflow:"hidden",display:"-webkit-box",WebkitLineClamp:1,WebkitBoxOrient:"vertical",
           }}>{item.notes}</div>
         )}
@@ -1348,7 +1349,7 @@ function Watchlist({data,setData,th=T}){
         <div style={{position:"relative",zIndex:1}}>
           <div style={{fontFamily:"'Outfit',sans-serif",fontSize:8,color:"rgba(255,255,255,.4)",letterSpacing:"3px",textTransform:"uppercase",marginBottom:6}}>WATCHLIST</div>
           <div style={{fontFamily:"'Outfit',sans-serif",fontSize:32,fontWeight:200,color:"#fff",letterSpacing:"-1px",lineHeight:1}}>片單</div>
-          <div style={{fontSize:10,color:"rgba(255,255,255,.4)",marginTop:5}}>
+          <div style={{fontSize:11,color:"rgba(255,255,255,.55)",marginTop:5}}>
             共 {data.movies.length+data.dramas.length} 部 · {new Date().getFullYear()}年
           </div>
         </div>
@@ -1379,7 +1380,7 @@ function Watchlist({data,setData,th=T}){
             <div style={{display:"flex",gap:5,flexWrap:"wrap",marginBottom:10}}>
               {["全部",...DSubs].map(t=>(
                 <button key={t} className="tap" type="button" onClick={e=>{e.preventDefault();setDf(t);}} style={{
-                  padding:"5px 12px",borderRadius:3,fontSize:13,fontWeight:400,
+                  padding:"4px 10px",borderRadius:3,fontSize:11,fontWeight:400,
                   fontFamily:"'Outfit',sans-serif",letterSpacing:".3px",
                   background:df===t?T.navy:(isDark?"#252330":"transparent"),
                   color:df===t?"#fff":(isDark?"#C8C0D8":th.ink4),
@@ -1483,38 +1484,38 @@ function Exhibition({data,setData,th=T}){
         {/* Left full-height colour band */}
         <div style={{width:4,background:bandCol,flexShrink:0}}/>
         <div style={{flex:1,padding:"13px 14px"}}>
-          <div style={{fontFamily:"'Outfit',sans-serif",fontSize:8,letterSpacing:"2px",
-            textTransform:"uppercase",color:th.ink4,marginBottom:5}}>
+          <div style={{fontFamily:"'Outfit',sans-serif",fontSize:9,letterSpacing:"2px",
+            textTransform:"uppercase",color:isDark?"#9898B8":th.ink4,marginBottom:5}}>
             {typeLabel} {it._isSpot?"SPOT":"EXHIBITION"}
           </div>
-          <div style={{fontSize:14,fontWeight:400,color:th.ink,marginBottom:8,lineHeight:1.4}}>{it.title}</div>
+          <div style={{fontSize:14,fontWeight:400,color:isDark?"#EDE8F4":th.ink,marginBottom:8,lineHeight:1.4}}>{it.title}</div>
           <div style={{display:"flex",alignItems:"center",justifyContent:"space-between"}}>
             <div style={{display:"flex",gap:6,alignItems:"center",flexWrap:"wrap"}}>
               {it.venue&&(
-                <span style={{fontSize:9,color:isDark?"#8098C8":T.navy,
+                <span style={{fontSize:11,color:isDark?"#9AAAD8":T.navy,
                   background:isDark?"rgba(96,128,184,.12)":T.navyBg,
                   padding:"2px 8px",borderRadius:3,fontFamily:"'Outfit',sans-serif",
-                  border:`1px solid ${isDark?"rgba(96,128,184,.2)":T.peri+"44"}`}}>
+                  border:`1px solid ${isDark?"rgba(96,128,184,.25)":T.peri+"44"}`}}>
                   {it.venue}
                 </span>
               )}
               {it.city&&!it.venue&&(
-                <span style={{fontSize:9,color:isDark?"#8098C8":T.navy,
+                <span style={{fontSize:11,color:isDark?"#9AAAD8":T.navy,
                   background:isDark?"rgba(96,128,184,.12)":T.navyBg,
                   padding:"2px 8px",borderRadius:3,fontFamily:"'Outfit',sans-serif",
-                  border:`1px solid ${isDark?"rgba(96,128,184,.2)":T.peri+"44"}`}}>
+                  border:`1px solid ${isDark?"rgba(96,128,184,.25)":T.peri+"44"}`}}>
                   {it.city}
                 </span>
               )}
-              <span style={{fontFamily:"'Outfit',sans-serif",fontSize:9,color:th.ink4,fontWeight:200}}>
+              <span style={{fontFamily:"'Outfit',sans-serif",fontSize:12,color:isDark?"#B0B0CC":th.ink4,fontWeight:200}}>
                 {it.date?.slice(0,7).replace("-"," · ")}
               </span>
-              {it.price&&<span style={{fontFamily:"'Outfit',sans-serif",fontSize:9,color:T.sage,fontWeight:300}}>{it.currency||"NT$"} {Number(it.price).toLocaleString()}</span>}
+              {it.price&&<span style={{fontFamily:"'Outfit',sans-serif",fontSize:11,color:isDark?"#8AB4A0":T.sage,fontWeight:300}}>{it.currency||"NT$"} {Number(it.price).toLocaleString()}</span>}
             </div>
             {it.rating>0&&<MoodIcon value={it.rating} size={20}/>}
           </div>
           {it.notes&&(
-            <div style={{fontSize:10,color:th.ink4,marginTop:7,lineHeight:1.7,
+            <div style={{fontSize:12,color:isDark?"#A0A0C0":th.ink4,marginTop:7,lineHeight:1.7,
               overflow:"hidden",display:"-webkit-box",WebkitLineClamp:1,WebkitBoxOrient:"vertical"}}>
               {it.notes}
             </div>
@@ -1523,7 +1524,7 @@ function Exhibition({data,setData,th=T}){
             <button type="button" className="tap" onClick={e=>{e.stopPropagation();window.open(`https://www.google.com/maps/search/${encodeURIComponent(it.venue)}`,"_blank");}} style={{
               marginTop:8,padding:"5px 12px",borderRadius:4,
               border:`1px solid ${th.line}`,background:isDark?th.surface:th.bg,
-              fontSize:9,fontFamily:"'Outfit',sans-serif",color:isDark?"#8098C8":T.navy,
+              fontSize:11,fontFamily:"'Outfit',sans-serif",color:isDark?"#9AAAD8":T.navy,
               display:"inline-flex",alignItems:"center",gap:4,letterSpacing:".8px",textTransform:"uppercase",
             }}>
               <svg width={10} height={10} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5"/></svg>
@@ -1561,7 +1562,7 @@ function Exhibition({data,setData,th=T}){
         <div style={{position:"relative",zIndex:1}}>
           <div style={{fontFamily:"'Outfit',sans-serif",fontSize:8,color:"rgba(255,255,255,.4)",letterSpacing:"3px",textTransform:"uppercase",marginBottom:6}}>ACTIVITIES</div>
           <div style={{fontFamily:"'Outfit',sans-serif",fontSize:32,fontWeight:200,color:"#fff",letterSpacing:"-1px",lineHeight:1}}>活動</div>
-          <div style={{fontSize:10,color:"rgba(255,255,255,.4)",marginTop:5}}>
+          <div style={{fontSize:11,color:"rgba(255,255,255,.55)",marginTop:5}}>
             展覽 {exItems.length} 場 · 景點 {spItems.length} 處
           </div>
         </div>
@@ -1629,7 +1630,7 @@ function Concert({data,setData,th=T}){
             backgroundImage:"repeating-linear-gradient(135deg,transparent,transparent 5px,rgba(255,255,255,.06) 5px,rgba(255,255,255,.06) 6px)"}}/>
           {/* Periwinkle dot accent */}
           <div style={{position:"absolute",top:14,right:14,width:10,height:10,borderRadius:"50%",background:T.peri,opacity:.6}}/>
-          <div style={{fontFamily:"'Outfit',sans-serif",fontSize:8,color:"rgba(255,255,255,.45)",
+          <div style={{fontFamily:"'Outfit',sans-serif",fontSize:10,color:"rgba(255,255,255,.65)",
             letterSpacing:"2px",textTransform:"uppercase",marginBottom:4,position:"relative",zIndex:1}}>
             {it.venue||"演唱會"} · {it.date?.slice(0,10).replace(/-/g,".")}
           </div>
@@ -1653,11 +1654,11 @@ function Concert({data,setData,th=T}){
             ].map(([label,val,valCol])=>(
               <div key={label} style={{borderBottom:`1px solid ${isDark?"#2E2838":th.lineSoft}`,paddingBottom:8}}>
                 <div style={{fontFamily:"'Outfit',sans-serif",fontSize:7,
-                  color:isDark?"#9098C0":T.peri,letterSpacing:"2px",textTransform:"uppercase",marginBottom:3}}>
+                  color:isDark?"#B0B8E0":T.peri,letterSpacing:"2px",textTransform:"uppercase",marginBottom:3,fontSize:8}}>
                   {label}
                 </div>
                 <div style={{fontFamily:"'Outfit',sans-serif",fontSize:13,fontWeight:300,
-                  color:val?(valCol||th.ink):(th.ink4),letterSpacing:"-.3px"}}>
+                  color:val?(valCol||( isDark?"#EDE8F4":th.ink)):(isDark?"#6A6888":th.ink4),letterSpacing:"-.3px"}}>
                   {val||"—"}
                 </div>
               </div>
@@ -1666,11 +1667,11 @@ function Concert({data,setData,th=T}){
           {/* Rating */}
           <div style={{display:"flex",alignItems:"center",gap:6,marginBottom:10}}>
             <span style={{fontFamily:"'Outfit',sans-serif",fontSize:7,
-              color:isDark?"#9098C0":T.peri,letterSpacing:"2px",textTransform:"uppercase"}}>RATING</span>
+              color:isDark?"#B0B8E0":T.peri,letterSpacing:"2px",textTransform:"uppercase",fontSize:8}}>RATING</span>
             <MoodIcon value={it.rating||0} size={18}/>
           </div>
           {it.notes&&(
-            <div style={{fontSize:11,color:th.ink4,lineHeight:1.7,marginBottom:12,
+            <div style={{fontSize:12,color:isDark?"#A0A0C0":th.ink4,lineHeight:1.7,marginBottom:12,
               overflow:"hidden",display:"-webkit-box",WebkitLineClamp:2,WebkitBoxOrient:"vertical"}}>
               {it.notes}
             </div>
@@ -1682,8 +1683,8 @@ function Concert({data,setData,th=T}){
                 flex:1,padding:8,borderRadius:6,fontSize:9,fontFamily:"'Outfit',sans-serif",
                 letterSpacing:".8px",textTransform:"uppercase",
                 background:isDark?"rgba(96,128,184,.12)":"rgba(176,184,216,.12)",
-                color:isDark?"#8098C8":T.navy,
-                border:`1px solid ${isDark?"rgba(96,128,184,.2)":"rgba(176,184,216,.35)"}`,
+                color:isDark?"#9AAAD8":T.navy,
+                border:`1px solid ${isDark?"rgba(96,128,184,.25)":"rgba(176,184,216,.35)"}`,
                 display:"flex",alignItems:"center",justifyContent:"center",gap:4,
               }}>
                 <svg width={10} height={10} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5"/></svg>
@@ -1739,7 +1740,7 @@ function Concert({data,setData,th=T}){
             color:"rgba(255,255,255,.5)",letterSpacing:"3px",textTransform:"uppercase",marginBottom:6}}>CONCERTS</div>
           <div style={{fontFamily:"'Outfit',sans-serif",fontSize:30,fontWeight:200,
             color:"#fff",letterSpacing:"-1px",lineHeight:1}}>演唱會</div>
-          <div style={{fontSize:10,color:"rgba(255,255,255,.4)",marginTop:4}}>
+          <div style={{fontSize:10,color:isDark?"#8080A8":th.ink4,marginTop:4}}>
             {items.length} 場記錄 · {new Date().getFullYear()}年
           </div>
         </div>
@@ -2284,7 +2285,7 @@ function Stats({data,th=T}){
             </div>
           ))}
           {data.concerts.filter(i=>i.date?.startsWith(String(validStatsY))).length===0&&(
-            <div style={{fontSize:12,color:"rgba(255,255,255,.4)",textAlign:"center",padding:"16px 0"}}>尚無演唱會記錄</div>
+            <div style={{fontSize:12,color:isDark?"#7878A0":th.ink4,textAlign:"center",padding:"16px 0"}}>尚無演唱會記錄</div>
           )}
           <MiniDash/>
         </div>
@@ -2446,7 +2447,7 @@ const ISettings=({s=22})=><Sv s={s} ch={<><circle cx="12" cy="12" r="3"/><path d
 /* ── DARK MODE TOKEN OVERRIDES ─────────────────────── */
 const DARK={
   bg:"#1C1A22",surface:"#252330",white:"#2E2A3A",
-  ink:"#EDE8F4",ink2:"#B0A8C0",ink3:"#7A7290",ink4:"#3A3648",
+  ink:"#EDE8F4",ink2:"#B0A8C0",ink3:"#7A7290",ink4:"#6A6888",
   line:"#2E2A3A",lineSoft:"#252230",bg2:"#1A1820",
   heroBg:"#1A1820",heroCard:"rgba(176,184,216,.07)",heroCardBorder:"rgba(176,184,216,.12)",
 };
