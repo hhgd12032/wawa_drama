@@ -215,7 +215,7 @@ function MoodIcon({value,size=22}){
 
 /* ── CUSTOM DATE PICKER (3 selects, no jumping) ─────── */
 function DatePicker({value,onChange,th=T}){
-  const isDark=th.bg==="#141218";
+  const isDark=th.bg==="#1C1A22";
   const NOW_Y=new Date().getFullYear();
 
   // parse existing value
@@ -330,16 +330,18 @@ const STREAMS=["Netflix","Disney+","HBO","iQIYI","Prime","Apple TV","其他"];
 const IChev=()=><svg width={9} height={9} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} strokeLinecap="round"><polyline points="6 9 12 15 18 9"/></svg>;
 
 /* ── STYLED SELECT ─────────────────────────────────── */
-const selStyle=(active,col,th)=>({
+const selStyle=(active,col,th)=>{
+  const isDk=th.bg==="#1C1A22";
+  return{
   padding:"5px 20px 5px 9px",
-  borderRadius:20,fontSize:11,fontWeight:500,
-  background:active?col:th.white,
-  color:active?"#fff":th.ink3,
-  border:`1.5px solid ${active?col:th.line}`,
+  borderRadius:20,fontSize:11,fontWeight:400,
+  background:active?col:(isDk?"#252330":th.white),
+  color:active?"#fff":(isDk?"#C8C0D8":th.ink3),
+  border:`1.5px solid ${active?col:(isDk?"#3A3648":th.line)}`,
   appearance:"none",WebkitAppearance:"none",
   cursor:"pointer",outline:"none",fontFamily:"inherit",
   paddingRight:"14px",
-  });
+  };};
 
 /* ── TIME FILTER ───────────────────────────────────── */
 function TFilt({value,onChange,platform,onPlatform,th=T}){
@@ -356,12 +358,14 @@ function TFilt({value,onChange,platform,onPlatform,th=T}){
     y:filterY,m:i+1,label:`${filterY}.${String(i+1).padStart(2,"0")}`
   }));
 
-  const Chip=({v,lbl,act,col=T.rose})=>(
+  const isDkF=th.bg==="#1C1A22";
+  const Chip=({v,lbl,act,col=T.navy})=>(
     <button className="tap" onClick={()=>onChange(v)}
-      style={{padding:"5px 9px",borderRadius:20,fontSize:11,fontWeight:500,
-        background:act?col:th.white,color:act?"#fff":th.ink3,
-        border:`1.5px solid ${act?col:th.line}`,whiteSpace:"nowrap",
-        flexShrink:0,transition:"all .15s"}}>
+      style={{padding:"5px 12px",borderRadius:20,fontSize:13,fontWeight:400,
+        background:act?col:(isDkF?"#252330":th.white),
+        color:act?"#fff":(isDkF?"#C8C0D8":th.ink3),
+        border:`1.5px solid ${act?col:(isDkF?"#3A3648":th.line)}`,
+        whiteSpace:"nowrap",flexShrink:0,transition:"all .15s"}}>
       {lbl}
     </button>
   );
@@ -402,13 +406,15 @@ function TFilt({value,onChange,platform,onPlatform,th=T}){
 
 /* ── BOTTOM SHEET ──────────────────────────────────── */
 function Sheet({title,onClose,children,th=T}){
-  const isDark=th.bg==="#141218";
+  const isDark=th.bg==="#1C1A22";
   const sheetBg=isDark?"#1E1C24":T.white;
   const titleColor=isDark?T.rose:T.ink;
   const inputCSS=isDark?`
-    .sd input,.sd textarea{background:#2E2520!important;border-color:#4A3830!important;color:#EDE8E2!important;}
-    .sd input::placeholder,.sd textarea::placeholder{color:#786860!important;}
-    .sd .cal-nav select{background:none!important;border:none!important;color:#EDE8E2!important;}
+    .sd input,.sd textarea,.sd select{background:#252330!important;border-color:#3A3648!important;color:#EDE8F4!important;}
+    .sd input::placeholder,.sd textarea::placeholder{color:#6A6888!important;}
+    .sd .cal-nav select{background:none!important;border:none!important;color:#EDE8F4!important;}
+    .sd label,.sd .fr-label{color:#B0A8C0!important;}
+    .sd option{background:#1E1C24!important;color:#EDE8F4!important;}
   `:"";
   return(
     <div style={{position:"fixed",inset:0,zIndex:500,background:"rgba(20,15,12,.7)",backdropFilter:"blur(8px)"}}
@@ -443,7 +449,7 @@ function Sheet({title,onClose,children,th=T}){
   );
 }
 const FR=({label,children,th=T})=>{
-  const isDark=th.bg==="#141218";
+  const isDark=th.bg==="#1C1A22";
   return(
     <div style={{marginBottom:16}}>
       <div style={{fontSize:10,fontWeight:500,color:isDark?T.rose:T.ink4,letterSpacing:"1.2px",marginBottom:7,textTransform:"uppercase"}}>{label}</div>
@@ -452,7 +458,7 @@ const FR=({label,children,th=T})=>{
   );
 };
 const SvBtn=({onClick,label="儲存",th=T})=>{
-  const isDark=th.bg==="#141218";
+  const isDark=th.bg==="#1C1A22";
   return(
     <button type="button" className="tap" onClick={onClick} style={{width:"100%",padding:13,background:isDark?T.rose:T.ink,color:"#fff",borderRadius:12,fontSize:14,fontWeight:500,marginTop:14,letterSpacing:".5px"}}>{label}</button>
   );
@@ -490,7 +496,7 @@ function TmdbSearch({titleRef,onApply,th=T}){
   const[status,setStatus]=useState("idle");
   const[results,setResults]=useState([]);
   const[searchedFor,setSearchedFor]=useState("");
-  const isDark=th.bg==="#141218";
+  const isDark=th.bg==="#1C1A22";
 
   const search=async(e)=>{
     if(e){e.preventDefault();e.stopPropagation();}
@@ -608,7 +614,7 @@ function FMovie({init,onSave,onClose,th=T}){
   const[f,sf]=useState(init?{...blank,...init}:blank);
   const fRef=React.useRef(f);
   const s=(k,v)=>{const next={...fRef.current,[k]:v};fRef.current=next;sf(next);};
-  const isDark=th.bg==="#141218";
+  const isDark=th.bg==="#1C1A22";
   const cb=isDark?"#252330":"#FAFAF7", ct=isDark?"#C8C0D8":T.ink3, cbr=isDark?"#3A3648":T.line;
   return(
     <Sheet title={init?"編輯電影":"新增電影"} onClose={onClose} th={th}>
@@ -652,7 +658,7 @@ function FDrama({init,onSave,onClose,th=T}){
   const[f,sf]=useState(init?{...blank,...init}:blank);
   const fRef=React.useRef(f);
   const s=(k,v)=>{const next={...fRef.current,[k]:v};fRef.current=next;sf(next);};
-  const isDark=th.bg==="#141218";
+  const isDark=th.bg==="#1C1A22";
   const cb=isDark?"#252330":"#FAFAF7", ct=isDark?"#C8C0D8":T.ink3, cbr=isDark?"#3A3648":T.line;
   return(
     <Sheet title={init?"編輯戲劇":"新增戲劇"} onClose={onClose} th={th}>
@@ -698,7 +704,7 @@ function FExhib({init,onSave,onClose,th=T}){
   const[f,sf]=useState(init?{...blank,...init}:blank);
   const fRef=React.useRef(f);
   const s=(k,v)=>{const next={...fRef.current,[k]:v};fRef.current=next;sf(next);};
-  const isDark=th.bg==="#141218";
+  const isDark=th.bg==="#1C1A22";
   const cb=isDark?"#252330":"#FAFAF7",ct=isDark?"#C8C0D8":T.ink3,cbr=isDark?"#3A3648":T.line;
   return(
     <Sheet title={init?"編輯展覽":"新增展覽"} onClose={onClose} th={th}>
@@ -743,7 +749,7 @@ function FConcert({init,onSave,onClose,th=T}){
   const[f,sf]=useState(init?{...blank,...init}:blank);
   const fRef=React.useRef(f);
   const s=(k,v)=>{const next={...fRef.current,[k]:v};fRef.current=next;sf(next);};
-  const isDark=th.bg==="#141218";
+  const isDark=th.bg==="#1C1A22";
   const cb=isDark?"#252330":"#FAFAF7",ct=isDark?"#C8C0D8":T.ink3,cbr=isDark?"#3A3648":T.line;
   return(
     <Sheet title={init?"編輯演唱會":"新增演唱會"} onClose={onClose} th={th}>
@@ -783,7 +789,7 @@ function FConcert({init,onSave,onClose,th=T}){
 /* ── DETAIL SHEET ──────────────────────────────────── */
 function DetSheet({item,cat,onClose,onEdit,onDel,th=T}){
   const dtl=DTC[item.subtype]||{l:T.rose,t:T.ink3};
-  const isDark=th.bg==="#141218";
+  const isDark=th.bg==="#1C1A22";
   const titleCol=isDark?"#EDE8F4":th.ink;
   const subCol=isDark?"#B0A8C0":th.ink4;
   const bodyCol=isDark?"#D8D0E8":th.ink2;
@@ -882,17 +888,17 @@ function DetSheet({item,cat,onClose,onEdit,onDel,th=T}){
 }
 
 /* ── RECORD CARD — Magazine Index Style ────────────── */
-function RCard({item,cat,onClick,th=T,idx=0}){
+function RCard({item,cat,onClick,th=T,idx=0,total=null}){
   const cs=catSt(item._cat||cat);
   const dtl=DTC[item.subtype]||null;
   const lc=dtl?dtl.l:cs.line;
-  const isDark=th.bg==="#141218";
-  const idxColor=idx===0?T.peri:idx===1?T.rose:isDark?"#2E2A3A":th.line;
-  const num=String(idx+1).padStart(2,"0");
+  const isDark=th.bg==="#1C1A22";
+  const idxColor=idx===0?T.peri:idx===1?T.rose:isDark?"#4A4860":th.line;
+  const num=total!=null?String(total-idx).padStart(2,"0"):String(idx+1).padStart(2,"0");
   return(
     <div className="tap" onClick={()=>onClick(item)} style={{
       display:"grid",gridTemplateColumns:"44px 1fr",
-      borderBottom:`1px solid ${th.line}`,
+      borderBottom:`1px solid ${isDark?"#2E2A3A":th.line}`,
       padding:"14px 0",cursor:"pointer",gap:0,
     }}>
       {/* Index number */}
@@ -905,14 +911,14 @@ function RCard({item,cat,onClick,th=T,idx=0}){
       <div>
         <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:5}}>
           <div style={{flex:1,paddingRight:8}}>
-            <div style={{fontSize:14,fontWeight:400,color:th.ink,lineHeight:1.35}}>{item.title}</div>
+            <div style={{fontSize:14,fontWeight:400,color:isDark?'#EDE8F4':th.ink,lineHeight:1.35}}>{item.title}</div>
             {item.imdbTitle&&item.imdbTitle!==item.title&&(
-              <div style={{fontFamily:"'Outfit',sans-serif",fontSize:9,fontWeight:200,color:th.ink4,marginTop:1,letterSpacing:".3px"}}>{item.imdbTitle}</div>
+              <div style={{fontFamily:"'Outfit',sans-serif",fontSize:9,fontWeight:200,color:isDark?'#6A6888':th.ink4,marginTop:1,letterSpacing:".3px"}}>{item.imdbTitle}</div>
             )}
           </div>
           <div style={{display:"flex",alignItems:"center",gap:6,flexShrink:0}}>
             {item.imdbRating&&(
-              <span style={{fontFamily:"'Outfit',sans-serif",fontSize:11,fontWeight:200,color:T.navy}}>{item.imdbRating}</span>
+              <span style={{fontFamily:"'Outfit',sans-serif",fontSize:11,fontWeight:200,color:isDark?"#B0B8D8":T.navy}}>{item.imdbRating}</span>
             )}
             {item.imdbRating&&item.rating>0&&<div style={{width:1,height:12,background:th.line}}/>}
             {item.rating>0&&<MoodIcon value={item.rating} size={20}/>}
@@ -920,7 +926,7 @@ function RCard({item,cat,onClick,th=T,idx=0}){
         </div>
         {/* Meta row */}
         <div style={{display:"flex",alignItems:"center",gap:7,marginBottom:item.notes?6:0,flexWrap:"wrap"}}>
-          <span style={{fontFamily:"'Outfit',sans-serif",fontSize:9,fontWeight:200,color:th.ink4}}>{item.date?.slice(0,10).replace(/-/g," · ")}</span>
+          <span style={{fontFamily:"'Outfit',sans-serif",fontSize:11,fontWeight:200,color:th.ink4}}>{item.date?.slice(0,10).replace(/-/g," · ")}</span>
           <span style={{
             fontSize:8,border:`1px solid ${lc}66`,padding:"1px 7px",borderRadius:2,
             color:lc,letterSpacing:".3px",fontFamily:"'Outfit',sans-serif",
@@ -933,7 +939,7 @@ function RCard({item,cat,onClick,th=T,idx=0}){
         </div>
         {item.notes&&(
           <div style={{
-            fontSize:10,color:th.ink4,lineHeight:1.7,
+            fontSize:11,color:isDark?"#8A88A8":th.ink4,lineHeight:1.7,
             overflow:"hidden",display:"-webkit-box",WebkitLineClamp:1,WebkitBoxOrient:"vertical",
           }}>{item.notes}</div>
         )}
@@ -991,7 +997,7 @@ function Home({data,setData,onNav,settings,th}){
   const selEvs=selDay?(calMap[selDay]||[]):[];
 
   return(
-    <div className="page">
+    <div className="page" style={{background:th.bg}}>
       {/* TOP BAR: title + search icon */}
       <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:12}}>
         {editT?(
@@ -1004,8 +1010,8 @@ function Home({data,setData,onNav,settings,th}){
         ):(
           <>
             <div style={{flex:1}}>
-              {settings.name&&<div style={{fontSize:10,color:th.ink4,letterSpacing:"1px",marginBottom:1,fontWeight:400}}>Hi, {settings.name} 👋</div>}
-              <h1 style={{fontSize:20,fontWeight:500,color:th.ink,letterSpacing:"-.3px"}}>{data.title}</h1>
+              {settings.name&&<div style={{fontSize:10,color:th.bg==="#1C1A22"?"#A0A0C0":th.ink4,letterSpacing:"1px",marginBottom:1,fontWeight:400}}>Hi, {settings.name} 👋</div>}
+              <h1 style={{fontSize:20,fontWeight:500,color:th.bg==="#1C1A22"?"#EDE8F4":th.ink,letterSpacing:"-.3px"}}>{data.title}</h1>
             </div>
             <button className="tap" onClick={()=>{setTV(data.title);setET(true);}} style={{color:th.ink4,padding:4}}><IPn/></button>
             <button className="tap" onClick={()=>{setShowSearch(s=>!s);setSearchQ("");}} style={{
@@ -1058,16 +1064,16 @@ function Home({data,setData,onNav,settings,th}){
         {th.heroOverlay&&<div style={{position:"absolute",inset:0,background:th.heroOverlay,zIndex:0}}/>}
         <div style={{position:"relative",zIndex:1,padding:"14px 20px 18px"}}>
           <div style={{marginBottom:3}}>
-            <div style={{fontFamily:"'Outfit',sans-serif",fontSize:8,fontWeight:300,color:th.ink4,letterSpacing:"3px",textTransform:"uppercase",marginBottom:4}}>
+            <div style={{fontFamily:"'Outfit',sans-serif",fontSize:8,fontWeight:300,color:th.bg==="#1C1A22"?"rgba(176,184,216,.6)":th.ink4,letterSpacing:"3px",textTransform:"uppercase",marginBottom:4}}>
               {TY} YEAR IN REVIEW
             </div>
           </div>
           <div style={{display:"flex",alignItems:"flex-end",gap:12,marginBottom:16}}>
-            <span style={{fontFamily:"'Outfit',sans-serif",fontSize:80,fontWeight:200,color:th.ink,lineHeight:.85,letterSpacing:"-5px"}}>
+            <span style={{fontFamily:"'Outfit',sans-serif",fontSize:80,fontWeight:200,color:th.bg==="#1C1A22"?"#EDE8F4":th.ink,lineHeight:.85,letterSpacing:"-5px"}}>
               {data.movies.filter(i=>i.date?.startsWith(String(TY))).length+data.dramas.filter(i=>i.date?.startsWith(String(TY))).length+data.exhibitions.filter(i=>i.date?.startsWith(String(TY))).length+data.concerts.filter(i=>i.date?.startsWith(String(TY))).length}
             </span>
             <div style={{paddingBottom:8,display:"flex",flexDirection:"column",gap:2}}>
-              <span style={{fontFamily:"'Outfit',sans-serif",fontSize:9,color:th.ink4,letterSpacing:"1.5px",textTransform:"uppercase"}}>筆紀錄</span>
+              <span style={{fontFamily:"'Outfit',sans-serif",fontSize:9,color:th.bg==="#1C1A22"?"rgba(200,192,220,.7)":th.ink4,letterSpacing:"1.5px",textTransform:"uppercase"}}>筆紀錄</span>
               <div style={{width:1,height:16,background:T.peri,opacity:.5,margin:"2px 0"}}/>
               <span style={{fontFamily:"'Outfit',sans-serif",fontSize:22,fontWeight:200,color:T.rose,letterSpacing:"-1px",lineHeight:1}}>{total}</span>
               <span style={{fontFamily:"'Outfit',sans-serif",fontSize:8,color:T.rose,letterSpacing:"1px"}}>本月</span>
@@ -1087,7 +1093,7 @@ function Home({data,setData,onNav,settings,th}){
                 border:`1px solid ${th.heroCardBorder||"rgba(224,220,232,.9)"}`,
               }}>
                 <span style={{fontFamily:"'Outfit',sans-serif",fontSize:22,fontWeight:200,color:col,lineHeight:1,letterSpacing:"-1px"}}>{count}</span>
-                <span style={{fontSize:9,color:th.ink3,letterSpacing:".5px"}}>{label}</span>
+                <span style={{fontSize:9,color:th.bg==="#1C1A22"?"rgba(200,192,220,.8)":th.ink3,letterSpacing:".5px"}}>{label}</span>
                 <div style={{width:16,height:1.5,borderRadius:1,background:col,marginTop:3,opacity:.8}}/>
               </button>
             ))}
@@ -1109,18 +1115,18 @@ function Home({data,setData,onNav,settings,th}){
         <span style={{fontFamily:"'Outfit',sans-serif",fontSize:11,fontWeight:200,color:"#fff"}}>{fML(calY,calM)}</span>
       </div>
       {/* CALENDAR */}
-      <div style={{background:th.white,borderRadius:0,border:"none",borderBottom:`1px solid ${th.line}`,padding:"14px 16px"}}>
+      <div style={{background:th.bg==="#1C1A22"?"#252330":th.white,borderRadius:0,border:"none",borderBottom:`1px solid ${th.line}`,padding:"14px 16px"}}>
         <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:16}}>
-          <button className="tap" onClick={()=>{const d=new Date(calY,calM-2,1);setCY(d.getFullYear());setCM(d.getMonth()+1);setSel(null);}} style={{width:30,height:30,borderRadius:"50%",border:`1.5px solid ${th.line}`,display:"flex",alignItems:"center",justifyContent:"center",color:th.ink2}}>
+          <button className="tap" onClick={()=>{const d=new Date(calY,calM-2,1);setCY(d.getFullYear());setCM(d.getMonth()+1);setSel(null);}} style={{width:30,height:30,borderRadius:"50%",border:`1.5px solid ${th.line}`,display:"flex",alignItems:"center",justifyContent:"center",color:th.bg==="#1C1A22"?"#A0A0C0":th.ink2}}>
             <ICL/>
           </button>
-          <span style={{fontSize:14,fontWeight:500,color:th.ink,letterSpacing:".3px"}}>{fML(calY,calM)}</span>
-          <button className="tap" onClick={()=>{const d=new Date(calY,calM,1);setCY(d.getFullYear());setCM(d.getMonth()+1);setSel(null);}} style={{width:30,height:30,borderRadius:"50%",border:`1.5px solid ${th.line}`,display:"flex",alignItems:"center",justifyContent:"center",color:th.ink2}}>
+          <span style={{fontSize:14,fontWeight:500,color:th.bg==="#1C1A22"?"#EDE8F4":th.ink,letterSpacing:".3px"}}>{fML(calY,calM)}</span>
+          <button className="tap" onClick={()=>{const d=new Date(calY,calM,1);setCY(d.getFullYear());setCM(d.getMonth()+1);setSel(null);}} style={{width:30,height:30,borderRadius:"50%",border:`1.5px solid ${th.line}`,display:"flex",alignItems:"center",justifyContent:"center",color:th.bg==="#1C1A22"?"#A0A0C0":th.ink2}}>
             <ICR/>
           </button>
         </div>
         <div style={{display:"grid",gridTemplateColumns:"repeat(7,1fr)",marginBottom:8}}>
-          {["日","一","二","三","四","五","六"].map(d=><div key={d} style={{textAlign:"center",fontSize:10,color:th.ink4,fontWeight:500,letterSpacing:".3px"}}>{d}</div>)}
+          {["日","一","二","三","四","五","六"].map(d=><div key={d} style={{textAlign:"center",fontSize:10,color:th.bg==="#1C1A22"?"#7A78A0":th.ink4,fontWeight:500,letterSpacing:".3px"}}>{d}</div>)}
         </div>
         <div style={{display:"grid",gridTemplateColumns:"repeat(7,1fr)",gap:3}}>
           {Array(fd).fill(null).map((_,i)=><div key={`e${i}`}/>)}
@@ -1135,12 +1141,12 @@ function Home({data,setData,onNav,settings,th}){
                 <div style={{
                   width:32,height:32,borderRadius:"50%",
                   display:"flex",alignItems:"center",justifyContent:"center",
-                  background:isT?T.navy:isSel?T.rose:haE?(th.bg==="#141218"?"rgba(176,184,216,.2)":T.periBg):"transparent",
-                  border:`1.5px solid ${isT?T.navy:isSel?T.rose:haE?T.peri+(th.bg==="#141218"?"80":"60"):"transparent"}`,
+                  background:isT?T.navy:isSel?T.rose:haE?(th.bg==="#1C1A22"?"rgba(176,184,216,.2)":T.periBg):"transparent",
+                  border:`1.5px solid ${isT?T.navy:isSel?T.rose:haE?T.peri+(th.bg==="#1C1A22"?"80":"60"):"transparent"}`,
                   transition:"all .15s",
                   flexShrink:0,
                 }}>
-                  <span style={{fontFamily:"'Outfit',sans-serif",fontSize:12,fontWeight:isT||isSel?400:haE?400:300,color:isT?"#fff":isSel?"#fff":haE?T.peri:th.ink3,lineHeight:1}}>{day}</span>
+                  <span style={{fontFamily:"'Outfit',sans-serif",fontSize:12,fontWeight:isT||isSel?400:haE?400:300,color:isT?"#fff":isSel?"#fff":haE?T.peri:(th.bg==="#1C1A22"?"#8A88B0":th.ink3),lineHeight:1}}>{day}</span>
                 </div>
                 {/* category dots below the circle */}
                 {haE&&(
@@ -1264,14 +1270,15 @@ const FloatFAB=({onClick})=>(
 /* ── SORT BUTTON ───────────────────────────────────── */
 // sort modes: "dateDesc" | "dateAsc" | "ratingDesc"
 const SortBtn=({sort,onToggle,th=T})=>{
+  const isDkS=th.bg==="#1C1A22";
   const short={dateDesc:"↓日期",dateAsc:"↑日期",ratingDesc:"↓評分",ratingAsc:"↑評分"};
   return(
     <div style={{position:"relative",flexShrink:0}}>
       <select value={sort} onChange={e=>onToggle(e.target.value)}
-        style={{padding:"4px 18px 4px 7px",borderRadius:20,fontSize:10,fontWeight:400,
-          background:sort!=="dateDesc"?T.rose:th.white,
-          color:sort!=="dateDesc"?"#fff":th.ink3,
-          border:`1.5px solid ${sort!=="dateDesc"?T.rose:th.line}`,
+        style={{padding:"5px 18px 5px 10px",borderRadius:20,fontSize:11,fontWeight:400,
+          background:sort!=="dateDesc"?T.navy:(isDkS?"#252330":th.white),
+          color:sort!=="dateDesc"?"#fff":(isDkS?"#C8C0D8":th.ink3),
+          border:`1.5px solid ${sort!=="dateDesc"?T.navy:(isDkS?"#3A3648":th.line)}`,
           appearance:"none",WebkitAppearance:"none",cursor:"pointer",outline:"none",fontFamily:"inherit",paddingRight:"14px",
           }}>
         <option value="dateDesc">↓ 由新到舊</option>
@@ -1315,40 +1322,54 @@ function Watchlist({data,setData,th=T}){
   const svD=it=>setData(d=>it.id?{...d,dramas:d.dramas.map(m=>m.id===it.id?it:m)}:{...d,dramas:[{...it,id:nid()},...d.dramas]});
   const dlM=id=>setData(d=>({...d,movies:d.movies.filter(m=>m.id!==id)}));
   const dlD=id=>setData(d=>({...d,dramas:d.dramas.filter(m=>m.id!==id)}));
-  const isDark=th.bg==="#141218";
+  const isDark=th.bg==="#1C1A22";
   const totalShown=tab==="戲劇"?fdr.length:movies.length;
   return(
     <div style={{position:"relative"}}>
-      {/* Magazine top strip */}
-      <div style={{height:3,background:`linear-gradient(90deg,${T.navy},${T.peri},${T.rose})`}}/>
-      {/* Page header — editorial style */}
-      <div style={{padding:"18px 22px 0",position:"relative",overflow:"hidden"}}>
-        <div style={{position:"absolute",fontFamily:"'Outfit',sans-serif",fontSize:140,fontWeight:200,
-          color:isDark?T.peri:T.navy,opacity:.04,top:-20,right:8,lineHeight:1,letterSpacing:"-8px",
-          userSelect:"none",pointerEvents:"none"}}>片</div>
-        <div style={{fontFamily:"'Outfit',sans-serif",fontSize:8,color:th.ink4,letterSpacing:"3px",textTransform:"uppercase",marginBottom:4,position:"relative",zIndex:1}}>WATCHLIST</div>
-        <div style={{fontFamily:"'Outfit',sans-serif",fontSize:28,fontWeight:200,color:th.ink,letterSpacing:"-1px",lineHeight:1,position:"relative",zIndex:1}}>片單</div>
-        <div style={{fontSize:10,color:th.ink4,marginTop:3,marginBottom:16,position:"relative",zIndex:1}}>
-          共 {data.movies.length+data.dramas.length} 部 · {new Date().getFullYear()}年
+      {/* Full-bleed header — match Exhibition style */}
+      <div style={{
+          background:isDark
+            ?"linear-gradient(135deg,#2A2040 0%,#4A3868 55%,#8A6888 100%)"
+            :"linear-gradient(135deg,#6070A8 0%,#8878A8 55%,#C8A0C0 100%)",
+          padding:"22px 22px 18px",position:"relative",overflow:"hidden"}}>
+        {/* dot grid deco */}
+        <div style={{position:"absolute",inset:0,
+          backgroundImage:"radial-gradient(circle,rgba(255,255,255,.06) 1px,transparent 1px)",
+          backgroundSize:"14px 14px"}}/>
+        {/* shimmer line top */}
+        <div style={{position:"absolute",top:0,left:0,right:0,height:2,
+          background:"linear-gradient(90deg,transparent,rgba(255,255,255,.35),transparent)"}}/>
+        {/* Memphis diagonal stripe */}
+        <div style={{position:"absolute",top:0,right:0,bottom:0,width:80,
+          backgroundImage:"repeating-linear-gradient(135deg,transparent,transparent 6px,rgba(255,255,255,.05) 6px,rgba(255,255,255,.05) 7px)"}}/>
+        {/* Small Coral rect deco */}
+        <div style={{position:"absolute",top:20,right:22,width:22,height:5,background:T.rose,opacity:.55}}/>
+        <div style={{position:"absolute",top:12,right:52,width:8,height:8,borderRadius:"50%",background:T.peri,opacity:.5}}/>
+        <div style={{position:"relative",zIndex:1}}>
+          <div style={{fontFamily:"'Outfit',sans-serif",fontSize:8,color:"rgba(255,255,255,.4)",letterSpacing:"3px",textTransform:"uppercase",marginBottom:6}}>WATCHLIST</div>
+          <div style={{fontFamily:"'Outfit',sans-serif",fontSize:32,fontWeight:200,color:"#fff",letterSpacing:"-1px",lineHeight:1}}>片單</div>
+          <div style={{fontSize:10,color:"rgba(255,255,255,.4)",marginTop:5}}>
+            共 {data.movies.length+data.dramas.length} 部 · {new Date().getFullYear()}年
+          </div>
         </div>
       </div>
       {/* Sharp editorial tabs */}
-      <div style={{display:"flex",borderBottom:`2px solid ${th.line}`,margin:"0 0 0"}}>
+      <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",borderBottom:`1.5px solid ${th.line}`}}>
         {[["戲劇",<IDr s={14}/>],["電影",<IFm s={14}/>]].map(([t,ic],i)=>(
           <button key={t} className="tap" type="button" onClick={e=>{e.preventDefault();setTab(t);}} style={{
             flex:1,padding:"10px 0",textAlign:"center",
-            fontFamily:"'Outfit',sans-serif",fontSize:11,fontWeight:tab===t?400:300,
-            color:tab===t?T.navy:th.ink4,letterSpacing:"1px",textTransform:"uppercase",
-            background:"transparent",border:"none",cursor:"pointer",
+            fontFamily:"'Outfit',sans-serif",fontSize:12,fontWeight:tab===t?400:300,
+            color:tab===t?(isDark?"#EDE8F4":T.navy):(isDark?"#8A88A8":th.ink4),letterSpacing:"1px",textTransform:"uppercase",
+            background:tab===t?(isDark?"#1E1C24":th.white):(isDark?"#1C1A22":th.bg),border:"none",cursor:"pointer",
             display:"flex",alignItems:"center",justifyContent:"center",gap:5,
             position:"relative",
           }}>
             {ic}{t}
-            {tab===t&&<div style={{position:"absolute",bottom:-2,left:0,right:0,height:2,background:T.peri}}/>}
+            {tab===t&&<div style={{position:"absolute",bottom:-1.5,left:0,right:0,height:2,background:isDark?T.peri:T.rose}}/>}
           </button>
         ))}
       </div>
-      <div className="page-inner" style={{paddingTop:0}}>
+      <div className="page-inner" style={{paddingTop:0,background:isDark?"#1C1A22":"transparent"}}>
         {/* Filter + sort row */}
         <div style={{paddingTop:12}}>
           <TFilt value={tf} onChange={setTf} platform={platF} onPlatform={setPlatF} th={th}/>
@@ -1358,11 +1379,11 @@ function Watchlist({data,setData,th=T}){
             <div style={{display:"flex",gap:5,flexWrap:"wrap",marginBottom:10}}>
               {["全部",...DSubs].map(t=>(
                 <button key={t} className="tap" type="button" onClick={e=>{e.preventDefault();setDf(t);}} style={{
-                  padding:"3px 10px",borderRadius:3,fontSize:9,fontWeight:400,
-                  fontFamily:"'Outfit',sans-serif",letterSpacing:".5px",
-                  background:df===t?T.navy:"transparent",
-                  color:df===t?"#fff":th.ink4,
-                  border:`1px solid ${df===t?T.navy:th.line}`,
+                  padding:"5px 12px",borderRadius:3,fontSize:13,fontWeight:400,
+                  fontFamily:"'Outfit',sans-serif",letterSpacing:".3px",
+                  background:df===t?T.navy:(isDark?"#252330":"transparent"),
+                  color:df===t?"#fff":(isDark?"#C8C0D8":th.ink4),
+                  border:`1px solid ${df===t?T.navy:(isDark?"#3A3648":th.line)}`,
                   transition:"all .15s",
                 }}>{t}</button>
               ))}
@@ -1371,7 +1392,7 @@ function Watchlist({data,setData,th=T}){
         )}
         {/* Count + sort */}
         <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:0}}>
-          <span style={{fontFamily:"'Outfit',sans-serif",fontSize:9,color:th.ink4,letterSpacing:"1px",textTransform:"uppercase"}}>
+          <span style={{fontFamily:"'Outfit',sans-serif",fontSize:11,color:isDark?"#A0A0C0":th.ink4,letterSpacing:"1px",textTransform:"uppercase"}}>
             {totalShown} 部{tab}
           </span>
           <div style={{display:"flex",alignItems:"center",gap:5}}>
@@ -1379,16 +1400,16 @@ function Watchlist({data,setData,th=T}){
           </div>
         </div>
         {/* Cards container — no padding, magazine list */}
-        <div style={{background:th.white,borderRadius:12,padding:"0 14px",border:`1px solid ${th.line}`,marginTop:8}}>
+        <div style={{background:isDark?"#252330":th.white,borderRadius:12,padding:"0 14px",border:`1px solid ${isDark?"#2E2A3A":th.line}`,marginTop:8}}>
           {tab==="電影"&&(
             movies.length===0
               ?<div style={{padding:"24px 0",textAlign:"center"}}><Mty cat="電影" th={th}/></div>
-              :movies.map((it,i)=><RCard key={it.id} item={it} cat="電影" onClick={x=>setDet({item:x,cat:"電影"})} th={th} idx={i}/>)
+              :movies.map((it,i)=><RCard key={it.id} item={it} cat="電影" onClick={x=>setDet({item:x,cat:"電影"})} th={th} idx={i} total={movies.length}/>)
           )}
           {tab==="戲劇"&&(
             fdr.length===0
               ?<div style={{padding:"24px 0",textAlign:"center"}}><Mty cat="戲劇" th={th}/></div>
-              :fdr.map((it,i)=><RCard key={it.id} item={it} cat="戲劇" onClick={x=>setDet({item:x,cat:"戲劇"})} th={th} idx={i}/>)
+              :fdr.map((it,i)=><RCard key={it.id} item={it} cat="戲劇" onClick={x=>setDet({item:x,cat:"戲劇"})} th={th} idx={i} total={fdr.length}/>)
           )}
         </div>
       </div>
@@ -1407,7 +1428,7 @@ function FSpot({init,onSave,onClose,th=T}){
   const[f,sf]=useState(init?{...blank,...init}:blank);
   const fRef=React.useRef(f);
   const s=(k,v)=>{const next={...fRef.current,[k]:v};fRef.current=next;sf(next);};
-  const isDark=th.bg==="#141218";
+  const isDark=th.bg==="#1C1A22";
   const cb=isDark?"#252330":"#FAFAF7",ct=isDark?"#C8C0D8":T.ink3,cbr=isDark?"#3A3648":T.line;
   return(
     <Sheet title={init?"編輯景點":"新增景點"} onClose={onClose} th={th}>
@@ -1446,7 +1467,7 @@ function Exhibition({data,setData,th=T}){
   const items=tab==="展覽"?exItems:spItems;
   const sv=it=>setData(d=>it.id?{...d,exhibitions:d.exhibitions.map(e=>e.id===it.id?it:e)}:{...d,exhibitions:[{...it,id:nid()},...d.exhibitions]});
   const dl=id=>setData(d=>({...d,exhibitions:d.exhibitions.filter(e=>e.id!==id)}));
-  const isDark=th.bg==="#141218";
+  const isDark=th.bg==="#1C1A22";
 
   /* Gallery card component */
   const GCard=({it})=>{
@@ -1517,16 +1538,26 @@ function Exhibition({data,setData,th=T}){
   return(
     <div style={{position:"relative"}}>
       {/* Full-bleed navy banner */}
-      <div style={{background:isDark?"#1A2240":T.navy,padding:"22px 22px 18px",position:"relative",overflow:"hidden"}}>
-        {/* Memphis vertical lines deco */}
-        <div style={{position:"absolute",right:20,top:"50%",transform:"translateY(-50%)",display:"flex",gap:3,alignItems:"flex-end"}}>
-          {[14,22,16,28,12,20].map((h,i)=>(
-            <div key={i} style={{width:1.5,height:h,background:isDark?"rgba(176,184,216,.15)":"rgba(255,255,255,.12)"}}/>
-          ))}
-        </div>
-        {/* Periwinkle corner accent */}
+      <div style={{
+          background:isDark
+            ?"linear-gradient(135deg,#1C2840 0%,#304060 55%,#607898 100%)"
+            :"linear-gradient(135deg,#3A5878 0%,#587090 55%,#8AAAC0 100%)",
+          padding:"22px 22px 18px",position:"relative",overflow:"hidden"}}>
+        {/* dot grid deco */}
+        <div style={{position:"absolute",inset:0,
+          backgroundImage:"radial-gradient(circle,rgba(255,255,255,.05) 1px,transparent 1px)",
+          backgroundSize:"16px 16px"}}/>
+        {/* shimmer line top */}
+        <div style={{position:"absolute",top:0,left:0,right:0,height:2,
+          background:"linear-gradient(90deg,transparent,rgba(255,255,255,.3),transparent)"}}/>
+        {/* Memphis diagonal stripe */}
+        <div style={{position:"absolute",top:0,right:0,bottom:0,width:80,
+          backgroundImage:"repeating-linear-gradient(135deg,transparent,transparent 6px,rgba(255,255,255,.05) 6px,rgba(255,255,255,.05) 7px)"}}/>
+        {/* Periwinkle corner triangle */}
         <div style={{position:"absolute",bottom:0,right:0,width:60,height:60,
-          background:T.peri,opacity:.15,clipPath:"polygon(100% 0,100% 100%,0 100%)"}}/>
+          background:"#B0B8D8",opacity:.18,clipPath:"polygon(100% 0,100% 100%,0 100%)"}}/> 
+        {/* Coral small rect deco */}
+        <div style={{position:"absolute",top:18,right:22,width:18,height:4,background:T.rose,opacity:.5}}/>
         <div style={{position:"relative",zIndex:1}}>
           <div style={{fontFamily:"'Outfit',sans-serif",fontSize:8,color:"rgba(255,255,255,.4)",letterSpacing:"3px",textTransform:"uppercase",marginBottom:6}}>ACTIVITIES</div>
           <div style={{fontFamily:"'Outfit',sans-serif",fontSize:32,fontWeight:200,color:"#fff",letterSpacing:"-1px",lineHeight:1}}>活動</div>
@@ -1543,8 +1574,8 @@ function Exhibition({data,setData,th=T}){
         ].map(([t,ic],i)=>(
           <button key={t} type="button" className="tap" onClick={()=>setTab(t)} style={{
             padding:"11px 0",fontFamily:"'Outfit',sans-serif",fontSize:11,
-            fontWeight:tab===t?400:300,color:tab===t?T.navy:th.ink4,
-            background:tab===t?th.white:isDark?"#141218":th.bg,
+            fontWeight:tab===t?400:300,color:tab===t?(isDark?"#EDE8F4":T.navy):(isDark?"#9898B8":th.ink4),
+            background:tab===t?th.white:isDark?"#1C1A22":th.bg,
             borderRight:i===0?`1px solid ${th.line}`:"none",
             display:"flex",alignItems:"center",justifyContent:"center",gap:5,
             letterSpacing:".5px",position:"relative",
@@ -1576,7 +1607,7 @@ function Concert({data,setData,th=T}){
   const items=ftm(data.concerts,tf).sort(sortFn);
   const sv=it=>setData(d=>it.id?{...d,concerts:d.concerts.map(c=>c.id===it.id?it:c)}:{...d,concerts:[{...it,id:nid()},...d.concerts]});
   const dl=id=>setData(d=>({...d,concerts:d.concerts.filter(c=>c.id!==id)}));
-  const isDark=th.bg==="#141218";
+  const isDark=th.bg==="#1C1A22";
 
   /* Ticket card component */
   const Ticket=({it})=>{
@@ -1769,7 +1800,7 @@ function Search({data,th=T}){
 /* ── STATS — Spotify-Wrapped style full-page slides ── */
 function AIPromptShare({ya,statsY,th}){
   const[copied,setCopied]=useState(false);
-  const isDark=th.bg==="#141218";
+  const isDark=th.bg==="#1C1A22";
   const mC=ya.filter(i=>i._cat==="電影").length;
   const dC=ya.filter(i=>i._cat==="戲劇").length;
   const eC=ya.filter(i=>i._cat==="展覽"||i._cat==="景點").length;
@@ -1957,7 +1988,7 @@ function Stats({data,th=T}){
   };
 
   // BG colors per slide — JH palette alternating dark/light
-  const slideBgs=["#1E1C24","#FAF7F2","#F4F3F8","#1E1C24","#FAF7F2","#1E1C24","#F4F3F8","#1E1C24","#FAF7F2"];
+  const slideBgs=["#1C1A28","#F5F3F8","#F0EEF5","#201E2C","#FAF7F2","#1E1A28","#F0EFF6","#1C1A28","#F5F3F8"];
   const maxMCval=Math.max(...mc,1);
   const peakM=mc.indexOf(Math.max(...mc))+1;
   const rankCol=i=>i===0?"#FFD700":i===1?"#C8C8D8":i===2?"#CD8040":"rgba(255,255,255,.22)";
@@ -1975,7 +2006,7 @@ function Stats({data,th=T}){
   const slides=[
     // ── S0: COVER ──────────────────────────────────────────────
     ()=>(
-      <div style={{minHeight:460,position:"relative",overflow:"hidden"}}>
+      <div style={{minHeight:460,position:"relative",overflow:"hidden",background:"#1C1A28"}}>
         {/* dot grid */}
         <div style={{position:"absolute",inset:0,backgroundImage:"radial-gradient(circle,rgba(176,184,216,.07) 1px,transparent 1px)",backgroundSize:"18px 18px"}}/>
         {/* top 3-color strip */}
@@ -2008,45 +2039,72 @@ function Stats({data,th=T}){
 
     // ── S1: MONTHLY RHYTHM ─────────────────────────────────────
     ()=>(
-      <div style={{minHeight:460,position:"relative",overflow:"hidden"}}>
-        {/* Navy left sidebar */}
-        <div style={{position:"absolute",left:0,top:0,bottom:0,width:5,background:T.navy}}/>
-        {/* Navy top bar */}
-        <div style={{background:T.navy,padding:"14px 20px 12px 22px",position:"relative",overflow:"hidden"}}>
-          <div style={{position:"absolute",right:0,top:0,bottom:0,width:60,backgroundImage:"radial-gradient(circle,rgba(176,184,216,.15) 1.5px,transparent 1.5px)",backgroundSize:"9px 9px"}}/>
-          <div style={{fontFamily:"'Outfit',sans-serif",fontSize:8,letterSpacing:"3px",textTransform:"uppercase",color:"rgba(255,255,255,.45)",marginBottom:3}}>MONTHLY RHYTHM</div>
-          <div style={{fontFamily:"'Outfit',sans-serif",fontSize:18,fontWeight:200,color:"#fff",letterSpacing:"-.5px"}}>每月節奏</div>
-        </div>
-        <div style={{padding:"16px 18px 20px 22px"}}>
-          {/* Peak month card */}
-          <div style={{background:"#fff",borderRadius:8,border:`1px solid ${T.line}`,padding:"10px 14px",marginBottom:14,display:"flex",alignItems:"center",justifyContent:"space-between"}}>
-            <div>
-              <div style={{fontFamily:"'Outfit',sans-serif",fontSize:7,color:"#9A9088",letterSpacing:"2px",textTransform:"uppercase",marginBottom:3}}>最活躍月份</div>
-              <div style={{fontFamily:"'Outfit',sans-serif",fontSize:22,fontWeight:200,color:T.navy,letterSpacing:"-1px",lineHeight:1}}>{peakM}月</div>
+      <div style={{minHeight:460,position:"relative",overflow:"hidden",
+        background:"linear-gradient(160deg,#2A2448 0%,#3A3260 45%,#584870 100%)"}}>
+        {/* dot grid */}
+        <div style={{position:"absolute",inset:0,
+          backgroundImage:"radial-gradient(circle,rgba(176,184,216,.07) 1px,transparent 1px)",
+          backgroundSize:"16px 16px"}}/>
+        {/* shimmer top */}
+        <div style={{position:"absolute",top:0,left:0,right:0,height:2,
+          background:"linear-gradient(90deg,transparent,rgba(200,160,208,.5),transparent)"}}/>
+        {/* right stripe deco */}
+        <div style={{position:"absolute",top:0,right:0,bottom:0,width:70,
+          backgroundImage:"repeating-linear-gradient(135deg,transparent,transparent 6px,rgba(255,255,255,.04) 6px,rgba(255,255,255,.04) 7px)"}}/>
+        <div style={{position:"relative",zIndex:1,padding:"24px 22px 22px"}}>
+          <div style={{fontFamily:"'Outfit',sans-serif",fontSize:8,letterSpacing:"3px",
+            textTransform:"uppercase",color:"rgba(200,184,220,.5)",marginBottom:5}}>MONTHLY RHYTHM</div>
+          <div style={{fontFamily:"'Outfit',sans-serif",fontSize:24,fontWeight:200,
+            color:"#EDE8F4",letterSpacing:"-1px",lineHeight:1,marginBottom:20}}>每月節奏</div>
+          {/* Two stat pills */}
+          <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8,marginBottom:18}}>
+            <div style={{background:"rgba(176,184,216,.1)",borderRadius:10,padding:"12px 14px",
+              border:"1px solid rgba(176,184,216,.15)"}}>
+              <div style={{fontFamily:"'Outfit',sans-serif",fontSize:7,color:"rgba(176,184,216,.6)",
+                letterSpacing:"2px",textTransform:"uppercase",marginBottom:4}}>最活躍月份</div>
+              <div style={{fontFamily:"'Outfit',sans-serif",fontSize:28,fontWeight:200,
+                color:T.peri,letterSpacing:"-1.5px",lineHeight:1}}>{peakM}月</div>
+              <div style={{fontFamily:"'Outfit',sans-serif",fontSize:9,
+                color:"rgba(176,184,216,.45)",marginTop:3}}>{Math.max(...mc)} 筆</div>
             </div>
-            <div style={{textAlign:"right"}}>
-              <div style={{fontFamily:"'Outfit',sans-serif",fontSize:7,color:"#9A9088",letterSpacing:"2px",textTransform:"uppercase",marginBottom:3}}>最高筆數</div>
-              <div style={{fontFamily:"'Outfit',sans-serif",fontSize:22,fontWeight:200,color:T.rose,letterSpacing:"-1px",lineHeight:1}}>{Math.max(...mc)}</div>
+            <div style={{background:"rgba(232,168,160,.1)",borderRadius:10,padding:"12px 14px",
+              border:"1px solid rgba(232,168,160,.15)"}}>
+              <div style={{fontFamily:"'Outfit',sans-serif",fontSize:7,color:"rgba(232,168,160,.6)",
+                letterSpacing:"2px",textTransform:"uppercase",marginBottom:4}}>年度總計</div>
+              <div style={{fontFamily:"'Outfit',sans-serif",fontSize:28,fontWeight:200,
+                color:T.rose,letterSpacing:"-1.5px",lineHeight:1}}>
+                {mc.reduce((a,b)=>a+b,0)}
+              </div>
+              <div style={{fontFamily:"'Outfit',sans-serif",fontSize:9,
+                color:"rgba(232,168,160,.45)",marginTop:3}}>筆紀錄</div>
             </div>
           </div>
           {/* Bar chart */}
-          <div style={{display:"flex",alignItems:"flex-end",gap:4,height:90,marginBottom:8}}>
+          <div style={{display:"flex",alignItems:"flex-end",gap:3,height:96}}>
             {mc.map((n,mi)=>{
-              const h=Math.max((n/maxMCval)*86,n>0?4:0);
-              const cols=[T.catM.line,T.catD.line,T.peri,T.rose,T.catC.line,T.sage,T.smoke,T.catM.line,T.catD.line,T.peri,T.rose,T.catC.line];
+              const h=Math.max((n/maxMCval)*92,n>0?4:0);
               const isPeak=mi===peakM-1;
+              const cols=["#6080B8","#7A9888","#B0B8D8","#E8A8A0","#C8A0D0",
+                          "#8A9098","#6080B8","#7A9888","#B0B8D8","#E8A8A0","#C8A0D0","#8A9098"];
               return(
                 <div key={mi} style={{flex:1,display:"flex",flexDirection:"column",alignItems:"center",gap:2}}>
-                  <div style={{fontFamily:"'Outfit',sans-serif",fontSize:7,color:isPeak?T.rose:"#9A9088",height:13,display:"flex",alignItems:"flex-end"}}>{n>0?n:""}</div>
-                  <div style={{width:"100%",borderRadius:"3px 3px 0 0",background:n>0?cols[mi]:"#EAE8F0",height:h,minHeight:n>0?4:0,outline:isPeak?`2px solid ${T.rose}`:""}}/>
-                  <div style={{fontFamily:"'Outfit',sans-serif",fontSize:7,color:isPeak?T.rose:"#9A9088"}}>{mi+1}</div>
+                  <div style={{fontFamily:"'Outfit',sans-serif",fontSize:7,
+                    color:isPeak?"#EDE8F4":"rgba(200,192,220,.4)",
+                    height:14,display:"flex",alignItems:"flex-end"}}>{n>0?n:""}</div>
+                  <div style={{width:"100%",borderRadius:"3px 3px 0 0",
+                    background:n>0?(isPeak?T.rose:cols[mi]):"rgba(255,255,255,.06)",
+                    height:h,minHeight:n>0?4:0,
+                    boxShadow:isPeak?`0 0 8px ${T.rose}66`:"none"}}/>
+                  <div style={{fontFamily:"'Outfit',sans-serif",fontSize:7,
+                    color:isPeak?"#EDE8F4":"rgba(200,192,220,.4)"}}>{mi+1}</div>
                 </div>
               );
             })}
           </div>
-          <div style={{display:"flex",gap:3,marginTop:4}}>
-            {[18,18,18,9].map((w,i)=>(
-              <div key={i} style={{width:w,height:1.5,borderRadius:1,background:i<3?`${T.peri}55`:`${T.rose}55`}}/>
+          <div style={{display:"flex",gap:3,marginTop:14}}>
+            {[16,16,16,8,8].map((w,i)=>(
+              <div key={i} style={{width:w,height:1.5,borderRadius:1,
+                background:i<3?"rgba(176,184,216,.3)":"rgba(232,168,160,.35)"}}/>
             ))}
           </div>
         </div>
@@ -2055,7 +2113,7 @@ function Stats({data,th=T}){
 
     // ── S2: TOP PICKS ───────────────────────────────────────────
     ()=>(
-      <div style={{minHeight:460,position:"relative",overflow:"hidden",background:"#F4F3F8"}}>
+      <div style={{minHeight:460,position:"relative",overflow:"hidden",background:"#F0EEF5"}}>
         {/* Coral header */}
         <div style={{background:T.rose,padding:"20px 20px 16px",position:"relative",overflow:"hidden"}}>
           <div style={{position:"absolute",top:0,right:0,bottom:0,width:70,backgroundImage:"repeating-linear-gradient(135deg,transparent,transparent 5px,rgba(255,255,255,.08) 5px,rgba(255,255,255,.08) 6px)"}}/>
@@ -2097,7 +2155,7 @@ function Stats({data,th=T}){
 
     // ── S3: DRAMA BREAKDOWN ─────────────────────────────────────
     ()=>(
-      <div style={{minHeight:460,position:"relative",overflow:"hidden"}}>
+      <div style={{minHeight:460,position:"relative",overflow:"hidden",background:"#201E2C"}}>
         {/* Watermark */}
         <div style={{position:"absolute",fontFamily:"'Outfit',sans-serif",fontSize:150,fontWeight:200,color:T.peri,opacity:.05,top:-8,right:-8,lineHeight:1,letterSpacing:"-8px",userSelect:"none",pointerEvents:"none"}}>劇</div>
         {/* dual-color top bar */}
@@ -2131,7 +2189,7 @@ function Stats({data,th=T}){
 
     // ── S4: MOOD ────────────────────────────────────────────────
     ()=>(
-      <div style={{minHeight:460,position:"relative",overflow:"hidden",background:"#FAF7F2"}}>
+      <div style={{minHeight:460,position:"relative",overflow:"hidden",background:"#FAF7F4"}}>
         {/* Navy left band */}
         <div style={{position:"absolute",left:0,top:0,bottom:0,width:4,background:T.navy}}/>
         {/* Coral top-right triangle */}
@@ -2140,7 +2198,7 @@ function Stats({data,th=T}){
           <div style={{fontFamily:"'Outfit',sans-serif",fontSize:8,letterSpacing:"3px",textTransform:"uppercase",color:"#9A9088",marginBottom:5}}>MOOD RECAP</div>
           <div style={{fontFamily:"'Outfit',sans-serif",fontSize:20,fontWeight:200,color:"#2A2520",letterSpacing:"-.5px",lineHeight:1.25,marginBottom:18}}>你的觀影<br/>心情</div>
           {/* Avg card */}
-          <div style={{background:"#fff",borderRadius:8,border:`1px solid ${T.line}`,padding:"10px 14px",marginBottom:14,display:"flex",alignItems:"center",gap:12}}>
+          <div style={{background:"#FAFAF8",borderRadius:8,border:`1px solid ${T.line}`,padding:"10px 14px",marginBottom:14,display:"flex",alignItems:"center",gap:12}}>
             <div>
               <div style={{fontFamily:"'Outfit',sans-serif",fontSize:7,color:"#9A9088",letterSpacing:"2px",textTransform:"uppercase",marginBottom:2}}>平均評分</div>
               <div style={{fontFamily:"'Outfit',sans-serif",fontSize:28,fontWeight:200,color:T.navy,letterSpacing:"-1.5px",lineHeight:1}}>{avg||"—"}</div>
@@ -2168,7 +2226,7 @@ function Stats({data,th=T}){
               ["已寫心得",ya.filter(i=>i.notes).length,"篇記錄",T.peri],
               ["最常心情",rDist.indexOf(Math.max(...rDist))+1||"—","分",T.sage],
             ].map(([label,val,unit,col])=>(
-              <div key={label} style={{background:"#fff",borderRadius:8,border:`1px solid ${T.line}`,padding:"11px 12px",borderTop:`2px solid ${col}`}}>
+              <div key={label} style={{background:"#FAFAF8",borderRadius:8,border:`1px solid ${T.line}`,padding:"11px 12px",borderTop:`2px solid ${col}`}}>
                 <div style={{fontFamily:"'Outfit',sans-serif",fontSize:7,color:"#9A9088",letterSpacing:"1.5px",textTransform:"uppercase",marginBottom:4}}>{label}</div>
                 <div style={{fontFamily:"'Outfit',sans-serif",fontSize:24,fontWeight:200,color:col,letterSpacing:"-1px",lineHeight:1}}>{val}</div>
                 <div style={{fontSize:9,color:"#9A9088",marginTop:2}}>{unit}</div>
@@ -2181,7 +2239,7 @@ function Stats({data,th=T}){
 
     // ── S5: LIVE EVENTS ─────────────────────────────────────────
     ()=>(
-      <div style={{minHeight:460,position:"relative",overflow:"hidden"}}>
+      <div style={{minHeight:460,position:"relative",overflow:"hidden",background:"#1E1A28"}}>
         {/* Coral-Maroon header */}
         <div style={{background:`linear-gradient(135deg,${T.rose} 0%,${T.maroon} 100%)`,padding:"20px 20px 16px",position:"relative",overflow:"hidden"}}>
           <div style={{position:"absolute",top:0,right:0,bottom:0,width:70,backgroundImage:"repeating-linear-gradient(135deg,transparent,transparent 5px,rgba(255,255,255,.06) 5px,rgba(255,255,255,.06) 6px)"}}/>
@@ -2235,7 +2293,7 @@ function Stats({data,th=T}){
 
     // ── S6: PLATFORM ────────────────────────────────────────────
     ()=>(
-      <div style={{minHeight:460,position:"relative",overflow:"hidden",background:"#F4F3F8"}}>
+      <div style={{minHeight:460,position:"relative",overflow:"hidden",background:"#F0EEF5"}}>
         {/* Navy header */}
         <div style={{background:T.navy,padding:"18px 20px 16px",position:"relative",overflow:"hidden"}}>
           <div style={{position:"absolute",right:0,top:0,bottom:0,width:80,backgroundImage:"radial-gradient(circle,rgba(176,184,216,.12) 1.5px,transparent 1.5px)",backgroundSize:"9px 9px"}}/>
@@ -2277,7 +2335,7 @@ function Stats({data,th=T}){
 
     // ── S7: BEST OF YEAR ────────────────────────────────────────
     ()=>(
-      <div style={{minHeight:460,position:"relative",overflow:"hidden"}}>
+      <div style={{minHeight:460,position:"relative",overflow:"hidden",background:"#1C1A28"}}>
         {/* Periwinkle left band */}
         <div style={{position:"absolute",left:0,top:0,bottom:0,width:4,background:T.peri}}/>
         {/* dot cluster deco */}
@@ -2305,7 +2363,7 @@ function Stats({data,th=T}){
 
     // ── S8: AI SUMMARY ──────────────────────────────────────────
     ()=>(
-      <div style={{minHeight:460,position:"relative",overflow:"hidden",background:"#FAF7F2"}}>
+      <div style={{minHeight:460,position:"relative",overflow:"hidden",background:"#FAF7F4"}}>
         {/* Navy→Peri gradient header */}
         <div style={{background:`linear-gradient(135deg,${T.navy} 0%,#6070A0 100%)`,padding:"20px 20px 16px",position:"relative",overflow:"hidden"}}>
           <div style={{position:"absolute",top:0,right:0,bottom:0,width:60,backgroundImage:"repeating-linear-gradient(135deg,transparent,transparent 4px,rgba(176,184,216,.1) 4px,rgba(176,184,216,.1) 5px)"}}/>
@@ -2315,7 +2373,7 @@ function Stats({data,th=T}){
         </div>
         <div style={{padding:"14px 18px 20px"}}>
           {/* Summary info card */}
-          <div style={{background:"#fff",borderRadius:10,padding:"12px 14px",border:`1px solid ${T.line}`,marginBottom:10}}>
+          <div style={{background:"#FAFAF8",borderRadius:10,padding:"12px 14px",border:`1px solid ${T.line}`,marginBottom:10}}>
             <div style={{fontFamily:"'Outfit',sans-serif",fontSize:7,color:"#9A9088",letterSpacing:"2px",textTransform:"uppercase",marginBottom:8}}>包含你的紀錄</div>
             {[
               [T.catM.line,`${mC} 部電影 · ${dC} 部戲劇 · ${eC} 場活動 · ${cC} 場演唱會`],
@@ -2387,7 +2445,7 @@ const ISettings=({s=22})=><Sv s={s} ch={<><circle cx="12" cy="12" r="3"/><path d
 
 /* ── DARK MODE TOKEN OVERRIDES ─────────────────────── */
 const DARK={
-  bg:"#141218",surface:"#1E1C24",white:"#252330",
+  bg:"#1C1A22",surface:"#252330",white:"#2E2A3A",
   ink:"#EDE8F4",ink2:"#B0A8C0",ink3:"#7A7290",ink4:"#3A3648",
   line:"#2E2A3A",lineSoft:"#252230",bg2:"#1A1820",
   heroBg:"#1A1820",heroCard:"rgba(176,184,216,.07)",heroCardBorder:"rgba(176,184,216,.12)",
@@ -2408,7 +2466,7 @@ function getTheme(dark){
     catD:{line:"#7A9888",bg:"#142018",text:"#8AB4A0"},
     catE:{line:"#E8A8A0",bg:"#2A1820",text:"#D08888"},
     catC:{line:"#C8A0D0",bg:"#1C1228",text:"#B888C8"},
-    heroBg:"#141218",
+    heroBg:"#1C1A22",
     heroOverlay:"linear-gradient(135deg,rgba(176,184,216,.1) 0%,rgba(200,120,138,.07) 100%)",
     heroCard:"rgba(176,184,216,.08)",
     heroCardBorder:"rgba(176,184,216,.15)",
@@ -2612,21 +2670,21 @@ function ScrollTop({th}){
 }
 
 function BNav({active,onNav,dark,th}){
-  const navBg=dark?"rgba(20,18,24,.98)":"rgba(244,243,248,.98)";
+  const navBg=dark?"rgba(28,26,34,.97)":"rgba(244,243,248,.98)";
   return(
     <nav style={{
       position:"fixed",bottom:0,left:"50%",transform:"translateX(-50%)",
       zIndex:100,width:"100%",maxWidth:480,
       background:navBg,backdropFilter:"blur(20px)",
-      borderTop:`1px solid ${th.line}`,
+      borderTop:`1px solid ${dark?"#2E2A3A":th.line}`,
       display:"flex",justifyContent:"space-around",alignItems:"center",
       padding:"10px 0 max(16px,env(safe-area-inset-bottom))",
     }}>
       {NAVS.map(({k,lb,I})=>{
         const on=active===k;
         return(
-          <button key={k} className="tap" onClick={()=>onNav(k)} style={{display:"flex",flexDirection:"column",alignItems:"center",gap:4,color:on?T.navy:th.ink4,padding:"4px 10px",minWidth:52,transition:"color .15s"}}>
-            <div style={{width:40,height:32,borderRadius:14,background:on?T.periBg:"transparent",display:"flex",alignItems:"center",justifyContent:"center",transition:"background .15s"}}><I s={20}/></div>
+          <button key={k} className="tap" onClick={()=>onNav(k)} style={{display:"flex",flexDirection:"column",alignItems:"center",gap:4,color:on?(dark?T.peri:T.navy):(dark?"#C8C0D8":th.ink4),padding:"4px 10px",minWidth:52,transition:"color .15s"}}>
+            <div style={{width:40,height:32,borderRadius:14,background:on?(dark?"rgba(176,184,216,.15)":T.periBg):"transparent",display:"flex",alignItems:"center",justifyContent:"center",transition:"background .15s"}}><I s={20}/></div>
             <span style={{fontSize:10,fontWeight:on?500:400,letterSpacing:".2px"}}>{lb}</span>
           </button>
         );
